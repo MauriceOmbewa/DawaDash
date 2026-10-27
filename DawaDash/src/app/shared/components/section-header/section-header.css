@@ -1,0 +1,29 @@
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h2 {
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(1.05rem, 5vw, 1.25rem);
+  font-weight: 700;
+}
+
+.btn {
+  flex-shrink: 0; /* the button never squeezes... */
+  white-space: nowrap; /* ...or wraps onto two lines */
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: 1.15rem;
+  }
+  .btn {
+    padding: 6px 14px;
+  }
+}

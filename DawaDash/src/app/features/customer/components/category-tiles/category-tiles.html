@@ -1,0 +1,8 @@
+<div class="tiles">
+  @for (category of categories; track category.path) {
+    <a class="card tile" [routerLink]="category.path">
+      <span class="icon">{{ category.icon }}</span>
+      <span class="label">{{ category.label }}</span>
+    </a>
+  }
+</div>

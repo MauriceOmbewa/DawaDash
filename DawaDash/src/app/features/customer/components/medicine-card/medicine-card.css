@@ -1,0 +1,66 @@
+.medicine-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 12px;
+}
+
+.thumb {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: var(--color-tint);
+  border-radius: var(--radius-sm);
+}
+
+.name {
+  flex: 1; /* pushes price and button to the bottom so all cards line up */
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+  background: var(--color-tint);
+  border-radius: var(--radius-pill);
+}
+
+.price {
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.btn {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .medicine-card {
+    gap: 8px;
+  }
+  .thumb {
+    height: 56px;
+    font-size: 1.6rem;
+  }
+  .btn {
+    padding: 9px 16px;
+  }
+}

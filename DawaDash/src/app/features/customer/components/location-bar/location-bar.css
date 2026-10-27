@@ -1,0 +1,48 @@
+.location-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 10px;
+}
+
+.pin {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  color: var(--color-accent);
+  background: var(--color-ink);
+  border-radius: var(--radius-sm);
+}
+
+.text {
+  flex: 1;
+  min-width: 0; /* lets long addresses truncate instead of overflowing */
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+}
+
+.address {
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .location-bar {
+    padding: 10px 16px 10px 10px;
+  }
+}

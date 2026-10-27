@@ -1,0 +1,14 @@
+<article class="card medicine-card">
+  <div class="thumb">{{ medicine().name.charAt(0) }}</div>
+
+  <h3 class="name">{{ medicine().name }}</h3>
+
+  <div class="meta">
+    <span class="badge">{{ medicine().requiresPrescription ? 'Rx' : 'OTC' }}</span>
+    <span class="price">KES {{ medicine().price | number }}</span>
+  </div>
+
+  <button type="button" class="btn btn-primary btn-block" (click)="addToCart.emit(medicine())">
+    Add to cart
+  </button>
+</article>

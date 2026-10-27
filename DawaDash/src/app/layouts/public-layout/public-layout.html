@@ -1,0 +1,34 @@
+<!-- Laptop: top navbar -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/" class="logo">Dawa<span>Dash</span></a>
+
+    <nav class="topbar-links">
+      <a routerLink="/medicines" routerLinkActive="active">Medicines</a>
+      <a routerLink="/doctors" routerLinkActive="active">Doctors</a>
+      <a routerLink="/nurses" routerLinkActive="active">Nurses</a>
+      <a routerLink="/hospitals" routerLinkActive="active">Hospitals</a>
+      <a routerLink="/orders" routerLinkActive="active">Orders</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <a routerLink="/cart" class="btn btn-soft btn-pill">Cart ({{ cartCount() }})</a>
+      <!-- Google sign-in gets wired up in a later step -->
+      <button type="button" class="btn btn-outline btn-pill">Sign in with Google</button>
+    </div>
+  </div>
+</header>
+
+<!-- The current page appears here -->
+<main class="page">
+  <router-outlet />
+</main>
+
+<!-- Mobile: bottom navigation -->
+<nav class="bottom-nav">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+  <a routerLink="/medicines" routerLinkActive="active">Medicines</a>
+  <a routerLink="/care" routerLinkActive="active">Care</a>
+  <a routerLink="/hospitals" routerLinkActive="active">Hospitals</a>
+  <a routerLink="/orders" routerLinkActive="active">Orders</a>
+</nav>

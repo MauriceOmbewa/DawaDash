@@ -1,0 +1,57 @@
+<div class="backdrop" (click)="closed.emit()">
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="location-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal-header">
+      <h2 id="location-title">Delivery location</h2>
+      <button type="button" class="close" aria-label="Close" (click)="closed.emit()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </header>
+
+    <label class="field-label" for="address">Where should we deliver?</label>
+
+    <div class="field">
+      <input
+        #box
+        id="address"
+        class="field-input"
+        type="text"
+        placeholder="Street, estate or landmark"
+        [value]="draft()"
+        (input)="draft.set(box.value)"
+        (keydown.enter)="confirm()"
+      />
+
+      <button
+        type="button"
+        class="map-btn"
+        [class.on]="showMap()"
+        aria-label="Pick location on map"
+        (click)="showMap.set(!showMap())"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" />
+          <circle cx="12" cy="10" r="2.5" />
+        </svg>
+      </button>
+    </div>
+
+    @if (showMap()) {
+      <app-map-picker (picked)="draft.set($event)" />
+    }
+
+    <div class="actions">
+      <button type="button" class="btn btn-soft" (click)="closed.emit()">Cancel</button>
+      <button type="button" class="btn btn-primary" [disabled]="!draft().trim()" (click)="confirm()">
+        Confirm location
+      </button>
+    </div>
+  </div>
+</div>

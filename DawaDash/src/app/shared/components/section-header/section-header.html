@@ -1,0 +1,6 @@
+<div class="section-header">
+  <h2>{{ title() }}</h2>
+  @if (linkTo()) {
+    <a class="btn btn-soft btn-pill" [routerLink]="linkTo()">{{ linkText() }}</a>
+  }
+</div>

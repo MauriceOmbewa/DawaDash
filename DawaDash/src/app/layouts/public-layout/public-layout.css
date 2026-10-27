@@ -1,0 +1,115 @@
+/* ----- Mobile (default) ----- */
+.topbar {
+  display: none;
+}
+
+.page {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 20px 16px 96px; /* bottom space so the bottom nav doesn't cover content */
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  padding: 10px 4px calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid var(--color-border);
+}
+
+.bottom-nav a {
+  flex: 1; /* every item gets an equal share of the width */
+  padding: 6px 2px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(0.7rem, 3.3vw, 0.85rem); /* shrinks on very small phones */
+  font-weight: 600;
+  color: var(--color-ink-soft);
+}
+
+.bottom-nav a.active {
+  color: var(--color-primary);
+}
+
+/* ----- Laptop and up ----- */
+@media (min-width: 768px) {
+  .topbar {
+    display: block;
+    background: #fff;
+  }
+
+  .topbar-inner {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .logo {
+    font-size: 28px; /* fixed in px so it stays the same size */
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .logo span {
+    color: var(--color-primary);
+  }
+
+  .topbar-links {
+    display: flex;
+    gap: 28px;
+    font-weight: 600;
+  }
+
+  .topbar-links a {
+    position: relative;
+    padding: 6px 0;
+    transition: color 0.15s;
+  }
+
+  /* The underline: hidden by default (scaled to 0 width) */
+  .topbar-links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+  }
+
+  /* Shown on hover and on the current page */
+  .topbar-links a:hover,
+  .topbar-links a.active {
+    color: var(--color-primary);
+  }
+  .topbar-links a:hover::after,
+  .topbar-links a.active::after {
+    transform: scaleX(1);
+  }
+
+  .topbar-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .topbar-actions .btn {
+    padding: 9px 18px;
+  }
+
+  .page {
+    padding: 24px 24px 64px;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+}

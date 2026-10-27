@@ -1,0 +1,25 @@
+<section class="home">
+  <h1>What do you need today?</h1>
+
+  <app-location-bar [address]="address()" (changeRequested)="openLocationModal()" />
+
+  <app-search-bar placeholder="Search medicine or symptom" (search)="onSearch($event)" />
+
+  <app-category-tiles />
+
+  <app-section-header title="Popular medicines" linkTo="/medicines" />
+
+  <div class="medicine-grid">
+    @for (medicine of popularMedicines; track medicine.id) {
+      <app-medicine-card [medicine]="medicine" (addToCart)="onAddToCart($event)" />
+    }
+  </div>
+</section>
+
+@if (locationModalOpen()) {
+  <app-location-modal
+    [address]="address()"
+    (saved)="onLocationSaved($event)"
+    (closed)="closeLocationModal()"
+  />
+}
