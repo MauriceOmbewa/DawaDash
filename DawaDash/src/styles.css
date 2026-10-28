@@ -93,6 +93,38 @@ a {
   width: 100%;
 }
 
+/* ---------- Reusable look: filter chips ---------- */
+.chip {
+  flex-shrink: 0; /* never squeezed in a scrolling row */
+  padding: 9px 18px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--color-primary-dark);
+  background: var(--color-tint);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.chip:hover {
+  background: #cfe5db;
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Selected or switched on */
+.chip.active,
+.chip.active:hover {
+  color: #fff;
+  background: var(--color-ink);
+}
+
 /* ---------- Maps ---------- */
 .leaflet-container {
   font-family: var(--font-body);

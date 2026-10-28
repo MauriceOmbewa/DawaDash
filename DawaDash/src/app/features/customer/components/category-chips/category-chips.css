@@ -1,0 +1,28 @@
+/* ----- Mobile: one row that scrolls sideways ----- */
+.chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* hide the scrollbar (Firefox) */
+
+  /* Run the row to both screen edges. The page has 16px side padding,
+     so we cancel it here and add it back inside. */
+  margin: 0 -16px;
+  padding: 4px 16px;
+}
+
+.chips::-webkit-scrollbar {
+  display: none; /* hide the scrollbar (Chrome, Safari) */
+}
+
+/* ----- Laptop and up: wrap normally, no scrolling ----- */
+@media (min-width: 768px) {
+  .chips {
+    flex-wrap: wrap;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+  }
+}

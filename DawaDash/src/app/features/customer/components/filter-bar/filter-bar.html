@@ -1,0 +1,24 @@
+<div class="filters">
+  <button type="button" class="chip" [class.active]="price() !== 'any'" (click)="nextPrice()">
+    Price: {{ priceLabel() }}
+  </button>
+
+  <button
+    type="button"
+    class="chip"
+    [class.active]="prescription() !== 'any'"
+    (click)="nextPrescription()"
+  >
+    Prescription: {{ prescriptionLabel() }}
+  </button>
+
+  <button
+    type="button"
+    class="chip"
+    [class.active]="localOnly()"
+    [attr.aria-pressed]="localOnly()"
+    (click)="toggleLocal()"
+  >
+    In {{ county() }} only
+  </button>
+</div>

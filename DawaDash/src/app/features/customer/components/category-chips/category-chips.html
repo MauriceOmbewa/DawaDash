@@ -1,0 +1,12 @@
+<div class="chips" role="group" aria-label="Medicine categories">
+  @for (category of categories(); track category) {
+    <button
+      type="button"
+      class="chip"
+      [class.active]="category === selected()"
+      (click)="selected.set(category)"
+    >
+      {{ category }}
+    </button>
+  }
+</div>

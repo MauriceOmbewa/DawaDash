@@ -7,6 +7,7 @@ import { Component, input, output } from '@angular/core';
 })
 export class SearchBar {
   placeholder = input('Search…');
+  value = input(''); // text to show in the box when the page loads
   search = output<string>();
 
   onSubmit(event: Event, term: string) {

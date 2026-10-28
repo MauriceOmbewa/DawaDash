@@ -1,0 +1,34 @@
+<section class="medicines">
+  <h1>Medicines</h1>
+
+  <app-search-bar
+    placeholder="Search by name or symptom"
+    [value]="searchTerm()"
+    (search)="searchTerm.set($event)"
+  />
+
+  <app-category-chips [categories]="categories" [(selected)]="category" />
+
+  <app-filter-bar
+    [(price)]="price"
+    [(prescription)]="prescription"
+    [(localOnly)]="localOnly"
+    [county]="county"
+  />
+
+  <p class="summary">{{ summary() }}</p>
+
+  @if (results().length > 0) {
+    <div class="medicine-grid">
+      @for (medicine of results(); track medicine.id) {
+        <app-medicine-card [medicine]="medicine" (addToCart)="onAddToCart($event)" />
+      }
+    </div>
+  } @else {
+    <div class="card empty">
+      <h2>No medicines found</h2>
+      <p>Try a different search, or clear the filters.</p>
+      <button type="button" class="btn btn-primary" (click)="clearFilters()">Clear filters</button>
+    </div>
+  }
+</section>
