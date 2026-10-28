@@ -1,13 +1,15 @@
 <section class="medicines">
-  <h1>Medicines</h1>
+  <h1>{{ title() }}</h1>
 
   <app-search-bar
     placeholder="Search by name or symptom"
     [value]="searchTerm()"
-    (search)="searchTerm.set($event)"
+    (search)="onSearch($event)"
   />
 
-  <app-category-chips [categories]="categories" [(selected)]="category" />
+  @if (!searching()) {
+    <app-category-chips [categories]="categories" [(selected)]="category" />
+  }
 
   <app-filter-bar
     [(price)]="price"
@@ -16,13 +18,29 @@
     [county]="county"
   />
 
-  <p class="summary">{{ summary() }}</p>
+  @if (!searching()) {
+    <p class="summary">{{ summary() }}</p>
+  } @else if (results().length > 0) {
+    <div class="banner">
+      <strong>{{ bannerTitle() }}</strong>
+      <span>{{ chemistText() }}</span>
+    </div>
+  }
 
   @if (results().length > 0) {
     <div class="medicine-grid">
       @for (medicine of results(); track medicine.id) {
         <app-medicine-card [medicine]="medicine" (addToCart)="onAddToCart($event)" />
       }
+    </div>
+  } @else if (localOnly() && resultsAnywhere().length > 0) {
+    <!-- Found, but only outside this county -->
+    <div class="card empty">
+      <h2>Not available in {{ county }} county</h2>
+      <p>{{ chemistsElsewhere() }} chemists in other counties stock this.</p>
+      <button type="button" class="btn btn-primary" (click)="localOnly.set(false)">
+        Show all counties
+      </button>
     </div>
   } @else {
     <div class="card empty">

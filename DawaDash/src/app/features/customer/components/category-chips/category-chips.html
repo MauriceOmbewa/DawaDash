@@ -1,12 +1,12 @@
-<div class="chips" role="group" aria-label="Medicine categories">
+<app-scroll-row>
   @for (category of categories(); track category) {
     <button
       type="button"
       class="chip"
       [class.active]="category === selected()"
-      (click)="selected.set(category)"
+      (click)="select(category, $event)"
     >
       {{ category }}
     </button>
   }
-</div>
+</app-scroll-row>

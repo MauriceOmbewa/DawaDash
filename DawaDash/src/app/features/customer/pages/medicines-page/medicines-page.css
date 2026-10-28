@@ -10,11 +10,34 @@ h1 {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
+  overflow-wrap: anywhere; /* a very long search never breaks the layout */
 }
 
 .summary {
   margin: 0;
   font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+/* The green strip shown above search results */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--color-tint);
+  border-radius: var(--radius-md);
+}
+
+.banner strong {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.banner span {
+  font-size: 0.85rem;
+  text-align: right;
   color: var(--color-ink-soft);
 }
 
@@ -45,6 +68,9 @@ h1 {
   }
   h1 {
     font-size: 2.6rem;
+  }
+  .banner {
+    padding: 14px 20px;
   }
   .medicine-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));

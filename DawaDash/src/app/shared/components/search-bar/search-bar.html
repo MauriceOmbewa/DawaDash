@@ -6,6 +6,7 @@
     aria-label="Search"
     [placeholder]="placeholder()"
     [value]="value()"
+    (search)="onNativeSearch(box.value)"
   />
   <button class="btn btn-primary" type="submit">Search</button>
 </form>

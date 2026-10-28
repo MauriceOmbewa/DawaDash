@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+/* ----- Mobile: one row that scrolls sideways ----- */
+.scroll-row {
+  position: relative;
+  /* Run the row to both screen edges. The page has 16px side padding,
+     so we cancel it here and add it back inside the track. */
+  margin: 0 -16px;
+}
+
+.scroller {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* hide the scrollbar (Firefox) */
+}
+
+.scroller::-webkit-scrollbar {
+  display: none; /* hide the scrollbar (Chrome, Safari) */
+}
+
+.track {
+  display: flex;
+  gap: 8px;
+  width: max-content; /* as wide as the chips need, so the row overflows and scrolls */
+  padding: 4px 16px;
+}
+
+/* ----- The scroll cues: a fade in the page colour, with an arrow on top ----- */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 64px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none; /* the fade never blocks taps on the chips under it */
+  transition: opacity 0.2s ease;
+}
+
+.edge.visible {
+  opacity: 1;
+}
+
+.edge.left {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 8px;
+  background: linear-gradient(to right, var(--color-bg) 35%, transparent);
+}
+
+.edge.right {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 8px;
+  background: linear-gradient(to left, var(--color-bg) 35%, transparent);
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--color-primary-dark);
+  background: #fff;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(18, 48, 43, 0.25);
+  cursor: pointer;
+}
+
+.edge.visible .arrow {
+  pointer-events: auto; /* only tappable while visible */
+}
+
+/* ----- Laptop and up: wrap onto several lines, no scrolling, no cues ----- */
+@media (min-width: 768px) {
+  .scroll-row {
+    margin: 0;
+  }
+
+  .scroller {
+    overflow: visible;
+  }
+
+  .track {
+    width: auto;
+    flex-wrap: wrap;
+    padding: 0;
+  }
+
+  .edge {
+    display: none;
+  }
+}

@@ -14,4 +14,11 @@ export class SearchBar {
     event.preventDefault();
     this.search.emit(term.trim());
   }
+
+  /** Browsers fire this when the user clicks the little × inside a search box. */
+  onNativeSearch(term: string) {
+    if (term === '') {
+      this.search.emit('');
+    }
+  }
 }

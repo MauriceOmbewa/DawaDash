@@ -1,0 +1,37 @@
+<div class="scroll-row">
+  <div #scroller class="scroller" (scroll)="update()">
+    <div #track class="track">
+      <ng-content />
+    </div>
+  </div>
+
+  <!-- Left cue: shown only when something is hidden on the left -->
+  <div class="edge left" [class.visible]="canScrollLeft()">
+    <button
+      type="button"
+      class="arrow"
+      aria-label="Scroll left"
+      [attr.tabindex]="canScrollLeft() ? 0 : -1"
+      (click)="scrollBy(-1)"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 6l-6 6 6 6" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Right cue: shown only when something is hidden on the right -->
+  <div class="edge right" [class.visible]="canScrollRight()">
+    <button
+      type="button"
+      class="arrow"
+      aria-label="Scroll right"
+      [attr.tabindex]="canScrollRight() ? 0 : -1"
+      (click)="scrollBy(1)"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" />
+      </svg>
+    </button>
+  </div>
+</div>

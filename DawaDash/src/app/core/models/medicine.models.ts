@@ -15,5 +15,5 @@ export interface Medicine {
   requiresPrescription: boolean;
   category: MedicineCategory;
   keywords: string[]; // symptoms and uses (lowercase), so searching "headache" finds Paracetamol
-  counties: string[]; // counties where it is available
+  chemistIds: number[]; // the chemists (stores) that stock this medicine
 }

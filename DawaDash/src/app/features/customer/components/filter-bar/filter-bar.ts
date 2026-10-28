@@ -1,4 +1,5 @@
 import { Component, computed, input, model } from '@angular/core';
+import { ScrollRow } from '../../../../shared/components/scroll-row/scroll-row';
 import {
   PRESCRIPTION_OPTIONS,
   PRICE_OPTIONS,
@@ -9,8 +10,8 @@ import {
 
 @Component({
   selector: 'app-filter-bar',
+  imports: [ScrollRow],
   templateUrl: './filter-bar.html',
-  styleUrl: './filter-bar.css',
 })
 export class FilterBar {
   price = model.required<PriceFilter>();
