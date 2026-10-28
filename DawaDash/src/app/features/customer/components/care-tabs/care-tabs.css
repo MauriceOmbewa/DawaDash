@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--color-tint);
+  border-radius: var(--radius-pill);
+}
+
+.tabs a {
+  flex: 1;
+  padding: 9px 12px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-pill);
+  transition: background 0.15s, color 0.15s;
+}
+
+/* The page you are on: a white pill, so it looks different from the dark filter chips below */
+.tabs a.active {
+  color: var(--color-ink);
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(18, 48, 43, 0.15);
+}
+
+/* Laptop: the top navbar already has both links */
+@media (min-width: 768px) {
+  :host {
+    display: none;
+  }
+}

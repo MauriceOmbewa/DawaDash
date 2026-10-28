@@ -1,0 +1,35 @@
+<section class="list">
+  <h1>{{ title() }}</h1>
+
+  <!-- Phone only: switch between Doctors and Home nurses -->
+  <app-care-tabs />
+
+  <app-search-bar
+    [placeholder]="searchPlaceholder()"
+    [value]="searchTerm()"
+    (search)="searchTerm.set($event)"
+  />
+
+  <app-category-chips [categories]="categories()" [(selected)]="category" />
+
+  <p class="note">{{ note() }}</p>
+
+  @if (results().length > 0) {
+    <div class="grid">
+      @for (provider of results(); track provider.id) {
+        <app-provider-card
+          [provider]="provider"
+          [badge]="badge()"
+          [actionLabel]="actionLabel()"
+          (action)="action.emit($event)"
+        />
+      }
+    </div>
+  } @else {
+    <div class="card empty">
+      <h2>No {{ title() | lowercase }} found</h2>
+      <p>Try a different search, or clear the filters.</p>
+      <button type="button" class="btn btn-primary" (click)="clearFilters()">Clear filters</button>
+    </div>
+  }
+</section>

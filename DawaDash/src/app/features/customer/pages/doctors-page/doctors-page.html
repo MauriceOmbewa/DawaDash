@@ -1,0 +1,9 @@
+<app-provider-list
+  title="Doctors"
+  searchPlaceholder="Search doctor by name"
+  note="Price shown is what you pay, platform fee included"
+  badge="Dr"
+  actionLabel="Book now"
+  [providers]="doctors"
+  (action)="onBook($event)"
+/>

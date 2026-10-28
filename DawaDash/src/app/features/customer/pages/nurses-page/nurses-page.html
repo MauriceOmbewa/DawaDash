@@ -1,0 +1,9 @@
+<app-provider-list
+  title="Home nurses"
+  searchPlaceholder="Search nurse or service"
+  note="The nurse comes to your address. You pay upfront to confirm."
+  badge="Nu"
+  actionLabel="Request visit"
+  [providers]="nurses"
+  (action)="onRequestVisit($event)"
+/>

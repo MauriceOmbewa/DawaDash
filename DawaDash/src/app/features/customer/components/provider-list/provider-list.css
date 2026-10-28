@@ -1,0 +1,55 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 8vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+/* Phone: one card per row */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.empty p {
+  margin: 0 0 18px;
+  color: var(--color-ink-soft);
+}
+
+/* Laptop: three cards per row */
+@media (min-width: 768px) {
+  .list {
+    gap: 16px;
+  }
+  h1 {
+    font-size: 2.6rem;
+  }
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}

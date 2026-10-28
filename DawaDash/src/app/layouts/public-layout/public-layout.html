@@ -28,7 +28,7 @@
 <nav class="bottom-nav">
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
   <a routerLink="/medicines" routerLinkActive="active">Medicines</a>
-  <a routerLink="/care" routerLinkActive="active">Care</a>
+  <a routerLink="/doctors" [class.active]="careActive()">Care</a>
   <a routerLink="/hospitals" routerLinkActive="active">Hospitals</a>
   <a routerLink="/orders" routerLinkActive="active">Orders</a>
 </nav>

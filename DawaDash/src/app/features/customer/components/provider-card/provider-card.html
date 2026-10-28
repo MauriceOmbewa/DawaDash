@@ -1,0 +1,18 @@
+<article class="card provider-card">
+  <div class="top">
+    <div class="avatar">{{ badge() }}</div>
+    <div class="who">
+      <h3 class="name">{{ provider().name }}</h3>
+      <p class="sub">{{ provider().specialty }} · {{ provider().county }}</p>
+    </div>
+  </div>
+
+  <div class="price-row">
+    <span class="label">Pay upfront</span>
+    <strong class="price">KES {{ provider().price | number }}</strong>
+  </div>
+
+  <button type="button" class="btn btn-primary btn-block" (click)="action.emit(provider())">
+    {{ actionLabel() }}
+  </button>
+</article>
