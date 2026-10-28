@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Chemist } from '../../../core/models/chemist.models';
+import { CountyOffer } from '../../../core/models/county-offer.models';
 import { Medicine } from '../../../core/models/medicine.models';
+
+// Mock: counties ordered from nearest to Mombasa. Later this is worked out from real locations.
+const NEAREST_FIRST = ['Kilifi', 'Kwale', 'Taita Taveta', 'Tana River', 'Nairobi', 'Kisumu'];
 
 @Injectable({ providedIn: 'root' })
 export class MedicineService {
@@ -13,6 +17,12 @@ export class MedicineService {
     { id: 4, name: 'Westlands Pharmacy', county: 'Nairobi' },
     { id: 5, name: 'Kilimani Chemist', county: 'Nairobi' },
     { id: 6, name: 'Milimani Pharmacy', county: 'Kisumu' },
+    { id: 7, name: 'Kilifi Town Pharmacy', county: 'Kilifi' },
+    { id: 8, name: 'Ukunda Chemist', county: 'Kwale' },
+    { id: 9, name: 'Msambweni Pharmacy', county: 'Kwale' },
+    { id: 10, name: 'CBD Pharmacy', county: 'Nairobi' },
+    { id: 11, name: 'Karen Chemist', county: 'Nairobi' },
+    { id: 12, name: 'Eastleigh Pharmacy', county: 'Nairobi' },
   ];
 
   private readonly chemistById = new Map(this.chemists.map((chemist) => [chemist.id, chemist]));
@@ -30,10 +40,12 @@ export class MedicineService {
       category: 'Pain relief', keywords: ['pain', 'inflammation', 'toothache', 'period pain'],
       chemistIds: this.everywhere,
     },
+    // Not stocked in Mombasa: stocked in Kilifi (1 chemist), Kwale (2) and Nairobi (5)
     {
       id: 3, name: 'Amoxicillin 500mg', price: 450, requiresPrescription: true,
       category: 'Antibiotics', keywords: ['infection', 'throat', 'chest', 'ear'],
-      chemistIds: this.everywhere,
+      chemistIds: [7, 8, 9, 4, 5, 10, 11, 12],
+      countyPrices: { Kilifi: 450, Kwale: 470, Nairobi: 440 },
     },
     {
       id: 4, name: 'ORS Sachets', price: 60, requiresPrescription: false,
@@ -60,7 +72,6 @@ export class MedicineService {
       category: 'Vitamins', keywords: ['immunity', 'diarrhoea', 'cold'],
       chemistIds: this.everywhere,
     },
-    // Not stocked by any Mombasa chemist, so you can see the "In Mombasa only" toggle at work
     {
       id: 9, name: 'Metronidazole 400mg', price: 250, requiresPrescription: true,
       category: 'Antibiotics', keywords: ['infection', 'stomach', 'amoeba'],
@@ -91,6 +102,10 @@ export class MedicineService {
     return this.medicines.slice(0, 4);
   }
 
+  getById(id: number): Medicine | undefined {
+    return this.medicines.find((medicine) => medicine.id === id);
+  }
+
   /** True if at least one chemist in this county stocks the medicine. */
   isAvailableIn(medicine: Medicine, county: string): boolean {
     return medicine.chemistIds.some((id) => this.chemistById.get(id)?.county === county);
@@ -110,5 +125,29 @@ export class MedicineService {
     }
 
     return ids.size;
+  }
+
+  /** The counties that have this medicine, nearest first (skipping the customer's own county). */
+  getOffers(medicine: Medicine, excludeCounty?: string): CountyOffer[] {
+    const chemistsPerCounty = new Map<string, number>();
+
+    for (const id of medicine.chemistIds) {
+      const chemist = this.chemistById.get(id);
+      if (!chemist || chemist.county === excludeCounty) continue;
+      chemistsPerCounty.set(chemist.county, (chemistsPerCounty.get(chemist.county) ?? 0) + 1);
+    }
+
+    const rank = (county: string) => {
+      const index = NEAREST_FIRST.indexOf(county);
+      return index === -1 ? NEAREST_FIRST.length : index;
+    };
+
+    return [...chemistsPerCounty]
+      .map(([county, chemists]) => ({
+        county,
+        chemists,
+        price: medicine.countyPrices?.[county] ?? medicine.price,
+      }))
+      .sort((a, b) => rank(a.county) - rank(b.county));
   }
 }

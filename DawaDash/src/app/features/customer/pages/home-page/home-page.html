@@ -11,7 +11,11 @@
 
   <div class="medicine-grid">
     @for (medicine of popularMedicines; track medicine.id) {
-      <app-medicine-card [medicine]="medicine" (addToCart)="onAddToCart($event)" />
+      <app-medicine-card
+        [medicine]="medicine"
+        [unavailable]="isUnavailable(medicine)"
+        (addToCart)="onAddToCart($event)"
+      />
     }
   </div>
 </section>

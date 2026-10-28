@@ -8,7 +8,16 @@
     <span class="price">KES {{ medicine().price | number }}</span>
   </div>
 
-  <button type="button" class="btn btn-primary btn-block" (click)="addToCart.emit(medicine())">
-    Add to cart
-  </button>
+  @if (unavailable()) {
+    <a
+      class="btn btn-soft btn-block"
+      [routerLink]="['/medicines', medicine().id, 'availability']"
+    >
+      Check availability
+    </a>
+  } @else {
+    <button type="button" class="btn btn-primary btn-block" (click)="addToCart.emit(medicine())">
+      Add to cart
+    </button>
+  }
 </article>

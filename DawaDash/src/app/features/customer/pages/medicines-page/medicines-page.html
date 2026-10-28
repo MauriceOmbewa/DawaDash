@@ -15,7 +15,7 @@
     [(price)]="price"
     [(prescription)]="prescription"
     [(localOnly)]="localOnly"
-    [county]="county"
+    [county]="county()"
   />
 
   @if (!searching()) {
@@ -30,17 +30,24 @@
   @if (results().length > 0) {
     <div class="medicine-grid">
       @for (medicine of results(); track medicine.id) {
-        <app-medicine-card [medicine]="medicine" (addToCart)="onAddToCart($event)" />
+        <app-medicine-card
+          [medicine]="medicine"
+          [unavailable]="isUnavailable(medicine)"
+          (addToCart)="onAddToCart($event)"
+        />
       }
     </div>
   } @else if (localOnly() && resultsAnywhere().length > 0) {
-    <!-- Found, but only outside this county -->
-    <div class="card empty">
-      <h2>Not available in {{ county }} county</h2>
-      <p>{{ chemistsElsewhere() }} chemists in other counties stock this.</p>
-      <button type="button" class="btn btn-primary" (click)="localOnly.set(false)">
-        Show all counties
-      </button>
+    <!-- Found, but only in other counties -->
+    <app-notice [title]="'Not in ' + county() + ' county'">
+      Stocked in other counties. Check availability to choose where we get it from.
+      Delivery is paid by you.
+    </app-notice>
+
+    <div class="medicine-grid">
+      @for (medicine of resultsAnywhere(); track medicine.id) {
+        <app-medicine-card [medicine]="medicine" [unavailable]="true" />
+      }
     </div>
   } @else {
     <div class="card empty">

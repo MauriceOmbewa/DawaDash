@@ -1,0 +1,71 @@
+@if (!medicine) {
+  <div class="card message">
+    <h1>Medicine not found</h1>
+    <p>We could not find that medicine.</p>
+    <button type="button" class="btn btn-primary" (click)="cancel()">Go back</button>
+  </div>
+} @else if (availableHere) {
+  <div class="card message">
+    <h1>{{ medicine.name }}</h1>
+    <p>Good news, it is available in {{ county() }} county.</p>
+    <button type="button" class="btn btn-primary" (click)="cancel()">Go back</button>
+  </div>
+} @else if (offers.length === 0) {
+  <div class="card message">
+    <h1>{{ medicine.name }}</h1>
+    <p>This medicine is not available in any county right now.</p>
+    <button type="button" class="btn btn-primary" (click)="cancel()">Go back</button>
+  </div>
+} @else {
+  <section class="availability">
+    <!-- Phone: a simple page title -->
+    <h1 class="title-phone">Check availability</h1>
+
+    <!-- Laptop: the medicine name on the left -->
+    <div class="intro">
+      <h1>{{ medicine.name }}</h1>
+      <p class="sub">Not available in {{ county() }} county right now.</p>
+      <app-notice title="We can still get it for you">
+        Pick a county that has it. Delivery is paid by you.
+      </app-notice>
+    </div>
+
+    <div class="panel">
+      <app-notice [title]="'Not in ' + county() + ' county'">
+        {{ medicine.name }} is stocked in other counties. Delivery is paid by you.
+      </app-notice>
+
+      <div class="options" role="radiogroup" aria-label="Counties that have this medicine">
+        @for (offer of offers; track offer.county) {
+          <app-county-option
+            [offer]="offer"
+            [selected]="offer.county === selectedCounty()"
+            (picked)="selectedCounty.set(offer.county)"
+          />
+        }
+      </div>
+
+      @if (selectedOffer(); as offer) {
+        <div class="card summary">
+          <div class="row">
+            <span>Medicine</span>
+            <strong>KES {{ offer.price | number }}</strong>
+          </div>
+          <div class="row">
+            <span>Delivery from {{ offer.county }} (you pay)</span>
+            <strong>Set at checkout</strong>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary btn-block" (click)="orderFromSelected()">
+            Yes, order from {{ offer.county }}
+          </button>
+          <button type="button" class="btn cancel btn-block" (click)="cancel()">
+            No, cancel
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+}

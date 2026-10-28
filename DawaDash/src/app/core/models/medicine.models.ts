@@ -11,9 +11,10 @@ export type MedicineCategory = (typeof MEDICINE_CATEGORIES)[number];
 export interface Medicine {
   id: number;
   name: string;
-  price: number; // in KES
+  price: number; // in KES, the normal listed price
   requiresPrescription: boolean;
   category: MedicineCategory;
   keywords: string[]; // symptoms and uses (lowercase), so searching "headache" finds Paracetamol
   chemistIds: number[]; // the chemists (stores) that stock this medicine
+  countyPrices?: Record<string, number>; // optional: a different price in some counties
 }

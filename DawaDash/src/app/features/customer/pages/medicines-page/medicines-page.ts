@@ -2,6 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MEDICINE_CATEGORIES, Medicine } from '../../../../core/models/medicine.models';
 import { CartService } from '../../../../core/services/cart.services';
+import { LocationService } from '../../../../core/services/location.services';
+import { Notice } from '../../../../shared/components/notice/notice';
 import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
 import { CategoryChips } from '../../components/category-chips/category-chips';
 import { FilterBar } from '../../components/filter-bar/filter-bar';
@@ -11,7 +13,7 @@ import { MedicineService } from '../../services/medicine.service';
 
 @Component({
   selector: 'app-medicines-page',
-  imports: [SearchBar, CategoryChips, FilterBar, MedicineCard],
+  imports: [SearchBar, CategoryChips, FilterBar, MedicineCard, Notice],
   templateUrl: './medicines-page.html',
   styleUrl: './medicines-page.css',
 })
@@ -21,8 +23,7 @@ export class MedicinesPage {
   private readonly medicineService = inject(MedicineService);
   private readonly allMedicines = this.medicineService.getAll();
 
-  // Later this will come from the customer's saved delivery location
-  readonly county = 'Mombasa';
+  readonly county = inject(LocationService).county; // a signal: use county() to read it
   readonly categories = ['All', ...MEDICINE_CATEGORIES];
 
   // The filters. Changing any of these updates `results` automatically.
@@ -48,25 +49,26 @@ export class MedicinesPage {
   // Text for the page
   summary = computed(() =>
     this.localOnly()
-      ? `Showing medicines available in ${this.county} county`
+      ? `Showing medicines available in ${this.county()} county`
       : 'Showing medicines from all counties',
   );
 
   bannerTitle = computed(() =>
-    this.localOnly() ? `Available in ${this.county} county` : 'Showing all counties',
+    this.localOnly() ? `Available in ${this.county()} county` : 'Showing all counties',
   );
 
   chemistText = computed(() => {
     const count = this.medicineService.countChemists(
       this.results(),
-      this.localOnly() ? this.county : undefined,
+      this.localOnly() ? this.county() : undefined,
     );
     return `${count} ${count === 1 ? 'chemist' : 'chemists'} can fill this`;
   });
 
-  chemistsElsewhere = computed(() =>
-    this.medicineService.countChemists(this.resultsAnywhere()),
-  );
+  /** True when no chemist in the customer's county stocks this medicine */
+  isUnavailable(medicine: Medicine): boolean {
+    return !this.medicineService.isAvailableIn(medicine, this.county());
+  }
 
   onSearch(term: string) {
     this.searchTerm.set(term);
@@ -106,7 +108,7 @@ export class MedicinesPage {
         (this.prescription() === 'otc' && !medicine.requiresPrescription);
 
       const matchesCounty =
-        !onlyLocal || this.medicineService.isAvailableIn(medicine, this.county);
+        !onlyLocal || this.medicineService.isAvailableIn(medicine, this.county());
 
       return (
         matchesSearch &&

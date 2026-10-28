@@ -1,0 +1,18 @@
+<button
+  type="button"
+  class="option"
+  [class.selected]="selected()"
+  role="radio"
+  [attr.aria-checked]="selected()"
+  (click)="picked.emit()"
+>
+  <span class="info">
+    <strong class="name">{{ offer().county }}</strong>
+    <span class="meta">
+      {{ offer().chemists }} {{ offer().chemists === 1 ? 'chemist' : 'chemists' }} ·
+      KES {{ offer().price | number }}
+    </span>
+  </span>
+
+  <span class="state">{{ selected() ? 'Selected' : 'Select' }}</span>
+</button>

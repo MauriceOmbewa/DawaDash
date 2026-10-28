@@ -1,0 +1,109 @@
+h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 8vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+/* ----- Phone (default): one column ----- */
+.availability {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.intro {
+  display: none; /* the laptop-only left column */
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary {
+  padding: 14px 16px;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.row + .row {
+  margin-top: 6px;
+}
+
+.row strong {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cancel {
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+/* Messages (not found, available here, not stocked anywhere) */
+.message {
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.message h1 {
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+.message p {
+  margin: 0 0 18px;
+  color: var(--color-ink-soft);
+}
+
+/* ----- Laptop and up: two columns ----- */
+@media (min-width: 768px) {
+  .availability {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .title-phone {
+    display: none;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .intro h1 {
+    font-size: 2.6rem;
+  }
+
+  .sub {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--color-ink-soft);
+  }
+}

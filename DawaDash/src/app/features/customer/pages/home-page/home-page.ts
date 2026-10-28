@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Medicine } from '../../../../core/models/medicine.models';
 import { CartService } from '../../../../core/services/cart.services';
+import { LocationService } from '../../../../core/services/location.services';
 import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
 import { SectionHeader } from '../../../../shared/components/section-header/section-header';
 import { CategoryTiles } from '../../components/category-tiles/category-tiles';
@@ -20,10 +21,16 @@ export class HomePage {
   private readonly router = inject(Router);
   private readonly cart = inject(CartService);
   private readonly medicineService = inject(MedicineService);
+  private readonly county = inject(LocationService).county;
 
   address = signal('Nyali Road, Mombasa');
   locationModalOpen = signal(false);
   popularMedicines = this.medicineService.getPopular();
+
+  /** True when no chemist in the customer's county stocks this medicine */
+  isUnavailable(medicine: Medicine): boolean {
+    return !this.medicineService.isAvailableIn(medicine, this.county());
+  }
 
   openLocationModal() {
     this.locationModalOpen.set(true);

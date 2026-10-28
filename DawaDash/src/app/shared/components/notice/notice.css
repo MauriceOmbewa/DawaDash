@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  --notice-bg: #fdf0d3;
+  --notice-border: #f0d28e;
+}
+
+.notice {
+  padding: 14px 16px;
+  background: var(--notice-bg);
+  border: 1.5px solid var(--notice-border);
+  border-radius: var(--radius-md);
+}
+
+.title {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.body {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
