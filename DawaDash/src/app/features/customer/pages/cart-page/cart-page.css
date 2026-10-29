@@ -1,0 +1,117 @@
+.layout {
+  display: grid;
+  gap: 12px;
+}
+
+.lines,
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-weight: 700;
+}
+
+.qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-soft);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.qty button {
+  border: 0;
+  background: transparent;
+  color: var(--c-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.line-total {
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+.dropoff {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pin {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--c-ink);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.where {
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.95rem;
+}
+
+.row:not(.total) span:last-child {
+  font-weight: 700;
+}
+
+.row.total {
+  border-top: 2px dashed var(--c-line);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-weight: 700;
+}
+
+.total-amount {
+  color: var(--c-green);
+  font-size: 1.4rem;
+}
+
+.note {
+  font-size: 0.8rem;
+}
+
+.empty {
+  color: var(--c-muted);
+  text-align: center;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: start;
+    gap: 16px;
+  }
+}

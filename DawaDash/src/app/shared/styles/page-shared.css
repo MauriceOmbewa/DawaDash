@@ -1,0 +1,195 @@
+/* Shared look for every page. The layout's .page already centres the content and
+   adds the padding, so nothing here repeats that. */
+:host {
+  display: block;
+  font-family: inherit;
+
+  /* Use your global theme variables; the second value is only a fallback */
+  --c-green: var(--color-primary, #3a7d68);
+  --c-line: var(--color-border, #cfe0d6);
+  --c-muted: var(--color-ink-soft, #5b6f68);
+  --c-ink: var(--color-ink, #12302a);
+  --c-soft: #dce9e2;
+  --c-water: #bcdbe8;
+  color: var(--c-ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+/* Page heading ("Doctors", "Hospitals", ...) */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.muted {
+  color: var(--c-muted);
+  font-size: 0.875rem;
+}
+
+/* Search box + button (same on every page) */
+.search {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 2px solid var(--c-line);
+  border-radius: 999px;
+  padding: 0.8rem 1.25rem;
+  font: inherit;
+  font-size: 1rem;
+  background: #fff;
+  color: var(--c-ink);
+}
+
+.search .btn {
+  padding: 0.8rem 1.6rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+
+.btn:hover {
+  filter: brightness(0.95);
+}
+
+.btn:focus-visible,
+.chip:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--c-green);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--c-green);
+  color: #fff;
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--c-green);
+  border-color: var(--c-green);
+}
+
+.btn-soft {
+  background: var(--c-soft);
+  color: var(--c-ink);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  padding: 0.85rem 1.4rem;
+  font-size: 1rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.95rem;
+  font-size: 0.875rem;
+}
+
+/* Filter chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  background: var(--c-soft);
+  color: var(--c-green);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip.active {
+  background: var(--c-ink);
+  color: #fff;
+}
+
+/* Small status labels */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--c-soft);
+  color: var(--c-green);
+}
+
+.badge-warn {
+  background: #fdf0cf;
+  color: #8a5a00;
+}
+
+.mobile-only {
+  display: revert;
+}
+
+/* 768px matches the layout's navbar breakpoint */
+@media (min-width: 768px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+}

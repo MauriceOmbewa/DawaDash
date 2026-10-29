@@ -1,0 +1,62 @@
+<h1 class="page-title">Hospitals</h1>
+
+<form class="search" (submit)="$event.preventDefault()">
+  <input
+    #q
+    type="search"
+    placeholder="Search hospital or service, e.g. maternity"
+    aria-label="Search hospital or service"
+    [value]="searchTerm()"
+    (input)="searchTerm.set(q.value)"
+  />
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="filters">
+  <div class="chips" role="group" aria-label="Hospital type">
+    @for (t of typeFilters; track t) {
+      <button type="button" class="chip" [class.active]="type() === t" (click)="type.set(t)">
+        {{ t }}
+      </button>
+    }
+  </div>
+
+  <div class="chips" role="group" aria-label="Services">
+    @for (s of serviceFilters; track s) {
+      <button type="button" class="chip" [class.active]="service() === s" (click)="toggleService(s)">
+        {{ s }}
+      </button>
+    }
+    <button type="button" class="chip" [class.active]="nearMe()" (click)="toggleNearMe()">
+      Near me
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+  <app-map-preview class="map" />
+
+  <section class="list" aria-label="Hospital results">
+    @for (h of results(); track h.id) {
+      <article class="card hospital">
+        <div class="hospital-head">
+          <h2>{{ h.name }}</h2>
+          <span class="badge">{{ h.type }}</span>
+        </div>
+        <p class="services">{{ h.services.join(' · ') }}</p>
+
+        <div class="hospital-foot">
+          <p class="muted distance">{{ h.distanceKm }} km away · Mombasa</p>
+          <div class="actions">
+            <a class="btn btn-outline btn-sm" [href]="directionsUrl(h)" target="_blank" rel="noopener">
+              Directions
+            </a>
+            <a class="btn btn-primary btn-sm" [routerLink]="['/hospitals', h.id]">View</a>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="card empty">No hospitals match your search. Try removing a filter.</p>
+    }
+  </section>
+</div>

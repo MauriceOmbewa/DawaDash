@@ -1,0 +1,49 @@
+@if (hospital(); as h) {
+  <header class="head">
+    <h1 class="page-title">{{ h.name }}</h1>
+    <div class="chips">
+      <span class="badge">{{ h.type }}</span>
+      <span class="badge">Level {{ h.level }}</span>
+      @if (h.open24h) {
+        <span class="badge badge-warn">Open 24 hours</span>
+      }
+    </div>
+    <p class="muted address">{{ h.address }}</p>
+  </header>
+
+  <div class="layout">
+    <app-map-preview class="map" [route]="true" />
+
+    <div class="info">
+      <section class="card directions">
+        <div>
+          <h2 class="card-title">Directions from {{ h.directions.from }}</h2>
+          <p class="muted">{{ h.directions.distanceKm }} km · about {{ h.directions.minutes }} min by car</p>
+          <ol class="steps">
+            @for (step of h.directions.steps; track step) {
+              <li>{{ step }}</li>
+            }
+          </ol>
+        </div>
+        <a class="btn btn-primary btn-sm start" [href]="startUrl(h)" target="_blank" rel="noopener">Start</a>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Services</h2>
+        <div class="chips">
+          @for (s of h.services; track s) {
+            <span class="service">{{ s }}</span>
+          }
+        </div>
+      </section>
+
+      <div class="cta">
+        <a class="btn btn-outline btn-lg" [href]="'tel:' + h.phone">Call</a>
+        <a class="btn btn-primary btn-lg" routerLink="/doctors">Book a doctor here</a>
+      </div>
+    </div>
+  </div>
+} @else {
+  <h1 class="page-title">Hospital not found</h1>
+  <p class="card">We could not find that hospital. <a routerLink="/hospitals">Back to hospitals</a></p>
+}

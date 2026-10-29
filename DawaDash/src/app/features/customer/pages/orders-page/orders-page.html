@@ -1,0 +1,35 @@
+<h1 class="page-title">My orders</h1>
+
+<div class="chips tabs" role="tablist" aria-label="Order type">
+  @for (t of tabs; track t.value) {
+    <button
+      type="button"
+      role="tab"
+      class="chip"
+      [class.active]="tab() === t.value"
+      [attr.aria-selected]="tab() === t.value"
+      (click)="tab.set(t.value)"
+    >
+      {{ t.label }}
+    </button>
+  }
+</div>
+
+<section class="list" aria-label="Orders and appointments">
+  @for (o of visible(); track o.kind + o.id) {
+    <article class="card order">
+      <div class="info">
+        <p class="order-title">{{ o.title }}</p>
+        <p class="muted">{{ o.subtitle }}</p>
+      </div>
+
+      <span [class]="badgeClass(o.status)">{{ o.status }}</span>
+
+      @if (o.action) {
+        <button type="button" class="btn btn-primary" (click)="onAction(o)">{{ o.action }}</button>
+      }
+    </article>
+  } @empty {
+    <p class="card empty">Nothing here yet.</p>
+  }
+</section>
