@@ -1,0 +1,59 @@
+<div class="layout">
+  <header class="head">
+    <h1 class="page-title">
+      <span class="mobile-only">Book appointment</span>
+      <span class="desktop-only">Book {{ doctor.name }}</span>
+    </h1>
+    <p class="muted desktop-only subtitle">
+      {{ doctor.title }} · {{ doctor.location }} · {{ doctor.mode }}
+    </p>
+  </header>
+
+  <section class="card doctor">
+    <div class="avatar" aria-hidden="true">{{ initials }}</div>
+    <div>
+      <p class="doctor-name">{{ doctor.name }}</p>
+      <p class="muted">{{ doctor.title }} · {{ doctor.location }}</p>
+    </div>
+  </section>
+
+  <section class="card time">
+    <h2 class="card-title">Pick a time</h2>
+    <div class="chips" role="group" aria-label="Appointment time">
+      @for (slot of slots; track slot) {
+        <button
+          type="button"
+          class="chip"
+          [class.active]="selectedSlot() === slot"
+          (click)="selectedSlot.set(slot)"
+        >
+          {{ slot }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <div class="pay">
+    <section class="card">
+      <h2 class="card-title">What you pay</h2>
+      <div class="row">
+        <span>Doctor consultation fee</span>
+        <span>KES {{ consultationFee.toLocaleString() }}</span>
+      </div>
+      <div class="row">
+        <span>Platform fee (10%)</span>
+        <span>KES {{ platformFee.toLocaleString() }}</span>
+      </div>
+      <div class="row total">
+        <span>Total</span>
+        <span class="total-amount">KES {{ total.toLocaleString() }}</span>
+      </div>
+    </section>
+
+    <p class="muted note">Pay now to confirm. Your slot is held once paid.</p>
+
+    <button type="button" class="btn btn-primary btn-block btn-lg" (click)="onPay()">
+      Pay KES {{ total.toLocaleString() }} with M-Pesa
+    </button>
+  </div>
+</div>

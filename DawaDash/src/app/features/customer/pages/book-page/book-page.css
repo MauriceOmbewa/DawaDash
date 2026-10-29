@@ -1,0 +1,92 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subtitle {
+  margin-top: -0.5rem;
+}
+
+.doctor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--c-ink);
+  color: #f4b400;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.doctor-name {
+  font-weight: 700;
+}
+
+.pay {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.95rem;
+}
+
+.row:not(.total) span:last-child {
+  font-weight: 700;
+}
+
+.row.total {
+  border-top: 2px dashed var(--c-line);
+  margin-top: 8px;
+  padding-top: 12px;
+  font-weight: 700;
+}
+
+.total-amount {
+  color: var(--c-green);
+  font-size: 1.4rem;
+}
+
+.note {
+  font-size: 0.8rem;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'head doctor'
+      'time pay';
+    gap: 14px 28px;
+    align-items: start;
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .doctor {
+    grid-area: doctor;
+  }
+
+  .time {
+    grid-area: time;
+  }
+
+  .pay {
+    grid-area: pay;
+  }
+}

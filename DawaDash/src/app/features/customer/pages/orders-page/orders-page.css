@@ -1,0 +1,41 @@
+.tabs {
+  margin-bottom: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.order {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.info {
+  flex: 1;
+  min-width: 9rem;
+}
+
+.order-title {
+  font-weight: 700;
+}
+
+.empty {
+  color: var(--c-muted);
+  text-align: center;
+}
+
+/* Phones: status next to the title, button on the right */
+@media (max-width: 899px) {
+  .order {
+    flex-wrap: nowrap;
+  }
+
+  .info {
+    min-width: 0;
+  }
+}

@@ -1,0 +1,82 @@
+.head {
+  margin-bottom: 14px;
+}
+
+.head .page-title {
+  margin-bottom: 8px;
+}
+
+.address {
+  margin-top: 8px;
+}
+
+.layout {
+  display: grid;
+  gap: 14px;
+}
+
+.map {
+  --map-height: 150px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.directions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.steps {
+  margin: 8px 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.start {
+  align-self: flex-start;
+}
+
+.service {
+  background: var(--c-soft);
+  color: var(--c-green);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+}
+
+.cta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+a {
+  color: var(--c-green);
+}
+
+.btn-primary,
+.btn-outline {
+  color: #fff;
+}
+
+.btn-outline {
+  color: var(--c-green);
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .map {
+    --map-height: 380px;
+  }
+}
