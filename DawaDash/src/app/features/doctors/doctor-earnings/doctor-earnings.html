@@ -1,0 +1,114 @@
+<section class="doctor-earnings-page">
+  <header class="earnings-header">
+    <div>
+      <h1>Earnings</h1>
+      <p class="subtitle">Daily consult proceeds and instant M-Pesa payouts</p>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="openWithdraw()">
+      Withdraw to M-Pesa
+    </button>
+  </header>
+
+  <!-- Summary Metric Cards -->
+  <div class="metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-label">Available Balance</span>
+      <strong class="metric-value font-mono">KES {{ availableBalance() | number }}</strong>
+      <span class="metric-footnote">Cleared for instant transfer</span>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Earned Today</span>
+      <strong class="metric-value font-mono">KES {{ earnedToday() | number }}</strong>
+      <span class="metric-footnote">6 consults settled</span>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Earned This Week</span>
+      <strong class="metric-value font-mono">KES {{ earnedWeek() | number }}</strong>
+      <span class="metric-footnote">18 consults total</span>
+    </div>
+  </div>
+
+  <!-- Transparent Fee Explanation -->
+  <div class="fee-explainer">
+    <strong>DawaDash 10% Platform Fee Model</strong>
+    <p>
+      You receive 100% of your configured consultation fee without deductions. The 10% platform fee is paid by patients at booking.
+    </p>
+  </div>
+
+  <!-- Transactions Table -->
+  <div class="card ledger-card">
+    <h2>Recent Consultations</h2>
+
+    <div class="ledger-list">
+      @for (tx of ledger(); track tx.id) {
+        <div class="ledger-row">
+          <div class="tx-info">
+            <strong>{{ tx.patientName }}</strong>
+            <span>{{ tx.type }} · {{ tx.date }}, {{ tx.time }}</span>
+          </div>
+
+          <div class="tx-amounts">
+            <span class="net-amount font-mono">+ KES {{ tx.netEarned | number }}</span>
+            <span class="fee-meta">Gross: {{ tx.grossAmount }} (Fee: -{{ tx.platformFee }})</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- M-Pesa Modal -->
+  @if (showWithdrawModal()) {
+    <div class="modal-backdrop" (click)="closeWithdraw()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>M-Pesa B2C Payout</h3>
+          <button type="button" class="btn-close" (click)="closeWithdraw()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <label>M-Pesa Registered Mobile</label>
+          <input
+            type="text"
+            class="input-field"
+            [ngModel]="mpesaNumber()"
+            (ngModelChange)="mpesaNumber.set($event)"
+          />
+
+          <label>Amount to Withdraw (KES)</label>
+          <input
+            type="number"
+            class="input-field"
+            [ngModel]="withdrawAmount()"
+            (ngModelChange)="withdrawAmount.set($event)"
+            [max]="availableBalance()"
+          />
+          <span class="field-hint">Max available: KES {{ availableBalance() | number }}</span>
+
+          @if (isSuccess()) {
+            <div class="success-banner">
+              ✓ KES {{ withdrawAmount() | number }} transferred to {{ mpesaNumber() }}!
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeWithdraw()">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="processWithdrawal()"
+            [disabled]="isSuccess()"
+          >
+            Confirm Withdrawal
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

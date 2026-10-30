@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-ink, #0A2E24);
+  background-color: var(--color-bg, #F4F8F5);
+}
+
+.nurse-earnings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+.earnings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.earnings-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 18px 20px;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: #5A7369;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #005C46;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.fee-explainer {
+  background: #FFF4D6;
+  border: 1px solid #FDE397;
+  border-radius: 18px;
+  padding: 16px 20px;
+}
+
+.fee-explainer strong {
+  color: #0A2E24;
+}
+
+.fee-explainer p {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #8C4A00;
+}
+
+.ledger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #F0F4F2;
+}
+
+.net-amount {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #005C46;
+}
+
+.badge-cleared {
+  font-size: 0.75rem;
+  color: #166534;
+  background: #DCFCE7;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}

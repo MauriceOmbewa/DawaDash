@@ -1,0 +1,57 @@
+<section class="admin-orders-page">
+  <header class="orders-header">
+    <div>
+      <h1>DawaDash Prescription & Medicine Orders</h1>
+      <p class="subtitle">Live fulfillment tracking across partner chemist network</p>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by order #, customer, or medicine..."
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    />
+
+    <select
+      class="county-select"
+      [ngModel]="countyFilter()"
+      (ngModelChange)="countyFilter.set($event)"
+    >
+      <option value="All">All Counties</option>
+      <option value="Nairobi">Nairobi</option>
+      <option value="Mombasa">Mombasa</option>
+      <option value="Kisumu">Kisumu</option>
+    </select>
+  </div>
+
+  <div class="orders-list">
+    @for (order of filteredOrders(); track order.id) {
+      <div class="card order-card">
+        <div class="order-main">
+          <div class="order-id-row">
+            <strong class="order-number font-mono">{{ order.orderNumber }}</strong>
+            <span class="order-customer">· {{ order.customerName }}</span>
+            <span class="order-time font-mono">({{ order.time }})</span>
+          </div>
+          <p class="order-items">{{ order.itemsSummary }}</p>
+          <span class="order-chemist">Fulfilling Chemist: <strong>{{ order.chemistName }}</strong> ({{ order.county }})</span>
+        </div>
+
+        <div class="order-right">
+          <strong class="order-amount font-mono">KES {{ order.totalAmount | number }}</strong>
+          <span
+            class="status-badge"
+            [class.status-dispatched]="order.status === 'Dispatched'"
+            [class.status-preparing]="order.status === 'Preparing'"
+            [class.status-delivered]="order.status === 'Delivered'"
+          >
+            {{ order.status }}
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+</section>

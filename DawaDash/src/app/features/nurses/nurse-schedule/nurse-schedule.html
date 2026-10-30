@@ -1,0 +1,143 @@
+<section class="nurse-schedule-page">
+  <header class="schedule-header">
+    <div>
+      <h1>Home Visit Schedule</h1>
+      <p class="subtitle">Daily nursing itineraries, routes, and clinical care rounds</p>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="openAddVisit()">
+      + Add Visit
+    </button>
+  </header>
+
+  <!-- Week Strip -->
+  <div class="week-strip">
+    @for (day of weekDays(); track day.day) {
+      <button
+        type="button"
+        class="day-pill"
+        [class.active]="selectedDay() === day.day"
+        (click)="selectDay(day.day)"
+      >
+        <span class="day-name">{{ day.day }}</span>
+        <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
+        <span class="day-count">{{ day.count }} visits</span>
+      </button>
+    }
+  </div>
+
+  <!-- Filter Row -->
+  <div class="filter-row">
+    <div class="pill-group">
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'All'"
+        (click)="setTypeFilter('All')"
+      >
+        All Visits
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'Wound care'"
+        (click)="setTypeFilter('Wound care')"
+      >
+        Wound care
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'Injections'"
+        (click)="setTypeFilter('Injections')"
+      >
+        Injections
+      </button>
+    </div>
+
+    <span class="total-visits">{{ filteredVisits().length }} scheduled visits</span>
+  </div>
+
+  <!-- Schedule Visit List -->
+  <div class="schedule-list">
+    @for (visit of filteredVisits(); track visit.id) {
+      <div class="card schedule-card">
+        <div class="time-block">
+          <span class="time-text">{{ visit.scheduledTime }}</span>
+          <span class="time-neighborhood">{{ visit.patient.neighborhood }}</span>
+        </div>
+
+        <div class="patient-block">
+          <h3>{{ visit.patient.name }}</h3>
+          <p>{{ visit.patient.serviceType }} · {{ visit.patient.phone }}</p>
+        </div>
+
+        <div class="fee-block">
+          <span class="fee-amount">KES {{ visit.fee | number }}</span>
+          <span class="badge badge-accepted">Confirmed</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add Visit Modal -->
+  @if (showAddVisitModal()) {
+    <div class="modal-backdrop" (click)="closeAddVisit()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Schedule Home Visit</h3>
+          <button type="button" class="btn-close" (click)="closeAddVisit()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <label>Patient Name</label>
+          <input
+            type="text"
+            class="input-field"
+            placeholder="e.g. Fatma Bakari"
+            [ngModel]="patientName()"
+            (ngModelChange)="patientName.set($event)"
+          />
+
+          <label>Scheduled Time</label>
+          <input
+            type="text"
+            class="input-field"
+            [ngModel]="scheduledTime()"
+            (ngModelChange)="scheduledTime.set($event)"
+          />
+
+          <label>Service</label>
+          <select
+            class="input-field select-field"
+            [ngModel]="serviceType()"
+            (ngModelChange)="serviceType.set($event)"
+          >
+            <option value="Wound care">Wound care</option>
+            <option value="Injections">Injections</option>
+            <option value="IV drip / Infusion">IV drip / Infusion</option>
+            <option value="Catheter care">Catheter care</option>
+          </select>
+
+          <label>Neighborhood / Area</label>
+          <input
+            type="text"
+            class="input-field"
+            placeholder="e.g. Nyali, Bamburi, Tudor"
+            [ngModel]="neighborhood()"
+            (ngModelChange)="neighborhood.set($event)"
+          />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddVisit()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="saveVisit()">
+            Add Visit
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

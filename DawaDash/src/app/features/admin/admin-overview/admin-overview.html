@@ -1,0 +1,82 @@
+<section class="admin-overview-page">
+  <header class="page-header">
+    <h1>Platform overview</h1>
+  </header>
+
+  <!-- 4 KPI Summary Cards (2x2 on Mobile, 4 across on Desktop) -->
+  <div class="metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-label">Orders today</span>
+      <strong class="metric-value font-mono">{{ stats().ordersToday }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Chemists</span>
+      <strong class="metric-value font-mono">{{ stats().chemistsCount }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Doctors</span>
+      <strong class="metric-value font-mono">{{ stats().doctorsCount }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Nurses</span>
+      <strong class="metric-value font-mono">{{ stats().nursesCount }}</strong>
+    </div>
+  </div>
+
+  <!-- Section: Waiting for approval -->
+  <div class="section-container">
+    <h2>Waiting for approval</h2>
+
+    <div class="cards-list">
+      @for (item of pendingApprovals(); track item.id) {
+        <div class="card approval-card">
+          <div class="card-details">
+            <h3 class="card-title">
+              {{ item.type }} · {{ item.name }}
+            </h3>
+            <p class="card-subtitle">
+              {{ item.specialtyOrDetails }}
+            </p>
+          </div>
+
+          <div class="card-actions">
+            <button
+              type="button"
+              class="btn btn-approve"
+              (click)="approveProvider(item.id)"
+            >
+              Approve
+            </button>
+
+            @if (item.type !== 'Nurse') {
+              <button
+                type="button"
+                class="btn btn-reject"
+                (click)="rejectProvider(item.id)"
+              >
+                Reject
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="card empty-card">
+          <p>All medical providers and chemists are verified!</p>
+        </div>
+      }
+
+      <!-- Platform fee row matching screenshot -->
+      <div class="card fee-card">
+        <div class="card-details">
+          <h3 class="card-title">Platform fee</h3>
+          <p class="card-subtitle">Added on top of provider fee</p>
+        </div>
+
+        <strong class="fee-percentage font-mono">{{ stats().platformFeePercent }}%</strong>
+      </div>
+    </div>
+  </div>
+</section>

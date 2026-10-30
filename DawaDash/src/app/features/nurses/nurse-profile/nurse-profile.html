@@ -1,0 +1,105 @@
+<section class="nurse-profile-page">
+  <header class="profile-header">
+    <h1>Nurse Profile & Credentials</h1>
+    <p class="subtitle">NCK nursing licensure, verified home-care services, and contact info</p>
+  </header>
+
+  <!-- Profile Card Banner -->
+  <div class="card profile-badge-card">
+    <div class="avatar">RN</div>
+    <div class="nurse-badge-info">
+      <div class="title-row">
+        <h2>Nurse {{ name() }}</h2>
+        <span class="badge badge-verified">✓ NCK Registered</span>
+      </div>
+      <p class="specialty-text">{{ title() }}</p>
+      <div class="meta-row">
+        <span class="rating">★ {{ rating() }} ({{ completedVisits() }} home visits completed)</span>
+        <span>·</span>
+        <span>{{ county() }} County</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Fields -->
+  <form class="card profile-form" (ngSubmit)="saveProfile()">
+    <h3>Professional & Station Info</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nurse Full Name</label>
+        <input
+          type="text"
+          class="input-field"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+          name="name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Professional Certification</label>
+        <input
+          type="text"
+          class="input-field"
+          [ngModel]="title()"
+          (ngModelChange)="title.set($event)"
+          name="title"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Nursing Council of Kenya (NCK) License</label>
+        <input
+          type="text"
+          class="input-field font-mono"
+          [ngModel]="nckNumber()"
+          (ngModelChange)="nckNumber.set($event)"
+          name="nckNumber"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Station / Coverage Area</label>
+        <input
+          type="text"
+          class="input-field"
+          [ngModel]="baseStation()"
+          (ngModelChange)="baseStation.set($event)"
+          name="baseStation"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Official Mobile (M-Pesa Payout)</label>
+        <input
+          type="text"
+          class="input-field font-mono"
+          [ngModel]="phone()"
+          (ngModelChange)="phone.set($event)"
+          name="phone"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Official Email</label>
+        <input
+          type="email"
+          class="input-field"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          name="email"
+        />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      @if (savedNotification()) {
+        <span class="save-msg">✓ Nurse credentials saved</span>
+      }
+      <button type="submit" class="btn btn-primary">
+        Save Profile
+      </button>
+    </div>
+  </form>
+</section>

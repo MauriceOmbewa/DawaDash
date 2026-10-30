@@ -1,0 +1,409 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-ink, #0A2E24);
+  background-color: var(--color-bg, #F4F8F5);
+}
+
+.doctor-today-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+/* Page Greeting */
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-ink, #0A2E24);
+  line-height: 1.15;
+}
+
+/* Metric KPI Cards (2x2 on mobile, 4 across on desktop) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5A7369;
+}
+
+.metric-value {
+  margin-top: 4px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.55rem;
+}
+
+/* Fee Alert Banner (Warm peach/gold from screenshot) */
+.fee-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #FFF4D6;
+  border: 1.5px solid #FDE397;
+  border-radius: 22px;
+}
+
+.fee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fee-info strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.01em;
+}
+
+.fee-info span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #8C4A00;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 14px;
+  border: none;
+}
+
+.btn-outline {
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #0A2E24;
+  border: 2px solid #0A2E24;
+}
+
+.btn-outline:hover {
+  background: #F4F8F5;
+}
+
+.btn-start {
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  background: #005C46;
+  color: #ffffff;
+}
+
+.btn-start:hover {
+  background: #004A38;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  background: #005C46;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #004A38;
+}
+
+.btn-secondary {
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  background: #F4F8F5;
+  color: #64748B;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #64748B;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Appointments Section */
+.appointments-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.appointments-section h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.appointment-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 20px;
+}
+
+.appointment-card.completed {
+  opacity: 0.65;
+  background: #F9FBFA;
+}
+
+.appointment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.appointment-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0A2E24;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appointment-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+/* Badges matching screenshots */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.badge-next {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.badge-booked {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.badge-completed {
+  background: #F1F5F9;
+  color: #475569;
+}
+
+/* Modals */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(10, 46, 36, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-large {
+  max-width: 600px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #F0F4F2;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.modal-body {
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: 2px solid #D5E4DC;
+  border-radius: 14px;
+  outline: none;
+  background: #F8FAF9;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  border-color: #005C46;
+  background: #ffffff;
+}
+
+.fee-breakdown-box {
+  background: #FFF8E7;
+  border: 1px solid #FDE68A;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  color: #78350F;
+}
+
+.breakdown-row.total {
+  border-top: 1px solid rgba(245, 158, 11, 0.2);
+  padding-top: 8px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #92400E;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.patient-summary {
+  background: #F8FAF9;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 0.85rem;
+}
+
+.patient-summary h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: #005C46;
+}
+
+.allergy-alert {
+  color: #B45309;
+  background: #FEF3C7;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.fee-notice {
+  font-size: 0.85rem;
+  color: #5A7369;
+  margin: 12px 0;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Media Query for Desktop Viewport */
+@media (min-width: 768px) {
+  .doctor-today-page {
+    gap: 20px;
+    padding: 24px 20px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    padding: 20px 24px;
+  }
+
+  .metric-value {
+    font-size: 2.3rem;
+  }
+
+  .fee-banner {
+    padding: 20px 26px;
+  }
+
+  .fee-info strong {
+    font-size: 1.15rem;
+  }
+
+  .appointment-card {
+    padding: 18px 24px;
+  }
+
+  .appointment-title {
+    font-size: 1.05rem;
+  }
+}
