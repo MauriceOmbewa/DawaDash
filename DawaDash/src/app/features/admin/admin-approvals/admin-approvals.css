@@ -1,0 +1,152 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: #0A2E24;
+  background-color: #F4F8F5;
+}
+
+.admin-approvals-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+.approvals-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.pill-group {
+  display: flex;
+  gap: 6px;
+  background: #E8EFEA;
+  padding: 4px;
+  border-radius: 14px;
+  width: fit-content;
+}
+
+.filter-pill {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #5A7369;
+  cursor: pointer;
+}
+
+.filter-pill.active {
+  background: #ffffff;
+  color: #0A2E24;
+}
+
+.approvals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 18px 22px;
+}
+
+.approval-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.type-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #005C46;
+  background: #DCFCE7;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0A2E24;
+}
+
+.card-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.submitted-text {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  display: block;
+  margin-top: 2px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+}
+
+.btn-approve {
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-approve:hover {
+  background: #004A38;
+}
+
+.btn-reject {
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #0A2E24;
+  border: 2px solid #005C46;
+}
+
+.empty-card {
+  text-align: center;
+  color: #64748B;
+  padding: 30px;
+}

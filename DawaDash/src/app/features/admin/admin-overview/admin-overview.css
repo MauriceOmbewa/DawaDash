@@ -1,0 +1,199 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-ink, #0A2E24);
+  background-color: var(--color-bg, #F4F8F5);
+}
+
+.admin-overview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Metric KPI Cards (2x2 on Mobile, 4 across on Desktop) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5A7369;
+}
+
+.metric-value {
+  margin-top: 4px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.section-container h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.approval-card,
+.fee-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 20px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0A2E24;
+}
+
+.card-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.fee-percentage {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+/* Buttons matching screenshot */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+}
+
+.btn-approve {
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-approve:hover {
+  background: #004A38;
+}
+
+.btn-reject {
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #0A2E24;
+  border: 2px solid #005C46;
+}
+
+.btn-reject:hover {
+  background: #F4F8F5;
+}
+
+.empty-card {
+  text-align: center;
+  color: #64748B;
+  font-size: 0.85rem;
+  padding: 24px;
+}
+
+@media (min-width: 768px) {
+  .admin-overview-page {
+    gap: 20px;
+    padding: 24px 20px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    padding: 20px 24px;
+  }
+
+  .metric-value {
+    font-size: 2.3rem;
+  }
+
+  .approval-card,
+  .fee-card {
+    padding: 18px 24px;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+  }
+}

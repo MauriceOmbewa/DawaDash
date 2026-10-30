@@ -1,0 +1,48 @@
+<!-- Desktop & Tablet Top Navbar -->
+<header class="doctor-navbar">
+  <div class="navbar-inner">
+    <!-- DawaDash Brand Wordmark -->
+    <a routerLink="/doctor/today" class="brand-link">
+      <span class="brand-text">
+        <span class="brand-dark">Dawa</span><span class="brand-teal">Dash</span>
+      </span>
+    </a>
+
+    <!-- Centered Nav Links -->
+    <nav class="desktop-nav">
+      <a routerLink="/doctor/today" routerLinkActive="active" class="nav-item">Today</a>
+      <a routerLink="/doctor/schedule" routerLinkActive="active" class="nav-item">Schedule</a>
+      <a routerLink="/doctor/earnings" routerLinkActive="active" class="nav-item">Earnings</a>
+      <a routerLink="/doctor/profile" routerLinkActive="active" class="nav-item">Profile</a>
+    </nav>
+
+    <!-- Right Side Status Action -->
+    <div class="navbar-actions">
+      <button
+        type="button"
+        class="status-pill"
+        [class.available]="isAvailable()"
+        (click)="toggleAvailability()"
+      >
+        <span class="status-dot"></span>
+        <span>{{ isAvailable() ? 'Available' : 'Busy' }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Sticky Bottom Navigation -->
+<nav class="mobile-bottom-nav">
+  <a routerLink="/doctor/today" routerLinkActive="active" class="mobile-nav-item">
+    <span>Today</span>
+  </a>
+  <a routerLink="/doctor/schedule" routerLinkActive="active" class="mobile-nav-item">
+    <span>Schedule</span>
+  </a>
+  <a routerLink="/doctor/earnings" routerLinkActive="active" class="mobile-nav-item">
+    <span>Earnings</span>
+  </a>
+  <a routerLink="/doctor/profile" routerLinkActive="active" class="mobile-nav-item">
+    <span>Profile</span>
+  </a>
+</nav>

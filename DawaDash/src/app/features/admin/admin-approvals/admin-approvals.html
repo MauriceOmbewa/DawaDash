@@ -1,0 +1,73 @@
+<section class="admin-approvals-page">
+  <header class="approvals-header">
+    <div>
+      <h1>Provider Approvals</h1>
+      <p class="subtitle">Validate chemist trade licenses, KMPDC credentials, and NCK nurse registrations</p>
+    </div>
+  </header>
+
+  <div class="filter-row">
+    <div class="pill-group">
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="filterType() === 'All'"
+        (click)="filterType.set('All')"
+      >
+        All ({{ providers().length }})
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="filterType() === 'Chemist'"
+        (click)="filterType.set('Chemist')"
+      >
+        Chemists
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="filterType() === 'Doctor'"
+        (click)="filterType.set('Doctor')"
+      >
+        Doctors
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="filterType() === 'Nurse'"
+        (click)="filterType.set('Nurse')"
+      >
+        Nurses
+      </button>
+    </div>
+  </div>
+
+  <div class="approvals-list">
+    @for (item of filteredProviders(); track item.id) {
+      <div class="card approval-card">
+        <div class="card-details">
+          <div class="title-line">
+            <span class="type-pill">{{ item.type }}</span>
+            <h3 class="card-title">{{ item.name }}</h3>
+          </div>
+          <p class="card-subtitle">{{ item.specialtyOrDetails }} · License: <strong>{{ item.licenseNumber }}</strong></p>
+          <span class="submitted-text">Submitted: {{ item.submittedDate }}</span>
+        </div>
+
+        <div class="card-actions">
+          <button type="button" class="btn btn-approve" (click)="approve(item.id)">
+            Approve
+          </button>
+          <button type="button" class="btn btn-reject" (click)="reject(item.id)">
+            Reject
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="card empty-card">
+        <p>No pending applications in this category.</p>
+      </div>
+    }
+  </div>
+</section>

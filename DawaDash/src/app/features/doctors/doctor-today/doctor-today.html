@@ -1,0 +1,168 @@
+<section class="doctor-today-page">
+  <!-- Greeting from Screenshot -->
+  <header class="page-header">
+    <h1>Good morning, Dr. {{ doctorName() }}</h1>
+  </header>
+
+  <!-- Metric KPI Cards: 4 columns on PC, 2x2 grid on Phone -->
+  <div class="metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-label">Today</span>
+      <strong class="metric-value">{{ stats().todayCount }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">This week</span>
+      <strong class="metric-value">{{ stats().weekCount }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Earned today</span>
+      <strong class="metric-value font-mono">KES {{ stats().earnedToday | number }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Rating</span>
+      <strong class="metric-value">{{ stats().rating }}</strong>
+    </div>
+  </div>
+
+  <!-- Consultation Fee Alert Banner (Exact warm peach style from screenshot) -->
+  <div class="fee-banner">
+    <div class="fee-info">
+      <strong>Your consultation fee: KES {{ consultationFee() | number }}</strong>
+      <span>Patients pay KES {{ totalPatientFee() | number }} with the 10% platform fee</span>
+    </div>
+
+    <button type="button" class="btn btn-outline" (click)="openEditFee()">
+      Edit
+    </button>
+  </div>
+
+  <!-- Today's Appointments Section -->
+  <div class="appointments-section">
+    <h2>Today</h2>
+
+    <div class="appointments-list">
+      @for (apt of appointments(); track apt.id) {
+        <div class="card appointment-card" [class.completed]="apt.status === 'completed'">
+          <div class="appointment-details">
+            <h3 class="appointment-title">
+              {{ apt.time }} · {{ apt.patient.name }}
+            </h3>
+            <p class="appointment-subtitle">
+              {{ apt.type }} · {{ apt.isPaid ? 'Paid' : 'Unpaid' }}
+            </p>
+          </div>
+
+          <div class="appointment-action">
+            @if (apt.status === 'start') {
+              <button
+                type="button"
+                class="btn btn-start"
+                (click)="startConsultation(apt)"
+              >
+                Start
+              </button>
+            } @else if (apt.status === 'next') {
+              <span class="badge badge-next">Next</span>
+            } @else if (apt.status === 'booked') {
+              <span class="badge badge-booked">Booked</span>
+            } @else {
+              <span class="badge badge-completed">Completed</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Edit Fee Dialog / Modal -->
+  @if (isEditingFee()) {
+    <div class="modal-backdrop" (click)="closeEditFee()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Edit Consultation Fee</h3>
+          <button type="button" class="btn-close" (click)="closeEditFee()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <label for="consultFeeInput">Doctor Base Fee (KES)</label>
+          <input
+            id="consultFeeInput"
+            type="number"
+            class="input-field"
+            [ngModel]="tempFee()"
+            (ngModelChange)="tempFee.set($event)"
+            min="500"
+            step="100"
+          />
+
+          <div class="fee-breakdown-box">
+            <div class="breakdown-row">
+              <span>Doctor payout:</span>
+              <strong>KES {{ tempFee() | number }}</strong>
+            </div>
+            <div class="breakdown-row">
+              <span>DawaDash 10% platform fee:</span>
+              <span>+ KES {{ (tempFee() * 0.1) | number }}</span>
+            </div>
+            <div class="breakdown-row total">
+              <span>Patient pays upon booking:</span>
+              <strong>KES {{ (tempFee() * 1.1) | number }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditFee()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="saveConsultationFee()">
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Active Teleconsultation Room Modal -->
+  @if (activeConsultation()) {
+    <div class="modal-backdrop" (click)="closeConsultation()">
+      <div class="modal-card modal-large" (click)="$event.stopPropagation()">
+        <div class="modal-header consult-header">
+          <div>
+            <h3>Consultation: {{ activeConsultation()?.patient?.name }}</h3>
+            <span class="consult-meta">{{ activeConsultation()?.type }} · Active Session</span>
+          </div>
+          <button type="button" class="btn-close" (click)="closeConsultation()">✕</button>
+        </div>
+
+        <div class="consult-body">
+          <div class="patient-summary">
+            <h4>Patient Clinical Info</h4>
+            <p><strong>Age:</strong> {{ activeConsultation()?.patient?.age }} yrs ({{ activeConsultation()?.patient?.gender }})</p>
+            <p><strong>Location:</strong> {{ activeConsultation()?.patient?.location }}</p>
+            <p><strong>Symptoms:</strong> "{{ activeConsultation()?.patient?.symptoms }}"</p>
+            @if (activeConsultation()?.patient?.allergies?.length) {
+              <p class="allergy-alert">
+                <strong>Allergies:</strong> {{ activeConsultation()?.patient?.allergies?.join(', ') }}
+              </p>
+            }
+          </div>
+
+          <div class="consult-actions">
+            <p class="fee-notice">Fee to be credited upon completion: <strong>KES {{ consultationFee() | number }}</strong></p>
+            <button
+              type="button"
+              class="btn btn-primary btn-block"
+              (click)="completeConsultation(activeConsultation()!.id)"
+            >
+              Sign Off & Complete Consultation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</section>

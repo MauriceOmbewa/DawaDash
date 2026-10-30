@@ -1,0 +1,295 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-ink, #0A2E24);
+  background-color: var(--color-bg, #F4F8F5);
+}
+
+.nurse-today-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+/* Greeting */
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Metric KPI Cards (2x2 on mobile, 4 across on desktop) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5A7369;
+}
+
+.metric-value {
+  margin-top: 4px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.55rem;
+}
+
+/* Section Containers */
+.section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.section-container h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.request-card,
+.visit-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0A2E24;
+}
+
+.card-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Buttons matching screenshot */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-accept,
+.btn-directions,
+.btn-primary {
+  padding: 8px 24px;
+  font-size: 0.95rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-accept:hover,
+.btn-directions:hover,
+.btn-primary:hover {
+  background: #004A38;
+}
+
+.btn-decline {
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #0A2E24;
+  border: 2px solid #005C46;
+}
+
+.btn-decline:hover {
+  background: #F4F8F5;
+}
+
+.btn-secondary {
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  background: #F4F8F5;
+  color: #64748B;
+  border: none;
+}
+
+.empty-card {
+  text-align: center;
+  color: #64748B;
+  font-size: 0.85rem;
+  padding: 24px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(10, 46, 36, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F0F4F2;
+  padding-bottom: 12px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #0A2E24;
+}
+
+.modal-meta {
+  font-size: 0.8rem;
+  color: #5A7369;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #64748B;
+}
+
+.modal-body {
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-block strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #0A2E24;
+  margin-bottom: 2px;
+}
+
+.info-block p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #5A7369;
+}
+
+.map-placeholder {
+  background: #EBF5EF;
+  border: 1px dashed #D1E7DD;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #005C46;
+  font-weight: 600;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid #F0F4F2;
+  padding-top: 12px;
+}
+
+/* Media Query for Desktop Viewport */
+@media (min-width: 768px) {
+  .nurse-today-page {
+    gap: 20px;
+    padding: 24px 20px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    padding: 20px 24px;
+  }
+
+  .metric-value {
+    font-size: 2.3rem;
+  }
+
+  .request-card,
+  .visit-card {
+    padding: 18px 24px;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+  }
+}

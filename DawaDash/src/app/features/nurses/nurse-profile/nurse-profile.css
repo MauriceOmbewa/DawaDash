@@ -1,0 +1,182 @@
+:host {
+  display: block;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-ink, #0A2E24);
+  background-color: var(--color-bg, #F4F8F5);
+}
+
+.nurse-profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.profile-badge-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #005C46;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.nurse-badge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-row h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.badge-verified {
+  background: #DCFCE7;
+  color: #065F46;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.specialty-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #5A7369;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.rating {
+  color: #B45309;
+  font-weight: 700;
+}
+
+.profile-form h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.05rem;
+  color: #0A2E24;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0A2E24;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #D5E4DC;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-sizing: border-box;
+  background: #F8FAF9;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #005C46;
+  background: #ffffff;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #F0F4F2;
+}
+
+.save-msg {
+  color: #005C46;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.btn-primary {
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}

@@ -1,0 +1,148 @@
+<section class="nurse-today-page">
+  <!-- Greeting matching screenshot -->
+  <header class="page-header">
+    <h1>Hello, Nurse {{ nurseName() }}</h1>
+  </header>
+
+  <!-- Metric KPI Cards: 4 across on Desktop, 2x2 grid on Phone -->
+  <div class="metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-label">Visits today</span>
+      <strong class="metric-value">{{ stats().visitsToday }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">New requests</span>
+      <strong class="metric-value">{{ stats().newRequests }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Earned today</span>
+      <strong class="metric-value font-mono">KES {{ stats().earnedToday | number }}</strong>
+    </div>
+
+    <div class="card metric-card">
+      <span class="metric-label">Rating</span>
+      <strong class="metric-value">{{ stats().rating }}</strong>
+    </div>
+  </div>
+
+  <!-- Section: New requests from screenshot -->
+  <div class="section-container">
+    <h2>New requests</h2>
+
+    <div class="cards-list">
+      @for (req of newRequests(); track req.id) {
+        <div class="card request-card">
+          <div class="card-details">
+            <h3 class="card-title">
+              {{ req.service }} · {{ req.patientName }}
+            </h3>
+            <p class="card-subtitle">
+              {{ req.locationTime }}
+            </p>
+          </div>
+
+          <div class="card-actions">
+            <button
+              type="button"
+              class="btn btn-accept"
+              (click)="acceptRequest(req.id)"
+            >
+              Accept
+            </button>
+
+            @if (req.id === 'req-1') {
+              <button
+                type="button"
+                class="btn btn-decline"
+                (click)="declineRequest(req.id)"
+              >
+                Decline
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="card empty-card">
+          <p>No pending home visit requests right now.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Section: Today from screenshot -->
+  <div class="section-container">
+    <h2>Today</h2>
+
+    <div class="cards-list">
+      @for (visit of todayVisits(); track visit.id) {
+        <div class="card visit-card">
+          <div class="card-details">
+            <h3 class="card-title">
+              {{ visit.time }} · {{ visit.patientName }}
+            </h3>
+            <p class="card-subtitle">
+              {{ visit.locationService }}
+            </p>
+          </div>
+
+          <div class="card-actions">
+            <button
+              type="button"
+              class="btn btn-directions"
+              (click)="openDirections(visit)"
+            >
+              Directions
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Directions & Patient Address Modal -->
+  @if (selectedDirections()) {
+    <div class="modal-backdrop" (click)="closeDirections()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3>Visit Directions: {{ selectedDirections()?.patientName }}</h3>
+            <span class="modal-meta">{{ selectedDirections()?.time }} · {{ selectedDirections()?.service }}</span>
+          </div>
+          <button type="button" class="btn-close" (click)="closeDirections()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="info-block">
+            <strong>Patient Address:</strong>
+            <p>{{ selectedDirections()?.address }}</p>
+          </div>
+
+          <div class="info-block">
+            <strong>Contact:</strong>
+            <p>{{ selectedDirections()?.phone }}</p>
+          </div>
+
+          <div class="map-placeholder">
+            <span>📍 Map routing ready via Google Maps / Apple Maps</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeDirections()">
+            Close
+          </button>
+          <a
+            class="btn btn-primary"
+            [href]="'https://maps.google.com/?q=' + selectedDirections()?.address"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in Maps ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+</section>

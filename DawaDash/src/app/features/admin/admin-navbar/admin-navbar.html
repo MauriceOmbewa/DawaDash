@@ -1,0 +1,40 @@
+<!-- Desktop & Tablet Top Navbar -->
+<header class="admin-navbar">
+  <div class="navbar-inner">
+    <!-- DawaDash Wordmark Logo -->
+    <a routerLink="/admin/overview" class="brand-link">
+      <span class="brand-text">
+        <span class="brand-dark">Dawa</span><span class="brand-teal">Dash</span>
+      </span>
+    </a>
+
+    <!-- Centered Nav Links -->
+    <nav class="desktop-nav">
+      <a routerLink="/admin/overview" routerLinkActive="active" class="nav-item">Overview</a>
+      <a routerLink="/admin/approvals" routerLinkActive="active" class="nav-item">Approvals</a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="nav-item">Orders</a>
+      <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">Settings</a>
+    </nav>
+
+    <!-- Right Side Admin Badge -->
+    <div class="navbar-actions">
+      <span class="admin-badge">Admin</span>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Sticky Bottom Navigation -->
+<nav class="mobile-bottom-nav">
+  <a routerLink="/admin/overview" routerLinkActive="active" class="mobile-nav-item">
+    <span>Overview</span>
+  </a>
+  <a routerLink="/admin/approvals" routerLinkActive="active" class="mobile-nav-item">
+    <span>Approvals</span>
+  </a>
+  <a routerLink="/admin/orders" routerLinkActive="active" class="mobile-nav-item">
+    <span>Orders</span>
+  </a>
+  <a routerLink="/admin/settings" routerLinkActive="active" class="mobile-nav-item">
+    <span>Settings</span>
+  </a>
+</nav>

@@ -1,0 +1,147 @@
+<section class="doctor-schedule-page">
+  <header class="schedule-header">
+    <div>
+      <h1>Schedule</h1>
+      <p class="subtitle">Review booked appointments, slot capacity, and availability</p>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="openAddSlot()">
+      + Add Slot
+    </button>
+  </header>
+
+  <!-- Week Days Strip -->
+  <div class="week-strip">
+    @for (day of weekDays(); track day.day) {
+      <button
+        type="button"
+        class="day-pill"
+        [class.active]="selectedDay() === day.day"
+        (click)="selectDay(day.day)"
+      >
+        <span class="day-name">{{ day.day }}</span>
+        <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
+        <span class="day-count">{{ day.count }} slots</span>
+      </button>
+    }
+  </div>
+
+  <!-- Type Filter Bar -->
+  <div class="filter-row">
+    <div class="pill-group">
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'All'"
+        (click)="setTypeFilter('All')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'Video consult'"
+        (click)="setTypeFilter('Video consult')"
+      >
+        Video consult
+      </button>
+      <button
+        type="button"
+        class="filter-pill"
+        [class.active]="typeFilter() === 'Clinic visit'"
+        (click)="setTypeFilter('Clinic visit')"
+      >
+        Clinic visit
+      </button>
+    </div>
+
+    <span class="total-slots">{{ filteredAppointments().length }} slots</span>
+  </div>
+
+  <!-- Timeline Cards -->
+  <div class="schedule-list">
+    @for (apt of filteredAppointments(); track apt.id) {
+      <div class="card schedule-card">
+        <div class="time-block">
+          <span class="time-text">{{ apt.time }}</span>
+          <span class="time-type">{{ apt.type }}</span>
+        </div>
+
+        <div class="patient-block">
+          <h3>{{ apt.patient.name }}</h3>
+          <p>{{ apt.patient.symptoms }}</p>
+        </div>
+
+        <div class="status-block">
+          <span
+            class="badge"
+            [class.badge-start]="apt.status === 'start'"
+            [class.badge-next]="apt.status === 'next'"
+            [class.badge-booked]="apt.status === 'booked'"
+          >
+            {{ apt.status }}
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add Slot Modal -->
+  @if (showAddSlotModal()) {
+    <div class="modal-backdrop" (click)="closeAddSlot()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Add Consultation Slot</h3>
+          <button type="button" class="btn-close" (click)="closeAddSlot()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <label>Patient Name</label>
+          <input
+            type="text"
+            class="input-field"
+            placeholder="e.g. Samuel Mwenda"
+            [ngModel]="newPatientName()"
+            (ngModelChange)="newPatientName.set($event)"
+          />
+
+          <label>Time</label>
+          <input
+            type="text"
+            class="input-field"
+            [ngModel]="newTime()"
+            (ngModelChange)="newTime.set($event)"
+          />
+
+          <label>Consultation Type</label>
+          <select
+            class="input-field select-field"
+            [ngModel]="newType()"
+            (ngModelChange)="newType.set($event)"
+          >
+            <option value="Video consult">Video consult</option>
+            <option value="Clinic visit">Clinic visit</option>
+          </select>
+
+          <label>Symptoms / Triage</label>
+          <input
+            type="text"
+            class="input-field"
+            placeholder="e.g. Mild flu symptoms"
+            [ngModel]="newSymptoms()"
+            (ngModelChange)="newSymptoms.set($event)"
+          />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddSlot()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary" (click)="saveSlot()">
+            Add Slot
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>
