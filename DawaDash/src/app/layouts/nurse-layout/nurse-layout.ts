@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NurseNavbar } from '../../features/nurses/nurse-navbar/nurse-navbar';
+import { Component, signal } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-nurse-layout',
-  imports: [RouterOutlet, NurseNavbar],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './nurse-layout.html',
   styleUrl: './nurse-layout.css',
 })
-export class NurseLayout {}
+export class NurseLayout {
+  isAvailable = signal<boolean>(true);
+
+  toggleAvailability(): void {
+    this.isAvailable.update(v => !v);
+  }
+}

@@ -1,0 +1,100 @@
+<section class="admin-products-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Products</h1>
+  </header>
+
+  <!-- Search Bar Row -->
+  <div class="search-bar-row">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearch()"
+      placeholder="Search product or chemist"
+      class="search-input"
+    />
+    <button type="button" class="btn btn-search" (click)="onSearch()">Search</button>
+  </div>
+
+  <!-- Filter Chips (All, Live, Prescription, Hidden) -->
+  <div class="filter-chips">
+    <button
+      type="button"
+      class="chip chip-all"
+      [class.selected]="activeFilter() === 'all'"
+      (click)="setFilter('all')"
+    >
+      All
+    </button>
+    <button
+      type="button"
+      class="chip chip-live"
+      [class.selected]="activeFilter() === 'live'"
+      (click)="setFilter('live')"
+    >
+      Live
+    </button>
+    <button
+      type="button"
+      class="chip chip-prescription"
+      [class.selected]="activeFilter() === 'prescription'"
+      (click)="setFilter('prescription')"
+    >
+      Prescription
+    </button>
+    <button
+      type="button"
+      class="chip chip-hidden"
+      [class.selected]="activeFilter() === 'hidden'"
+      (click)="setFilter('hidden')"
+    >
+      Hidden
+    </button>
+  </div>
+
+  <!-- Products List -->
+  <div class="products-list">
+    @for (product of filteredProducts(); track product.id) {
+      <div class="card product-card">
+        <div class="card-details">
+          <h3 class="card-title">
+            {{ product.name }}
+          </h3>
+          <p class="card-subtitle">
+            Added by {{ product.chemistName }} · {{ product.location }} · KES {{ product.price }}
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <!-- Status Badge -->
+          <span class="status-badge status-{{ product.status }}">
+            {{ product.status | titlecase }}
+          </span>
+
+          <!-- Contextual Action Button (Hide vs Show) -->
+          @if (product.status === 'hidden') {
+            <button
+              type="button"
+              class="btn btn-show"
+              (click)="showProduct(product.id)"
+            >
+              Show
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-hide"
+              (click)="hideProduct(product.id)"
+            >
+              Hide
+            </button>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="card empty-card">
+        <p>No medicines or products found matching "{{ searchTerm() }}" under "{{ activeFilter() }}"</p>
+      </div>
+    }
+  </div>
+</section>

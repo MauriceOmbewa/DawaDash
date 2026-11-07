@@ -1,17 +1,11 @@
 :host {
   display: block;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: #0A2E24;
-  background-color: #F4F8F5;
 }
 
 .admin-approvals-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px 12px;
 }
 
 .approvals-header h1 {
