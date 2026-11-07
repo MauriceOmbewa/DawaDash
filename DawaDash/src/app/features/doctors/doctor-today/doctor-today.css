@@ -1,17 +1,11 @@
 :host {
   display: block;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: var(--color-ink, #0A2E24);
-  background-color: var(--color-bg, #F4F8F5);
 }
 
 .doctor-today-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px 12px;
 }
 
 /* Page Greeting */
@@ -375,7 +369,6 @@
 @media (min-width: 768px) {
   .doctor-today-page {
     gap: 20px;
-    padding: 24px 20px;
   }
 
   .metrics-grid {

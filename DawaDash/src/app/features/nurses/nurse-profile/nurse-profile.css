@@ -1,17 +1,11 @@
 :host {
   display: block;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: var(--color-ink, #0A2E24);
-  background-color: var(--color-bg, #F4F8F5);
 }
 
 .nurse-profile-page {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 16px 12px;
 }
 
 .profile-header h1 {

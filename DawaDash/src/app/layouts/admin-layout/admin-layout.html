@@ -1,5 +1,35 @@
-<app-admin-navbar />
+<!-- Desktop: top navbar -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/admin/overview" class="logo">Dawa<span>Dash</span></a>
 
+    <nav class="topbar-links">
+      <a routerLink="/admin/overview"  routerLinkActive="active">Overview</a>
+      <a routerLink="/admin/approvals"  routerLinkActive="active">Approvals</a>
+      <a routerLink="/admin/chemists"  routerLinkActive="active">Chemists</a>
+      <a routerLink="/admin/customers" routerLinkActive="active">Customers</a>
+      <a routerLink="/admin/products"  routerLinkActive="active">Products</a>
+      <a routerLink="/admin/orders"    routerLinkActive="active">Orders</a>
+      <a routerLink="/admin/settings"  routerLinkActive="active">Settings</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <span class="badge-admin">Admin</span>
+    </div>
+  </div>
+</header>
+
+<!-- Page content -->
 <main class="page">
   <router-outlet />
 </main>
+
+<!-- Mobile: bottom navigation -->
+<nav class="bottom-nav">
+  <a routerLink="/admin/overview"  routerLinkActive="active">Overview</a>
+  <a routerLink="/admin/approvals" routerLinkActive="active">Approvals</a>
+  <a routerLink="/admin/chemists"  routerLinkActive="active">Chemists</a>
+  <a routerLink="/admin/customers" routerLinkActive="active">Customers</a>
+  <a routerLink="/admin/products"  routerLinkActive="active">Products</a>
+  <a routerLink="/admin/orders"    routerLinkActive="active">Orders</a>
+</nav>

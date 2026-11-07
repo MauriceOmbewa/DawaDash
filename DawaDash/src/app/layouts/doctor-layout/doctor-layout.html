@@ -1,5 +1,38 @@
-<app-doctor-navbar />
+<!-- Desktop: top navbar -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/doctor/today" class="logo">Dawa<span>Dash</span></a>
 
+    <nav class="topbar-links">
+      <a routerLink="/doctor/today"    routerLinkActive="active">Today</a>
+      <a routerLink="/doctor/schedule" routerLinkActive="active">Schedule</a>
+      <a routerLink="/doctor/earnings" routerLinkActive="active">Earnings</a>
+      <a routerLink="/doctor/profile"  routerLinkActive="active">Profile</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <button
+        type="button"
+        class="status-pill"
+        [class.available]="isAvailable()"
+        (click)="toggleAvailability()"
+      >
+        <span class="status-dot"></span>
+        <span>{{ isAvailable() ? 'Available' : 'Busy' }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Page content -->
 <main class="page">
   <router-outlet />
 </main>
+
+<!-- Mobile: bottom navigation -->
+<nav class="bottom-nav">
+  <a routerLink="/doctor/today"    routerLinkActive="active">Today</a>
+  <a routerLink="/doctor/schedule" routerLinkActive="active">Schedule</a>
+  <a routerLink="/doctor/earnings" routerLinkActive="active">Earnings</a>
+  <a routerLink="/doctor/profile"  routerLinkActive="active">Profile</a>
+</nav>

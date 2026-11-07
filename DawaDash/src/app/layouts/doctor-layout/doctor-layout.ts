@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { DoctorNavbar } from '../../features/doctors/doctor-navbar/doctor-navbar';
+import { Component, signal } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-doctor-layout',
-  imports: [RouterOutlet, DoctorNavbar],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './doctor-layout.html',
   styleUrl: './doctor-layout.css',
 })
-export class DoctorLayout {}
+export class DoctorLayout {
+  isAvailable = signal<boolean>(true);
+
+  toggleAvailability(): void {
+    this.isAvailable.update(v => !v);
+  }
+}

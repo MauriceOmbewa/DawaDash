@@ -1,0 +1,333 @@
+:host {
+  display: block;
+}
+
+.admin-customers-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Search Bar Row */
+.search-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #CFDBD5;
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #0A2E24;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: #005C46;
+  box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.12);
+}
+
+.btn-search {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background: #004A38;
+}
+
+/* Filter Chips (All, Active, Banned) */
+.filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.chip-all {
+  background: #DCE5E0;
+  color: #2D483E;
+}
+
+.chip-all.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+.chip-active {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-active.selected {
+  background: #005C46;
+  color: #ffffff;
+}
+
+.chip-banned {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.chip-banned.selected {
+  background: #991B1B;
+  color: #ffffff;
+}
+
+/* Customers List */
+.customers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.customer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.card-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.status-banned {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-ban {
+  padding: 7px 22px;
+  font-size: 0.92rem;
+  background: #ffffff;
+  color: #991B1B;
+  border: 2px solid #991B1B;
+}
+
+.btn-ban:hover {
+  background: #FEF2F2;
+}
+
+.btn-lift-ban {
+  padding: 8px 22px;
+  font-size: 0.92rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-lift-ban:hover {
+  background: #004A38;
+}
+
+.empty-card {
+  text-align: center;
+  color: #5A7369;
+  font-size: 0.9rem;
+  padding: 32px 20px;
+}
+
+/* Modal Dialog */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(10, 46, 36, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.modal-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5A7369;
+  line-height: 1.45;
+}
+
+.reason-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #F4F8F5;
+  border: 1px solid #CFDBD5;
+  border-radius: 14px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #0A2E24;
+  outline: none;
+  resize: vertical;
+}
+
+.reason-textarea:focus {
+  border-color: #005C46;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancel {
+  padding: 8px 18px;
+  background: #E8EFEA;
+  color: #0A2E24;
+  border: none;
+}
+
+.btn-cancel:hover {
+  background: #DCE5E0;
+}
+
+.btn-confirm-ban {
+  padding: 8px 22px;
+  background: #991B1B;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-confirm-ban:hover {
+  background: #7F1D1D;
+}
+
+@media (max-width: 640px) {
+  .customer-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-customers-page {
+    gap: 20px;
+  }
+  .card {
+    padding: 18px 24px;
+  }
+}

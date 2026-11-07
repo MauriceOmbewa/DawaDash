@@ -1,0 +1,119 @@
+<section class="admin-customers-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>Customers</h1>
+  </header>
+
+  <!-- Search Bar Row -->
+  <div class="search-bar-row">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearch()"
+      placeholder="Search by name, email or phone"
+      class="search-input"
+    />
+    <button type="button" class="btn btn-search" (click)="onSearch()">Search</button>
+  </div>
+
+  <!-- Filter Chips (All, Active, Banned matching screenshot) -->
+  <div class="filter-chips">
+    <button
+      type="button"
+      class="chip chip-all"
+      [class.selected]="activeFilter() === 'all'"
+      (click)="setFilter('all')"
+    >
+      All
+    </button>
+    <button
+      type="button"
+      class="chip chip-active"
+      [class.selected]="activeFilter() === 'active'"
+      (click)="setFilter('active')"
+    >
+      Active
+    </button>
+    <button
+      type="button"
+      class="chip chip-banned"
+      [class.selected]="activeFilter() === 'banned'"
+      (click)="setFilter('banned')"
+    >
+      Banned
+    </button>
+  </div>
+
+  <!-- Customers List -->
+  <div class="customers-list">
+    @for (customer of filteredCustomers(); track customer.id) {
+      <div class="card customer-card">
+        <div class="card-details">
+          <h3 class="card-title">
+            {{ customer.name }}
+          </h3>
+          <p class="card-subtitle">
+            {{ customer.city }} · {{ customer.ordersCount }} {{ customer.ordersCount === 1 ? 'order' : 'orders' }} · Joined {{ customer.joinedDate }}
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <!-- Status Badge -->
+          <span class="status-badge status-{{ customer.status }}">
+            {{ customer.status | titlecase }}
+          </span>
+
+          <!-- Action Button (Ban or Lift Ban) -->
+          @if (customer.status === 'active') {
+            <button
+              type="button"
+              class="btn btn-ban"
+              (click)="openBanModal(customer)"
+            >
+              Ban
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-lift-ban"
+              (click)="liftBan(customer.id)"
+            >
+              Lift ban
+            </button>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="card empty-card">
+        <p>No customers found matching "{{ searchTerm() }}" in {{ activeFilter() }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- Ban Reason Prompt Modal -->
+  @if (showBanModal()) {
+    <div class="modal-backdrop" (click)="closeBanModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Ban Customer Account</h3>
+        <p class="modal-desc">
+          Provide a reason for restricting {{ selectedCustomer()?.name }} ({{ selectedCustomer()?.city }}).
+          This action will prevent new prescription and pharmacy orders.
+        </p>
+        <textarea
+          class="reason-textarea"
+          rows="3"
+          [(ngModel)]="banReason"
+          placeholder="State reason (e.g. repeated payment reversal, forged prescription, abusive conduct)..."
+        ></textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-cancel" (click)="closeBanModal()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-confirm-ban" (click)="confirmBan()">
+            Confirm Ban
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

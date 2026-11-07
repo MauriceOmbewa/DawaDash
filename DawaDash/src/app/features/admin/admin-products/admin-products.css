@@ -1,0 +1,269 @@
+:host {
+  display: block;
+}
+
+.admin-products-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Search Bar Row matching screenshot */
+.search-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #CFDBD5;
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #0A2E24;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: #005C46;
+  box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.12);
+}
+
+.search-input::placeholder {
+  color: #8A9D95;
+}
+
+.btn-search {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-search:hover {
+  background: #004A38;
+}
+
+/* Filter Chips (All, Live, Prescription, Hidden) */
+.filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.chip-all {
+  background: #DCE5E0;
+  color: #2D483E;
+}
+
+.chip-all.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+.chip-live {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-live.selected {
+  background: #005C46;
+  color: #ffffff;
+}
+
+.chip-prescription {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.chip-prescription.selected {
+  background: #D97706;
+  color: #ffffff;
+}
+
+.chip-hidden {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-hidden.selected {
+  background: #005C46;
+  color: #ffffff;
+}
+
+/* Products List */
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.01em;
+}
+
+.card-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-live {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.status-prescription {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.status-hidden {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Hide Outline Button */
+.btn-hide {
+  padding: 7px 22px;
+  font-size: 0.92rem;
+  background: #ffffff;
+  color: #0A2E24;
+  border: 2px solid #005C46;
+}
+
+.btn-hide:hover {
+  background: #F4F8F5;
+}
+
+/* Show Solid Button */
+.btn-show {
+  padding: 8px 22px;
+  font-size: 0.92rem;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-show:hover {
+  background: #004A38;
+}
+
+.empty-card {
+  text-align: center;
+  color: #5A7369;
+  font-size: 0.9rem;
+  padding: 32px 20px;
+}
+
+@media (max-width: 640px) {
+  .product-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-products-page {
+    gap: 20px;
+  }
+  .card {
+    padding: 18px 24px;
+  }
+}
