@@ -1,0 +1,183 @@
+.layout {
+  display: flex;
+  max-width: 1040px;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.chips {
+  gap: 7px;
+}
+
+.chip {
+  padding: 7px 12px;
+  font-size: 0.75rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stat {
+  min-width: 0;
+  padding: 10px 11px;
+  border-radius: 13px;
+}
+
+.stat-label {
+  margin-bottom: 2px;
+  font-size: 0.68rem;
+}
+
+.stat-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.chart,
+.top {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 14px;
+}
+
+.card-title {
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+}
+
+.bars {
+  display: flex;
+  height: 104px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 2px 0;
+}
+
+.bar-col {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.bar {
+  width: min(100%, 22px);
+  min-height: 8px;
+  border-radius: 4px 4px 0 0;
+  background: var(--c-green);
+}
+
+.bar.top {
+  background: var(--color-accent, #f2b43a);
+}
+
+.bar-label {
+  color: var(--c-muted);
+  font-size: 0.63rem;
+}
+
+.top-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.75rem;
+}
+
+.row > span:first-child {
+  min-width: 0;
+}
+
+.sold {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      'head head head head'
+      'chips chips chips chips'
+      'stats stats stats stats'
+      'chart chart top top';
+    gap: 12px;
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .chips {
+    grid-area: chips;
+  }
+
+  .chip {
+    padding: 8px 14px;
+  }
+
+  .stats {
+    grid-area: stats;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .stat {
+    padding: 12px 14px;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .chart {
+    grid-area: chart;
+  }
+
+  .top {
+    grid-area: top;
+  }
+
+  .chart,
+  .top {
+    padding: 14px;
+  }
+
+  .bars {
+    height: 130px;
+  }
+}

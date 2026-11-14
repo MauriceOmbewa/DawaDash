@@ -11,7 +11,7 @@ import { HospitalService } from '../../../../core/services/hospital.services';
   styleUrls: ['../../../../shared/styles/page-shared.css', './hospitals-page.css'],
 })
 export class HospitalsPage {
-  private readonly hospitals = inject(HospitalService).getHospitals();
+  readonly hospitals = inject(HospitalService).getHospitals();
 
   readonly typeFilters: ('All' | HospitalType)[] = ['All', 'Public', 'Private', 'Faith-based'];
   readonly serviceFilters = ['Emergency', 'Maternity', 'Dental', 'Eye', 'Lab'];

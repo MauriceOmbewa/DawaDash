@@ -1,0 +1,27 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <a routerLink="/chemist/orders" class="logo">dawam<span>taani</span></a>
+
+    <nav class="topbar-links" aria-label="Chemist navigation">
+      <a routerLink="/chemist/orders" routerLinkActive="active">Orders</a>
+      <a routerLink="/chemist/products" routerLinkActive="active">Products</a>
+      <a routerLink="/chemist/analytics" routerLinkActive="active">Analytics</a>
+      <a routerLink="/chemist/profile" routerLinkActive="active">Profile</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <span class="badge-chemist">Account active</span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <router-outlet />
+</main>
+
+<nav class="bottom-nav" aria-label="Chemist navigation">
+  <a routerLink="/chemist/orders" routerLinkActive="active">Orders</a>
+  <a routerLink="/chemist/products" routerLinkActive="active">Products</a>
+  <a routerLink="/chemist/analytics" routerLinkActive="active">Analytics</a>
+  <a routerLink="/chemist/profile" routerLinkActive="active">Profile</a>
+</nav>

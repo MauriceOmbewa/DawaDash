@@ -1,58 +1,107 @@
-import { Component, input } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnChanges,
+  OnDestroy,
+  input,
+  viewChild,
+} from '@angular/core';
+import * as L from 'leaflet';
+import { Hospital } from '../../../core/models/hospital.models';
 
-/** A simple map picture. Replace with a real map (Google Maps, Leaflet) later. */
+const MAP_CENTER: L.LatLngTuple = [-4.03, 39.71];
+const HOSPITAL_ICON = L.divIcon({
+  className: '',
+  html: `
+    <svg width="34" height="42" viewBox="0 0 24 30" aria-hidden="true">
+      <path d="M12 29s9-8.2 9-16A9 9 0 0 0 3 13c0 7.8 9 16 9 16z" fill="#12302b"/>
+      <path d="M11 8h2v9h-2zM7.5 11.5h9v2h-9z" fill="#fff"/>
+    </svg>`,
+  iconSize: [34, 42],
+  iconAnchor: [17, 42],
+});
+
 @Component({
   selector: 'app-map-preview',
   template: `
-    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Map preview">
-      <rect width="400" height="300" fill="#e1eee6" />
-      <path d="M0 238 C 90 210, 200 270, 400 220 L400 300 L0 300 Z" fill="#bcdbe8" />
-
-      <!-- roads -->
-      <line x1="0" y1="45" x2="400" y2="125" stroke="#fff" stroke-width="12" />
-      <rect x="0" y="92" width="400" height="12" fill="#fff" />
-      <rect x="148" y="0" width="12" height="300" fill="#fff" />
-      <rect x="278" y="0" width="12" height="300" fill="#fff" />
-
-      @if (route()) {
-        <polyline
-          points="154,190 154,98 284,98 284,52"
-          fill="none"
-          stroke="#0f7b63"
-          stroke-width="6"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-        />
-      }
-
-      <!-- other places -->
-      <circle cx="60" cy="98" r="10" fill="#0f7b63" />
-      <circle cx="340" cy="190" r="10" fill="#0f7b63" />
-
-      <!-- hospital -->
-      <circle cx="284" cy="52" r="14" fill="#0f7b63" />
-      <path d="M284 45v14M277 52h14" stroke="#fff" stroke-width="3.5" stroke-linecap="round" />
-
-      <!-- you are here -->
-      <circle cx="154" cy="190" r="12" fill="#0b2b26" stroke="#f4b400" stroke-width="4" />
-    </svg>
+    <div #map class="map" role="application" aria-label="OpenStreetMap showing hospital locations"></div>
   `,
   styles: `
     :host {
       display: block;
       height: var(--map-height, 160px);
-      border-radius: 16px;
       overflow: hidden;
+      border-radius: 16px;
       background: #e1eee6;
     }
-    svg {
-      display: block;
+
+    .map {
       width: 100%;
       height: 100%;
+      background: #e1eee6;
     }
   `,
 })
-export class MapPreview {
-  /** Draw the driving route from "you" to the hospital */
-  route = input(false);
+export class MapPreview implements AfterViewInit, OnChanges, OnDestroy {
+  readonly hospitals = input<Hospital[]>([]);
+  readonly selectedHospital = input<Hospital | null>(null);
+
+  private readonly mapElement = viewChild.required<ElementRef<HTMLDivElement>>('map');
+  private map?: L.Map;
+  private markers?: L.FeatureGroup;
+
+  ngAfterViewInit(): void {
+    this.map = L.map(this.mapElement().nativeElement).setView(MAP_CENTER, 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(this.map);
+    this.markers = L.featureGroup().addTo(this.map);
+    this.renderMarkers();
+
+    requestAnimationFrame(() => this.map?.invalidateSize());
+  }
+
+  ngOnChanges(): void {
+    this.renderMarkers();
+  }
+
+  ngOnDestroy(): void {
+    this.map?.remove();
+  }
+
+  private renderMarkers(): void {
+    const map = this.map;
+    const markers = this.markers;
+    if (!map || !markers) return;
+
+    markers.clearLayers();
+    const selected = this.selectedHospital();
+    const hospitals = selected ? [selected] : this.hospitals();
+
+    for (const hospital of hospitals) {
+      const marker = L.marker([hospital.latitude, hospital.longitude], { icon: HOSPITAL_ICON });
+      const popup = document.createElement('div');
+      const name = document.createElement('strong');
+      const address = document.createElement('div');
+      name.textContent = hospital.name;
+      address.textContent = hospital.address;
+      popup.append(name, address);
+      marker.bindPopup(popup).addTo(markers);
+    }
+
+    if (selected) {
+      map.setView([selected.latitude, selected.longitude], 15);
+    } else if (hospitals.length === 0) {
+      map.setView(MAP_CENTER, 12);
+    } else if (hospitals.length === 1) {
+      map.setView([hospitals[0].latitude, hospitals[0].longitude], 14);
+    } else {
+      const bounds = L.latLngBounds(
+        hospitals.map((hospital) => [hospital.latitude, hospital.longitude] as L.LatLngTuple),
+      );
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
+    }
+  }
 }

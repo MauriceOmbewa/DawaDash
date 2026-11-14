@@ -1,0 +1,51 @@
+<div class="layout">
+  <header class="head">
+    <h1 class="page-title">Analytics</h1>
+  </header>
+
+  <div class="chips" role="group" aria-label="Time range">
+    @for (r of ranges; track r.key) {
+      <button
+        type="button"
+        class="chip"
+        [class.active]="range() === r.key"
+        (click)="range.set(r.key)"
+      >
+        {{ r.label }}
+      </button>
+    }
+  </div>
+
+  <section class="stats">
+    @for (s of stats; track s.label) {
+      <div class="card stat">
+        <p class="muted stat-label">{{ s.label }}</p>
+        <p class="stat-value">{{ s.value }}</p>
+      </div>
+    }
+  </section>
+
+  <section class="card chart">
+    <h2 class="card-title">Sales this week</h2>
+    <div class="bars" role="img" aria-label="Sales for each day this week">
+      @for (b of bars(); track b.day) {
+        <div class="bar-col">
+          <div class="bar" [class.top]="b.top" [style.height.%]="b.height" [title]="'KES ' + b.sales.toLocaleString()"></div>
+          <span class="bar-label">{{ b.day }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="card top">
+    <h2 class="card-title">Top medicines</h2>
+    <ul class="top-list">
+      @for (m of topMedicines; track m.name) {
+        <li class="row">
+          <span>{{ m.name }}</span>
+          <span class="sold">{{ m.sold }} sold</span>
+        </li>
+      }
+    </ul>
+  </section>
+</div>

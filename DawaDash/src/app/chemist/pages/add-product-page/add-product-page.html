@@ -1,0 +1,60 @@
+<form class="layout" (submit)="$event.preventDefault(); onSave()">
+  <header class="head">
+    <h1 class="page-title">Add a product</h1>
+  </header>
+
+  <div class="fields">
+    <label class="field name">
+      <span class="label">Medicine name</span>
+      <input class="input" type="text" name="name" placeholder="e.g. Paracetamol 500mg" required />
+    </label>
+
+    <label class="field category">
+      <span class="label">Category</span>
+      <select class="input" name="category">
+        @for (c of categories; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field price">
+      <span class="label">Price (KES)</span>
+      <input class="input" type="number" name="price" inputmode="numeric" min="0" placeholder="120" required />
+    </label>
+
+    <label class="field stock">
+      <span class="label">Stock quantity</span>
+      <input class="input" type="number" name="stock" inputmode="numeric" min="0" placeholder="240" required />
+    </label>
+  </div>
+
+  <section class="card rx">
+    <div>
+      <p class="rx-title">Needs a prescription</p>
+      <p class="muted rx-sub">Customers must upload one</p>
+    </div>
+    <button
+      type="button"
+      class="toggle"
+      role="switch"
+      [attr.aria-checked]="needsPrescription()"
+      [class.on]="needsPrescription()"
+      (click)="togglePrescription()"
+    >
+      <span class="toggle-text">{{ needsPrescription() ? 'On' : 'Off' }}</span>
+    </button>
+  </section>
+
+  <label class="photo">
+    <input type="file" accept="image/*" hidden (change)="onPhoto($event)" />
+    {{ photoName() ?? 'Add a photo' }}
+  </label>
+
+  <div class="buttons">
+    <a class="btn btn-outline btn-block" routerLink="/chemist/products">Cancel</a>
+    <button type="submit" class="btn btn-primary btn-block">Save product</button>
+  </div>
+
+  <p class="muted note">Customers in your county will see this product.</p>
+</form>

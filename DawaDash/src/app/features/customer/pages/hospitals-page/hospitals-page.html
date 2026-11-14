@@ -34,7 +34,7 @@
 </div>
 
 <div class="layout">
-  <app-map-preview class="map" />
+  <app-map-preview class="map" [hospitals]="hospitals" />
 
   <section class="list" aria-label="Hospital results">
     @for (h of results(); track h.id) {
