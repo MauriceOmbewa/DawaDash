@@ -1,0 +1,71 @@
+<section class="orders-page">
+  <header class="page-header">
+    <h1 class="page-title">Orders</h1>
+  </header>
+
+  <section class="stats" aria-label="Order summary">
+    @for (stat of stats; track stat.label) {
+      <article class="stat-card">
+        <p>{{ stat.label }}</p>
+        <strong>{{ stat.value }}</strong>
+      </article>
+    }
+  </section>
+
+  <nav class="filters" aria-label="Filter orders by status">
+    @for (tab of tabs; track tab) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filter() === tab"
+        (click)="filter.set(tab)"
+      >
+        {{ tab }}
+      </button>
+    }
+  </nav>
+
+  <div class="table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Status</th>
+          <th scope="col">Customer</th>
+          <th class="total-column" scope="col">Total</th>
+          <th class="payment-column" scope="col">Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of visible(); track order.id) {
+          <tr
+            class="order-row"
+            tabindex="0"
+            [attr.aria-label]="'Open order ' + order.id"
+            (click)="openOrder(order.id)"
+            (keydown.enter)="openOrderFromKeyboard($event, order.id)"
+            (keydown.space)="$event.preventDefault(); openOrderFromKeyboard($event, order.id)"
+          >
+            <td>
+              <a
+                class="order-link"
+                [routerLink]="['/chemist/orders', order.id]"
+                (click)="$event.stopPropagation()"
+              >
+                #{{ order.id }}
+              </a>
+            </td>
+            <td><span [class]="'status-pill status-' + statusClass(order.status)">{{ order.status }}</span></td>
+            <td class="customer-cell">{{ order.customerName }}</td>
+            <td class="total-column">{{ formatPrice(order.total) }}</td>
+            <td class="payment-column"><span class="payment-pill">{{ order.paymentStatus }}</span></td>
+          </tr>
+        } @empty {
+          <tr><td class="empty" colspan="5">No orders in this status.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="table-hint">Click a row to open its details page</p>
+</section>

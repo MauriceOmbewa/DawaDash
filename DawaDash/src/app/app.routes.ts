@@ -21,6 +21,11 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./features/chemist/chemist.routes').then((m) => m.CHEMIST_ROUTES),
+  },
 
   // Pages that don't exist yet send you home. We'll replace this as we build them.
   { path: '**', redirectTo: '' },

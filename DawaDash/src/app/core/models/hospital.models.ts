@@ -14,6 +14,8 @@ export interface Hospital {
   level: number;
   open24h: boolean;
   address: string;
+  latitude: number;
+  longitude: number;
   distanceKm: number;
   services: string[];
   phone: string;

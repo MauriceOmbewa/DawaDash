@@ -1,0 +1,81 @@
+<div class="layout">
+  <header class="head">
+    <h1 class="page-title">Profile</h1>
+  </header>
+
+  <section class="card status-card" [class.suspended]="accountStatus() === 'suspended'">
+    <div class="status-head">
+      <h2 class="card-title">Account status</h2>
+      <span class="badge">{{ accountStatus() === 'active' ? 'Active' : 'Suspended' }}</span>
+    </div>
+    <p class="muted status-text">
+      @if (accountStatus() === 'active') {
+        Approved by the platform. You can receive orders.
+      } @else {
+        Your account is suspended. You will not get new orders.
+      }
+    </p>
+  </section>
+
+  <section class="card warn">
+    <h2 class="card-title">If your account is suspended</h2>
+    <p class="warn-text">You will not get new orders until the platform lifts it. The reason will show here.</p>
+  </section>
+
+  <section class="card licences">
+    <h2 class="card-title">Licences</h2>
+    <ul class="lic-list">
+      @for (l of licences; track l.name) {
+        <li class="lic">
+          <div>
+            <p class="lic-name">{{ l.name }}</p>
+            <p class="muted lic-exp">Expires {{ l.expires }}</p>
+          </div>
+          <span class="badge" [class.expired]="!l.valid">{{ l.valid ? 'Valid' : 'Expired' }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <form class="card details" (submit)="$event.preventDefault(); onSave()">
+    <h2 class="card-title">Business details</h2>
+
+    <div class="fields">
+      <label class="field">
+        <span class="label">Business name</span>
+        <input class="input" type="text" name="name" placeholder="[Chemist name]" [value]="business.name" />
+      </label>
+
+      <label class="field">
+        <span class="label">County</span>
+        <select class="input" name="county">
+          @for (c of counties; track c) {
+            <option [value]="c" [selected]="c === business.county">{{ c }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Street address</span>
+        <input class="input" type="text" name="street" placeholder="[Street], Nyali" [value]="business.street" />
+      </label>
+
+      <label class="field">
+        <span class="label">Phone</span>
+        <input class="input" type="tel" name="phone" placeholder="+254 7XX XXX XXX" [value]="business.phone" />
+      </label>
+
+      <label class="field">
+        <span class="label">M-Pesa till</span>
+        <input class="input" type="text" name="till" inputmode="numeric" placeholder="[till number]" [value]="business.till" />
+      </label>
+
+      <label class="field">
+        <span class="label">Hours</span>
+        <input class="input" type="text" name="hours" [value]="business.hours" />
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block btn-lg">Save changes</button>
+  </form>
+</div>

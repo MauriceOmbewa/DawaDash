@@ -1,0 +1,154 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px;
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--c-line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--c-green);
+  outline-offset: 2px;
+}
+
+.rx {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  border-radius: 14px;
+}
+
+.rx-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.rx-sub {
+  font-size: 0.74rem;
+}
+
+.toggle {
+  display: inline-flex;
+  min-width: 42px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-line);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toggle.on {
+  background: var(--c-ink);
+  color: #fff;
+}
+
+.photo {
+  display: block;
+  padding: 10px;
+  border: 1px dashed var(--c-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--c-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.buttons .btn {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+}
+
+.buttons .btn-outline {
+  border-color: var(--c-green);
+  color: var(--c-ink);
+}
+
+.note {
+  font-size: 0.72rem;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    gap: 12px;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .input {
+    min-height: 42px;
+  }
+
+  .rx {
+    padding: 14px 16px;
+  }
+
+  .photo {
+    padding: 12px;
+  }
+
+  .buttons {
+    gap: 12px;
+  }
+}

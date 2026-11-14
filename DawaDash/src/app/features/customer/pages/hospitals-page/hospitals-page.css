@@ -33,7 +33,7 @@
 
 .map {
   grid-area: map;
-  --map-height: 90px;
+  --map-height: 260px;
 }
 
 .list {

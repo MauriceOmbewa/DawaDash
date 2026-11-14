@@ -1,0 +1,107 @@
+@if (order(); as currentOrder) {
+  <div class="detail-page">
+    <header class="head">
+      <div class="heading">
+        <p class="breadcrumb"><a routerLink="/chemist/orders">Orders</a> / #{{ currentOrder.id }}</p>
+        <h1 class="page-title">Order #{{ currentOrder.id }}</h1>
+      </div>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="btn confirm"
+          [disabled]="currentOrder.status !== 'New'"
+          (click)="confirmOrder(currentOrder)"
+        >
+          Mark as confirmed
+        </button>
+        <button
+          type="button"
+          class="btn cancel"
+          [disabled]="currentOrder.status === 'Cancelled' || currentOrder.status === 'Completed' || currentOrder.status === 'Delivered'"
+          (click)="cancelOrder(currentOrder)"
+        >
+          Cancel
+        </button>
+      </div>
+    </header>
+
+    <div class="order-grid">
+      <main class="main-column">
+        <section class="panel status-panel">
+          <div class="panel-heading">
+            <h2>Order status</h2>
+            <span class="status-pill">{{ currentOrder.status }}</span>
+          </div>
+
+          <ol class="progress" aria-label="Order progress">
+            @for (step of steps; track step; let i = $index) {
+              <li
+                class="progress-step"
+                [class.done]="i < currentStep(currentOrder.status)"
+                [class.current]="i === currentStep(currentOrder.status)"
+              >
+                <span class="step-marker">{{ i < currentStep(currentOrder.status) ? '✓' : i + 1 }}</span>
+                <span class="step-label">{{ step }}</span>
+              </li>
+            }
+          </ol>
+
+          <p class="activity">
+            <span class="activity-dot"></span>
+            <span><strong>{{ currentOrder.status }}</strong> · Order placed {{ currentOrder.placedAt }}</span>
+          </p>
+        </section>
+
+        <section class="panel items-panel">
+          <h2>Order items</h2>
+          @for (item of currentOrder.items; track item.code) {
+            <div class="order-item">
+              <span class="product-mark" aria-hidden="true">{{ item.shortLabel }}</span>
+              <div class="item-info">
+                <strong>{{ item.name }}</strong>
+                <span>Qty {{ item.quantity }}</span>
+              </div>
+              <strong class="item-total">{{ formatPrice(item.unitPrice * item.quantity) }}</strong>
+            </div>
+          }
+
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd>{{ formatPrice(subtotal(currentOrder)) }}</dd></div>
+            <div><dt>Delivery</dt><dd>{{ formatPrice(currentOrder.deliveryFee) }}</dd></div>
+            <div class="grand-total"><dt>Total</dt><dd>{{ formatPrice(currentOrder.total) }}</dd></div>
+          </dl>
+        </section>
+      </main>
+
+      <aside class="side-column">
+        <section class="panel customer-panel">
+          <h2>Customer</h2>
+          <dl class="customer-details">
+            <div><dt>Name</dt><dd>{{ currentOrder.customerName }}</dd></div>
+            <div><dt>Phone</dt><dd><a [href]="'tel:' + currentOrder.phone">{{ currentOrder.phone }}</a></dd></div>
+            <div><dt>Drop-off</dt><dd>{{ currentOrder.dropoff }}</dd></div>
+          </dl>
+        </section>
+
+        <section class="panel payment-panel">
+          <h2>Payment</h2>
+          <dl class="payment-details">
+            <div><dt>Status</dt><dd><span class="payment-pill">{{ currentOrder.paymentStatus }}</span></dd></div>
+            <div><dt>Method</dt><dd>{{ currentOrder.paymentMethod }}</dd></div>
+            <div><dt>Channel</dt><dd>{{ currentOrder.paymentChannel }}</dd></div>
+          </dl>
+        </section>
+
+        <aside class="prescription-note" [class.required]="currentOrder.requiresPrescription">
+          <strong>{{ currentOrder.requiresPrescription ? 'Prescription required' : 'No prescription needed' }}</strong>
+          <p>{{ currentOrder.requiresPrescription ? 'Review the customer prescription before confirming this order.' : 'If an item needs one, review it here first.' }}</p>
+        </aside>
+      </aside>
+    </div>
+  </div>
+} @else {
+  <section class="not-found">
+    <h1 class="page-title">Order not found</h1>
+    <a routerLink="/chemist/orders">Back to orders</a>
+  </section>
+}
