@@ -1,7 +1,12 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Appointment, ConsultType } from '../models/doctor-models';
+import {
+  Appointment,
+  ConsultType,
+  ConsultationSetting,
+  WeekDayShort,
+} from '../models/doctor-models';
 
 interface DayOption {
   day: string;
@@ -17,15 +22,21 @@ interface DayOption {
   styleUrl: './doctor-schedule.css',
 })
 export class DoctorSchedule {
+  // Transitions between 'schedule' (table view) and 'settings' (Consultation settings UI)
+  activeView = signal<'schedule' | 'settings'>('schedule');
+
   selectedDay = signal('Wed');
   typeFilter = signal<'All' | ConsultType>('All');
   showAddSlotModal = signal(false);
+  settingsSavedNotice = signal(false);
 
-  // Form states
+  // Form states for Add Slot modal
   newPatientName = signal('');
   newTime = signal('11:00 am');
   newType = signal<ConsultType>('Video consult');
   newSymptoms = signal('');
+
+  readonly allDays: WeekDayShort[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   weekDays = signal<DayOption[]>([
     { day: 'Mon', date: 'Oct 27', count: 5 },
@@ -35,6 +46,43 @@ export class DoctorSchedule {
     { day: 'Fri', date: 'Oct 31', count: 8 },
     { day: 'Sat', date: 'Nov 01', count: 3 },
     { day: 'Sun', date: 'Nov 02', count: 0 },
+  ]);
+
+  // Consultation settings state (Virtual, Hospital visit, Home visit)
+  consultationSettings = signal<ConsultationSetting[]>([
+    {
+      id: 'virtual',
+      title: 'Virtual',
+      subtitle: 'Video call online in the app',
+      enabled: true,
+      days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      fromTime: '6:00 pm',
+      toTime: '9:00 pm',
+      fee: 2000,
+      footerNote: 'Patients join a secure video call from the app.',
+    },
+    {
+      id: 'hospital',
+      title: 'Hospital visit',
+      subtitle: 'Patients come to you',
+      enabled: true,
+      days: ['Tue', 'Thu'],
+      fromTime: '9:00 am',
+      toTime: '1:00 pm',
+      fee: 2500,
+      footerNote: 'Location: [Hospital name], Mombasa',
+    },
+    {
+      id: 'home',
+      title: 'Home visit',
+      subtitle: 'You visit the patient',
+      enabled: true,
+      days: ['Sat'],
+      fromTime: '10:00 am',
+      toTime: '4:00 pm',
+      fee: 3000,
+      footerNote: 'Travel radius: 10 km',
+    },
   ]);
 
   appointments = signal<Appointment[]>([
@@ -128,23 +176,46 @@ export class DoctorSchedule {
     });
   });
 
-  selectDay(day: string) {
+  // View Navigation
+  openSettings(): void {
+    this.activeView.set('settings');
+  }
+
+  backToSchedule(): void {
+    this.activeView.set('schedule');
+  }
+
+  // Schedule Table Actions
+  selectDay(day: string): void {
     this.selectedDay.set(day);
   }
 
-  setTypeFilter(type: 'All' | ConsultType) {
+  setTypeFilter(type: 'All' | ConsultType): void {
     this.typeFilter.set(type);
   }
 
-  openAddSlot() {
+  toggleSlotActive(aptId: string): void {
+    this.appointments.update((list: Appointment[]) =>
+      list.map((apt) =>
+        apt.id === aptId
+          ? {
+              ...apt,
+              status: apt.status === 'cancelled' ? 'booked' : 'cancelled',
+            }
+          : apt
+      )
+    );
+  }
+
+  openAddSlot(): void {
     this.showAddSlotModal.set(true);
   }
 
-  closeAddSlot() {
+  closeAddSlot(): void {
     this.showAddSlotModal.set(false);
   }
 
-  saveSlot() {
+  saveSlot(): void {
     if (!this.newPatientName().trim()) return;
 
     const newApt: Appointment = {
@@ -172,5 +243,61 @@ export class DoctorSchedule {
     this.newPatientName.set('');
     this.newSymptoms.set('');
     this.closeAddSlot();
+  }
+
+  // Consultation Settings Actions
+  toggleChannel(channelId: 'virtual' | 'hospital' | 'home'): void {
+    this.consultationSettings.update((list) =>
+      list.map((item) =>
+        item.id === channelId ? { ...item, enabled: !item.enabled } : item
+      )
+    );
+  }
+
+  isDaySelected(setting: ConsultationSetting, day: WeekDayShort): boolean {
+    return setting.days.includes(day);
+  }
+
+  toggleDay(channelId: 'virtual' | 'hospital' | 'home', day: WeekDayShort): void {
+    this.consultationSettings.update((list) =>
+      list.map((item) => {
+        if (item.id !== channelId) return item;
+        const exists = item.days.includes(day);
+        return {
+          ...item,
+          days: exists
+            ? item.days.filter((d) => d !== day)
+            : [...item.days, day],
+        };
+      })
+    );
+  }
+
+  updateChannelField(
+    channelId: 'virtual' | 'hospital' | 'home',
+    field: 'fromTime' | 'toTime' | 'fee',
+    value: string | number
+  ): void {
+    this.consultationSettings.update((list) =>
+      list.map((item) => {
+        if (item.id !== channelId) return item;
+        if (field === 'fee') {
+          const parsed = Number(String(value).replace(/[^0-9]/g, '')) || 0;
+          return { ...item, fee: parsed };
+        }
+        return { ...item, [field]: String(value) };
+      })
+    );
+  }
+
+  getPatientPays(fee: number): number {
+    return Math.round(fee * 1.1);
+  }
+
+  saveConsultationSettings(): void {
+    this.settingsSavedNotice.set(true);
+    setTimeout(() => {
+      this.settingsSavedNotice.set(false);
+    }, 2800);
   }
 }

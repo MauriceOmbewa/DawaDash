@@ -1,0 +1,909 @@
+<section class="admin-users-page">
+  @if (!selectedCategory()) {
+    <!-- Users List Page -->
+    <header class="page-header">
+      <h1>Users</h1>
+    </header>
+
+    <!-- Primary Category Tabs (Customers | Doctors | Nurses | Hospitals) -->
+    <div class="category-bar" role="tablist" aria-label="User categories">
+      <button
+        type="button"
+        class="category-pill"
+        [class.active]="activeCategory() === 'customers'"
+        (click)="selectCategory('customers')"
+      >
+        Customers
+      </button>
+      <button
+        type="button"
+        class="category-pill"
+        [class.active]="activeCategory() === 'doctors'"
+        (click)="selectCategory('doctors')"
+      >
+        Doctors
+      </button>
+      <button
+        type="button"
+        class="category-pill"
+        [class.active]="activeCategory() === 'nurses'"
+        (click)="selectCategory('nurses')"
+      >
+        Nurses
+      </button>
+      <button
+        type="button"
+        class="category-pill"
+        [class.active]="activeCategory() === 'hospitals'"
+        (click)="selectCategory('hospitals')"
+      >
+        Hospitals
+      </button>
+    </div>
+
+    <!-- Search Input & Primary Button -->
+    <form class="search-bar-row" (ngSubmit)="onSearch()">
+      <input
+        type="text"
+        class="search-input"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        name="usersSearch"
+        [placeholder]="searchPlaceholder()"
+      />
+      <button type="submit" class="btn-search">Search</button>
+    </form>
+
+    <!-- Status Filter Chips -->
+    <div class="status-chips">
+      <button
+        type="button"
+        class="status-chip"
+        [class.selected]="activeStatus() === 'all'"
+        (click)="selectStatus('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="status-chip"
+        [class.selected]="activeStatus() === 'active'"
+        (click)="selectStatus('active')"
+      >
+        Active
+      </button>
+      <button
+        type="button"
+        class="status-chip"
+        [class.selected]="activeStatus() === 'suspended'"
+        (click)="selectStatus('suspended')"
+      >
+        Suspended
+      </button>
+      <button
+        type="button"
+        class="status-chip"
+        [class.selected]="activeStatus() === 'banned'"
+        (click)="selectStatus('banned')"
+      >
+        Banned
+      </button>
+    </div>
+
+    <!-- Responsive Table Card -->
+    <div class="table-card">
+      @if (activeCategory() === 'customers') {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>CUSTOMER</th>
+              <th>STATUS</th>
+              <th>COUNTY</th>
+              <th class="desktop-only">ORDERS</th>
+              <th class="desktop-only">BOOKINGS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cust of filteredCustomers(); track cust.id) {
+              <tr class="clickable-row" (click)="openDetails('customers', cust.id)">
+                <td>
+                  <div class="entity-cell">
+                    <span class="entity-avatar">{{ cust.initials }}</span>
+                    <div class="entity-meta">
+                      <strong class="entity-name">{{ cust.name }}</strong>
+                      <span class="entity-sub">{{ cust.email }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge badge-' + cust.status">
+                    {{ statusLabel(cust.status) }}
+                  </span>
+                </td>
+                <td>{{ cust.county }}</td>
+                <td class="desktop-only">{{ cust.ordersCount }}</td>
+                <td class="desktop-only">{{ cust.bookingsCount }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No customers match your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+      @if (activeCategory() === 'doctors') {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>DOCTOR</th>
+              <th>STATUS</th>
+              <th>SPECIALTY</th>
+              <th class="desktop-only">LICENCE EXPIRES</th>
+              <th class="desktop-only">RATING</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (doc of filteredDoctors(); track doc.id) {
+              <tr class="clickable-row" (click)="openDetails('doctors', doc.id)">
+                <td>
+                  <div class="entity-cell">
+                    <span class="entity-avatar">{{ doc.avatarBadge }}</span>
+                    <div class="entity-meta">
+                      <strong class="entity-name">{{ doc.name }}</strong>
+                      <span class="entity-sub">{{ doc.city }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge badge-' + doc.status">
+                    {{ statusLabel(doc.status) }}
+                  </span>
+                </td>
+                <td>{{ doc.specialty }}</td>
+                <td class="desktop-only">
+                  @if (doc.licenceBadgeType === 'warning') {
+                    <span class="badge badge-pending">{{ doc.licenceExpires }}</span>
+                  } @else if (doc.licenceBadgeType === 'expired') {
+                    <span class="badge badge-banned">{{ doc.licenceExpires }}</span>
+                  } @else {
+                    <span>{{ doc.licenceExpires }}</span>
+                  }
+                </td>
+                <td class="desktop-only">{{ doc.rating }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No doctors match your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+      @if (activeCategory() === 'nurses') {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>NURSE</th>
+              <th>STATUS</th>
+              <th>SERVICE</th>
+              <th class="desktop-only">LICENCE EXPIRES</th>
+              <th class="desktop-only">RATING</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (nur of filteredNurses(); track nur.id) {
+              <tr class="clickable-row" (click)="openDetails('nurses', nur.id)">
+                <td>
+                  <div class="entity-cell">
+                    <span class="entity-avatar">{{ nur.avatarBadge }}</span>
+                    <div class="entity-meta">
+                      <strong class="entity-name">{{ nur.name }}</strong>
+                      <span class="entity-sub">{{ nur.city }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge badge-' + nur.status">
+                    {{ statusLabel(nur.status) }}
+                  </span>
+                </td>
+                <td>{{ nur.service }}</td>
+                <td class="desktop-only">
+                  @if (nur.licenceBadgeType === 'warning') {
+                    <span class="badge badge-pending">{{ nur.licenceExpires }}</span>
+                  } @else if (nur.licenceBadgeType === 'expired') {
+                    <span class="badge badge-banned">{{ nur.licenceExpires }}</span>
+                  } @else {
+                    <span>{{ nur.licenceExpires }}</span>
+                  }
+                </td>
+                <td class="desktop-only">{{ nur.rating }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No nurses match your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
+      @if (activeCategory() === 'hospitals') {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>HOSPITAL</th>
+              <th>STATUS</th>
+              <th>TYPE</th>
+              <th class="desktop-only">COUNTY</th>
+              <th class="desktop-only">PHONE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (hosp of filteredHospitals(); track hosp.id) {
+              <tr class="clickable-row" (click)="openDetails('hospitals', hosp.id)">
+                <td>
+                  <div class="entity-cell">
+                    <span class="entity-avatar">{{ hosp.initials }}</span>
+                    <div class="entity-meta">
+                      <strong class="entity-name">{{ hosp.name }}</strong>
+                      <span class="entity-sub">{{ hosp.level }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge badge-' + hosp.status">
+                    {{ statusLabel(hosp.status) }}
+                  </span>
+                </td>
+                <td>{{ hosp.type }}</td>
+                <td class="desktop-only">{{ hosp.county }}</td>
+                <td class="desktop-only">{{ hosp.phone }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No hospitals match your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <p class="table-hint">Click a row to open its details page</p>
+  } @else {
+    <!-- Detail Sub-View -->
+    @if (currentCustomer(); as customer) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Users</button>
+        <span class="crumb-sep">/</span>
+        <button type="button" class="crumb-link" (click)="backToList()">Customers</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ customer.name }}</span>
+      </nav>
+
+      <header class="detail-header">
+        <div class="detail-title-wrap">
+          <h1>{{ customer.name }}</h1>
+          @if (customer.reason) {
+            <span class="reason-pill">{{ customer.reason }}</span>
+          }
+        </div>
+        <div class="detail-actions">
+          @if (customer.status === 'banned' || customer.status === 'suspended') {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">
+              {{ customer.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
+            </button>
+          } @else {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">
+              Ban
+            </button>
+          }
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="section-block">
+            <h2>Orders</h2>
+            <div class="table-card">
+              <table class="users-table">
+                <thead>
+                  <tr>
+                    <th>ORDER</th>
+                    <th>STATUS</th>
+                    <th>DATE</th>
+                    <th class="desktop-only">TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ord of customer.orders; track ord.orderNumber) {
+                    <tr>
+                      <td><strong>{{ ord.orderNumber }}</strong></td>
+                      <td>
+                        <span
+                          class="badge"
+                          [class.badge-active]="ord.status === 'Delivered'"
+                          [class.badge-pending]="ord.status !== 'Delivered'"
+                        >
+                          {{ ord.status }}
+                        </span>
+                      </td>
+                      <td>{{ ord.date }}</td>
+                      <td class="desktop-only">KES {{ ord.total | number }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h2>Bookings</h2>
+            <div class="table-card">
+              <table class="users-table">
+                <thead>
+                  <tr>
+                    <th>BOOKING</th>
+                    <th>STATUS</th>
+                    <th>MODE</th>
+                    <th class="desktop-only">FEE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (bk of customer.bookings; track $index) {
+                    <tr>
+                      <td><strong>{{ bk.providerName }}</strong></td>
+                      <td>
+                        <span class="badge badge-active">{{ bk.status }}</span>
+                      </td>
+                      <td>{{ bk.mode }}</td>
+                      <td class="desktop-only">KES {{ bk.fee | number }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="empty-cell">No bookings recorded yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Contact</h3>
+            <div class="kv-row">
+              <span class="kv-label">Email</span>
+              <strong class="kv-value">{{ customer.email }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Phone</span>
+              <strong class="kv-value">{{ customer.phone }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Joined</span>
+              <strong class="kv-value">{{ customer.joinedDate }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Account</h3>
+            <div class="kv-row">
+              <span class="kv-label">Status</span>
+              <span class="badge" [class]="'badge badge-' + customer.status">
+                {{ statusLabel(customer.status) }}
+              </span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">County</span>
+              <strong class="kv-value">{{ customer.county }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Sign-in</span>
+              <strong class="kv-value">{{ customer.signInMethod }}</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+
+    @if (currentDoctor(); as doctor) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Users</button>
+        <span class="crumb-sep">/</span>
+        <button type="button" class="crumb-link" (click)="backToList()">Doctors</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ doctor.name }}</span>
+      </nav>
+
+      <header class="detail-header provider-header">
+        <div class="provider-identity">
+          <div class="provider-square-avatar">{{ doctor.initials }}</div>
+          <div class="provider-heading">
+            <h1>{{ doctor.name }}</h1>
+            <div class="provider-pills">
+              <span class="badge" [class]="'badge badge-' + doctor.status">
+                {{ statusLabel(doctor.status) }}
+              </span>
+              <span class="badge badge-mint">{{ doctor.specialty }}</span>
+              <span class="badge badge-mint">{{ doctor.rating }} rating</span>
+            </div>
+            @if (doctor.reason) {
+              <p class="reason-note">{{ doctor.reason }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          @if (doctor.status === 'active') {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('suspend')">
+              Suspend
+            </button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">
+              Ban
+            </button>
+          } @else {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">
+              {{ doctor.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
+            </button>
+          }
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="info-card">
+            <h3>How and when patients can book</h3>
+            <div class="modes-list">
+              @for (mode of doctor.bookingModes; track mode.label) {
+                <div class="mode-item">
+                  <div class="mode-copy">
+                    <strong>{{ mode.label }}</strong>
+                    <span>{{ mode.scheduleText }}</span>
+                  </div>
+                  <span class="badge" [class.badge-active]="mode.enabled" [class.badge-banned]="!mode.enabled">
+                    {{ mode.enabled ? 'On' : 'Off' }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h2>Patients treated</h2>
+            <div class="table-card">
+              <table class="users-table">
+                <thead>
+                  <tr>
+                    <th>PATIENT</th>
+                    <th>DATE</th>
+                    <th>MODE</th>
+                    <th class="desktop-only">NOTES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pt of doctor.patientsTreated; track pt.id) {
+                    <tr>
+                      <td>
+                        <div class="entity-cell">
+                          <span class="entity-avatar">{{ pt.initials }}</span>
+                          <div class="entity-meta">
+                            <strong class="entity-name">{{ pt.name }}</strong>
+                            <span class="entity-sub">{{ pt.county }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ pt.date }}</td>
+                      <td>{{ pt.mode }}</td>
+                      <td class="desktop-only">
+                        <button type="button" class="text-action-link" (click)="openPatientNote(pt)">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Reviews</h3>
+            <div class="reviews-list">
+              @for (rev of doctor.reviews; track $index) {
+                <div class="review-item">
+                  <strong>{{ rev.rating }} · {{ rev.patientName }}</strong>
+                  <span>{{ rev.text }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Account</h3>
+            <div class="kv-row">
+              <span class="kv-label">Login email</span>
+              <strong class="kv-value">{{ doctor.loginEmail }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Status</span>
+              <strong class="kv-value">{{ statusLabel(doctor.status) }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Joined</span>
+              <strong class="kv-value">{{ doctor.joinedDate }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Licence</h3>
+            <div class="kv-row">
+              <span class="kv-label">Licence no.</span>
+              <strong class="kv-value">{{ doctor.licenceNumber }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Expires</span>
+              <strong class="kv-value">{{ doctor.licenceExpires }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Check</span>
+              <span
+                class="badge"
+                [class.badge-active]="doctor.licenceValid"
+                [class.badge-banned]="!doctor.licenceValid"
+              >
+                {{ doctor.licenceValid ? 'Valid' : 'Expired' }}
+              </span>
+            </div>
+            <button type="button" class="btn-outline-teal card-btn" (click)="requestRenewal()">
+              {{ doctor.renewalRequested ? 'Renewal requested' : 'Request renewal' }}
+            </button>
+          </div>
+
+          <div class="info-card">
+            <h3>Official work</h3>
+            <div class="kv-row">
+              <span class="kv-label">Workplace</span>
+              <strong class="kv-value">{{ doctor.workplace }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Specialty</span>
+              <strong class="kv-value">{{ doctor.specialty }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Experience</span>
+              <strong class="kv-value">{{ doctor.experienceYears }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Earnings</h3>
+            <div class="kv-row">
+              <span class="kv-label">Doctor earned</span>
+              <strong class="kv-value">KES {{ doctor.earnedKes | number }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Platform fee</span>
+              <strong class="kv-value">KES {{ doctor.platformFeeKes | number }}</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+
+    @if (currentNurse(); as nurse) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Users</button>
+        <span class="crumb-sep">/</span>
+        <button type="button" class="crumb-link" (click)="backToList()">Nurses</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ nurse.name }}</span>
+      </nav>
+
+      <header class="detail-header provider-header">
+        <div class="provider-identity">
+          <div class="provider-square-avatar">{{ nurse.initials }}</div>
+          <div class="provider-heading">
+            <h1>{{ nurse.name }}</h1>
+            <div class="provider-pills">
+              <span class="badge" [class]="'badge badge-' + nurse.status">
+                {{ statusLabel(nurse.status) }}
+              </span>
+              <span class="badge badge-mint">{{ nurse.service }}</span>
+              <span class="badge badge-mint">{{ nurse.rating }} rating</span>
+            </div>
+            @if (nurse.reason) {
+              <p class="reason-note">{{ nurse.reason }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          @if (nurse.status === 'pending') {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">Approve</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Reject</button>
+          } @else if (nurse.status === 'active') {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('suspend')">Suspend</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Ban</button>
+          } @else {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">
+              {{ nurse.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
+            </button>
+          }
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="info-card">
+            <h3>How and when patients can book</h3>
+            <div class="modes-list">
+              @for (mode of nurse.bookingModes; track mode.label) {
+                <div class="mode-item">
+                  <div class="mode-copy">
+                    <strong>{{ mode.label }}</strong>
+                    <span>{{ mode.scheduleText }}</span>
+                  </div>
+                  <span class="badge" [class.badge-active]="mode.enabled" [class.badge-banned]="!mode.enabled">
+                    {{ mode.enabled ? 'On' : 'Off' }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="section-block">
+            <h2>Patients visited</h2>
+            <div class="table-card">
+              <table class="users-table">
+                <thead>
+                  <tr>
+                    <th>PATIENT</th>
+                    <th>DATE</th>
+                    <th>MODE</th>
+                    <th class="desktop-only">NOTES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pt of nurse.patientsTreated; track pt.id) {
+                    <tr>
+                      <td>
+                        <div class="entity-cell">
+                          <span class="entity-avatar">{{ pt.initials }}</span>
+                          <div class="entity-meta">
+                            <strong class="entity-name">{{ pt.name }}</strong>
+                            <span class="entity-sub">{{ pt.county }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ pt.date }}</td>
+                      <td>{{ pt.mode }}</td>
+                      <td class="desktop-only">
+                        <button type="button" class="text-action-link" (click)="openPatientNote(pt)">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="empty-cell">No home visits completed yet.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Reviews</h3>
+            <div class="reviews-list">
+              @for (rev of nurse.reviews; track $index) {
+                <div class="review-item">
+                  <strong>{{ rev.rating }} · {{ rev.patientName }}</strong>
+                  <span>{{ rev.text }}</span>
+                </div>
+              } @empty {
+                <span class="kv-label">No patient reviews yet.</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Account</h3>
+            <div class="kv-row">
+              <span class="kv-label">Login email</span>
+              <strong class="kv-value">{{ nurse.loginEmail }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Status</span>
+              <strong class="kv-value">{{ statusLabel(nurse.status) }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Joined</span>
+              <strong class="kv-value">{{ nurse.joinedDate }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Licence</h3>
+            <div class="kv-row">
+              <span class="kv-label">Licence no.</span>
+              <strong class="kv-value">{{ nurse.licenceNumber }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Expires</span>
+              <strong class="kv-value">{{ nurse.licenceExpires }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Check</span>
+              <span class="badge" [class.badge-active]="nurse.licenceValid" [class.badge-banned]="!nurse.licenceValid">
+                {{ nurse.licenceValid ? 'Valid' : 'Expired' }}
+              </span>
+            </div>
+            <button type="button" class="btn-outline-teal card-btn" (click)="requestRenewal()">
+              {{ nurse.renewalRequested ? 'Renewal requested' : 'Request renewal' }}
+            </button>
+          </div>
+
+          <div class="info-card">
+            <h3>Earnings</h3>
+            <div class="kv-row">
+              <span class="kv-label">Nurse earned</span>
+              <strong class="kv-value">KES {{ nurse.earnedKes | number }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Platform fee</span>
+              <strong class="kv-value">KES {{ nurse.platformFeeKes | number }}</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+
+    @if (currentHospital(); as hospital) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Users</button>
+        <span class="crumb-sep">/</span>
+        <button type="button" class="crumb-link" (click)="backToList()">Hospitals</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ hospital.name }}</span>
+      </nav>
+
+      <header class="detail-header provider-header">
+        <div class="provider-identity">
+          <div class="provider-square-avatar">{{ hospital.initials }}</div>
+          <div class="provider-heading">
+            <h1>{{ hospital.name }}</h1>
+            <div class="provider-pills">
+              <span class="badge" [class]="'badge badge-' + hospital.status">
+                {{ statusLabel(hospital.status) }}
+              </span>
+              <span class="badge badge-mint">{{ hospital.level }}</span>
+              <span class="badge badge-mint">{{ hospital.type }}</span>
+            </div>
+            @if (hospital.reason) {
+              <p class="reason-note">{{ hospital.reason }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          @if (hospital.status === 'pending') {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">Approve</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Reject</button>
+          } @else if (hospital.status === 'active') {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('suspend')">Suspend</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Ban</button>
+          } @else {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">
+              {{ hospital.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
+            </button>
+          }
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="info-card">
+            <h3>Departments &amp; capacity</h3>
+            <div class="departments-wrap">
+              @for (dept of hospital.departments; track dept) {
+                <span class="badge badge-mint">{{ dept }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Facility registration</h3>
+            <div class="kv-row">
+              <span class="kv-label">Registration no.</span>
+              <strong class="kv-value">{{ hospital.registrationNumber }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Linked doctors</span>
+              <strong class="kv-value">{{ hospital.doctorsCount }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Contact</h3>
+            <div class="kv-row">
+              <span class="kv-label">Email</span>
+              <strong class="kv-value">{{ hospital.email }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Phone</span>
+              <strong class="kv-value">{{ hospital.phone }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">County</span>
+              <strong class="kv-value">{{ hospital.county }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Joined</span>
+              <strong class="kv-value">{{ hospital.joinedDate }}</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+  }
+
+  <!-- Suspend / Ban Reason Modal -->
+  @if (showReasonModal()) {
+    <div class="modal-backdrop" (click)="closeReasonModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">
+          {{ pendingActionType() === 'suspend' ? 'Suspend account' : 'Ban account' }}
+        </h3>
+        <p class="modal-desc">
+          Provide a reason for this action. It will be saved on the user record.
+        </p>
+        <textarea
+          class="reason-textarea"
+          rows="3"
+          [ngModel]="actionReason()"
+          (ngModelChange)="actionReason.set($event)"
+          placeholder="Enter reason..."
+        ></textarea>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" (click)="closeReasonModal()">Cancel</button>
+          <button type="button" class="btn-danger-solid" (click)="confirmReasonAction()">
+            {{ pendingActionType() === 'suspend' ? 'Confirm suspend' : 'Confirm ban' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Patient Note Modal -->
+  @if (activeNotePatient(); as notePatient) {
+    <div class="modal-backdrop" (click)="closePatientNote()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Consultation notes</h3>
+        <p class="modal-desc">
+          {{ notePatient.name }} · {{ notePatient.county }} · {{ notePatient.mode }} ({{ notePatient.date }})
+        </p>
+        <div class="note-box">{{ notePatient.notesSummary }}</div>
+        <div class="modal-actions">
+          <button type="button" class="btn-solid-teal" (click)="closePatientNote()">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (statusNotice(); as notice) {
+    <div class="toast-banner">{{ notice }}</div>
+  }
+</section>

@@ -1,0 +1,144 @@
+<section class="admin-earnings-page">
+  <header class="page-header">
+    <h1>Platform earnings</h1>
+  </header>
+
+  <!-- Period Filter Chips -->
+  <div class="period-chips">
+    <button
+      type="button"
+      class="chip"
+      [class.selected]="selectedPeriod() === 'year'"
+      (click)="setPeriod('year')"
+    >
+      This year
+    </button>
+    <button
+      type="button"
+      class="chip"
+      [class.selected]="selectedPeriod() === 'quarter'"
+      (click)="setPeriod('quarter')"
+    >
+      Last 3 months
+    </button>
+    <button
+      type="button"
+      class="chip"
+      [class.selected]="selectedPeriod() === 'month'"
+      (click)="setPeriod('month')"
+    >
+      This month
+    </button>
+  </div>
+
+  <!-- 4 Summary KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-label">Platform earned</span>
+      <strong class="kpi-value">KES {{ activeData().totalEarned | number }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">From doctors</span>
+      <strong class="kpi-value">KES {{ activeData().fromDoctors | number }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">From nurses</span>
+      <strong class="kpi-value">KES {{ activeData().fromNurses | number }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">From chemists</span>
+      <strong class="kpi-value">KES {{ activeData().fromChemists | number }}</strong>
+    </div>
+  </div>
+
+  <!-- Chart + Breakdown Split Grid -->
+  <div class="earnings-grid">
+    <!-- Left Card: Stacked Vertical Bar Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2>Platform earnings per month</h2>
+        @if (hoveredBar(); as bar) {
+          <span class="bar-tooltip">
+            {{ bar.month }}: KES {{ (bar.doctorsKes + bar.nursesKes + bar.chemistsKes) | number }}
+          </span>
+        }
+      </div>
+
+      <div class="stacked-chart">
+        @for (bar of activeData().monthlyBars; track bar.month) {
+          <div
+            class="bar-column"
+            (mouseenter)="hoveredBar.set(bar)"
+            (mouseleave)="hoveredBar.set(null)"
+            (click)="hoveredBar.set(bar)"
+          >
+            <div class="bar-track">
+              <div
+                class="bar-segment segment-chemists"
+                [style.height.%]="bar.chemistsHeightPct"
+                [title]="'Chemists: KES ' + bar.chemistsKes"
+              ></div>
+              <div
+                class="bar-segment segment-nurses"
+                [style.height.%]="bar.nursesHeightPct"
+                [title]="'Nurses: KES ' + bar.nursesKes"
+              ></div>
+              <div
+                class="bar-segment segment-doctors"
+                [style.height.%]="bar.doctorsHeightPct"
+                [title]="'Doctors: KES ' + bar.doctorsKes"
+              ></div>
+            </div>
+            <span class="bar-label">{{ bar.month }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="chart-legend">
+        <span class="legend-item">
+          <span class="legend-dot dot-doctors"></span> Doctors
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot dot-nurses"></span> Nurses
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot dot-chemists"></span> Chemists
+        </span>
+      </div>
+    </div>
+
+    <!-- Right Section: Who paid, who earned -->
+    <div class="breakdown-section">
+      <h2>Who paid, who earned</h2>
+
+      <div class="table-card">
+        <table class="earnings-table">
+          <thead>
+            <tr>
+              <th>SOURCE</th>
+              <th>CUSTOMERS PAID</th>
+              <th>PLATFORM KEEPS</th>
+              <th class="desktop-only">PAID TO PROVIDERS</th>
+              <th class="desktop-only">RATE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of activeData().breakdown; track row.source) {
+              <tr>
+                <td><strong>{{ row.source }}</strong></td>
+                <td>KES {{ row.customersPaid | number }}</td>
+                <td>KES {{ row.platformKeeps | number }}</td>
+                <td class="desktop-only">KES {{ row.paidToProviders | number }}</td>
+                <td class="desktop-only">{{ row.rate }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <p class="sample-footnote">
+        Sample numbers. Providers are paid what they declared; the platform keeps its commission.
+      </p>
+    </div>
+  </div>
+</section>

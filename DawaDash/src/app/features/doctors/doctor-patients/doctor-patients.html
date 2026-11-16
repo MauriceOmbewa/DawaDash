@@ -1,0 +1,167 @@
+<section class="doctor-patients-page">
+  @if (!selectedPatient()) {
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1>My patients</h1>
+    </header>
+
+    <!-- Search Bar Row -->
+    <div class="search-bar-row">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search patient name"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+      />
+      <button type="button" class="btn btn-search" (click)="onSearch()">
+        Search
+      </button>
+    </div>
+
+    <!-- Filter Chips (All, Virtual, Hospital visit, Home visit) -->
+    <div class="filter-chips">
+      <button
+        type="button"
+        class="chip chip-all"
+        [class.selected]="activeFilter() === 'All'"
+        (click)="setFilter('All')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'Virtual'"
+        (click)="setFilter('Virtual')"
+      >
+        Virtual
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'Hospital visit'"
+        (click)="setFilter('Hospital visit')"
+      >
+        Hospital visit
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'Home visit'"
+        (click)="setFilter('Home visit')"
+      >
+        Home visit
+      </button>
+    </div>
+
+    <!-- Patients Table Card -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table class="patients-table">
+          <thead>
+            <tr>
+              <th>PATIENT</th>
+              <th>LAST VISIT</th>
+              <th>MODE</th>
+              <th class="col-desktop-only">VISITS</th>
+              <th class="col-desktop-only">RECORD</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (patient of filteredPatients(); track patient.id) {
+              <tr class="patient-row" (click)="openPatientDetails(patient)">
+                <td>
+                  <div class="patient-cell">
+                    <div class="patient-avatar">
+                      {{ patient.initials }}
+                    </div>
+                    <div class="patient-info">
+                      <div class="patient-name">{{ patient.name }}</div>
+                      <div class="patient-location">{{ patient.location }}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="cell-date">{{ patient.lastVisit }}</td>
+
+                <td class="cell-mode">{{ patient.mode }}</td>
+
+                <td class="cell-visits col-desktop-only">{{ patient.visitsCount }}</td>
+
+                <td class="cell-record col-desktop-only" (click)="$event.stopPropagation()">
+                  <button
+                    type="button"
+                    class="btn-view"
+                    (click)="openPatientDetails(patient)"
+                  >
+                    View
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">
+                  No patients found matching "{{ searchQuery() }}" in {{ activeFilter() }}.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Caption below table -->
+    <p class="table-caption">Click a row to open its details page</p>
+  } @else {
+    <!-- Patient Details Sub-View -->
+    <div class="patient-details-page">
+      <div class="details-nav">
+        <button type="button" class="btn-back" (click)="closePatientDetails()">
+          ← Back to My patients
+        </button>
+      </div>
+
+      <div class="details-card">
+        <div class="details-header">
+          <div class="details-avatar">{{ selectedPatient()?.initials }}</div>
+          <div>
+            <h2>{{ selectedPatient()?.name }}</h2>
+            <p class="details-meta">
+              {{ selectedPatient()?.location }} · {{ selectedPatient()?.age }} yrs · {{ selectedPatient()?.gender }} · {{ selectedPatient()?.phone }}
+            </p>
+          </div>
+          <span class="mode-badge">{{ selectedPatient()?.mode }}</span>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-box">
+            <span class="detail-label">Last Visit</span>
+            <strong class="detail-value">{{ selectedPatient()?.lastVisit }}</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Total Visits</span>
+            <strong class="detail-value">{{ selectedPatient()?.visitsCount }}</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Blood Group</span>
+            <strong class="detail-value">{{ selectedPatient()?.bloodGroup }}</strong>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Allergies</span>
+            <strong class="detail-value">
+              {{ selectedPatient()?.allergies?.length ? selectedPatient()?.allergies?.join(', ') : 'None known' }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="clinical-notes-box">
+          <h3>Recent Diagnosis</h3>
+          <p class="diagnosis-text">{{ selectedPatient()?.recentDiagnosis }}</p>
+          <h3>Clinical Notes</h3>
+          <p class="notes-text">{{ selectedPatient()?.notes }}</p>
+        </div>
+      </div>
+    </div>
+  }
+</section>

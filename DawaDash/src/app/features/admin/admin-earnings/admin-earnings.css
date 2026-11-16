@@ -1,0 +1,295 @@
+:host {
+  display: block;
+}
+
+.admin-earnings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 4.5vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Period Chips */
+.period-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: none;
+  background: #E1F2E8;
+  color: #0B4F3C;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  background: #D2EBD9;
+}
+
+.chip.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+/* 4 KPI Summary Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.kpi-label {
+  font-size: 0.84rem;
+  color: #5A7369;
+  font-weight: 500;
+}
+
+.kpi-value {
+  font-size: clamp(1.35rem, 2.8vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0A2E24;
+  line-height: 1.15;
+}
+
+/* Main Content Grid */
+.earnings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* Chart Card */
+.chart-card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-header h2,
+.breakdown-section h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.bar-tooltip {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #005C46;
+  background: #DCFCE7;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.stacked-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  height: 195px;
+  padding: 12px 6px 0;
+}
+
+.bar-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.bar-track {
+  width: 100%;
+  max-width: 44px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.bar-segment {
+  width: 100%;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.bar-column:hover .bar-segment {
+  opacity: 0.9;
+}
+
+.segment-chemists {
+  background: #0D2923;
+  border-radius: 6px 6px 2px 2px;
+}
+
+.segment-nurses {
+  background: #F5B031;
+  border-radius: 2px;
+}
+
+.segment-doctors {
+  background: #0B7358;
+  border-radius: 2px 2px 4px 4px;
+}
+
+.bar-label {
+  font-size: 0.8rem;
+  color: #5A7369;
+  font-weight: 600;
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #0A2E24;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.dot-doctors {
+  background: #0B7358;
+}
+
+.dot-nurses {
+  background: #F5B031;
+}
+
+.dot-chemists {
+  background: #0D2923;
+}
+
+/* Breakdown Table */
+.breakdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.earnings-table thead th {
+  background: #F6FAF8;
+  padding: 12px 14px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5A7369;
+  border-bottom: 1px solid #E8EFEA;
+}
+
+.earnings-table tbody td {
+  padding: 14px;
+  font-size: 0.9rem;
+  color: #0A2E24;
+  border-bottom: 1px solid #EEF3F0;
+  vertical-align: middle;
+}
+
+.earnings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sample-footnote {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #5A7369;
+  line-height: 1.45;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .admin-earnings-page {
+    gap: 20px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .desktop-only {
+    display: table-cell;
+  }
+}
+
+@media (min-width: 960px) {
+  .earnings-grid {
+    grid-template-columns: 1.05fr 1fr;
+    align-items: start;
+  }
+}

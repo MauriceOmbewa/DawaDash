@@ -35,6 +35,8 @@ export type ProductFilterStatus = 'all' | 'live' | 'prescription' | 'hidden';
 
 export interface AdminProduct {
   id: string;
+  sku?: string;
+  initials?: string;
   name: string;
   chemistName: string;
   location: string;
@@ -42,7 +44,9 @@ export interface AdminProduct {
   status: 'live' | 'prescription' | 'hidden';
   requiresPrescription: boolean;
   category?: string;
+  packSize?: string;
   stockCount?: number;
+  updatedAt?: string;
 }
 
 export interface PendingProvider {
@@ -75,3 +79,159 @@ export interface AdminOrder {
   status: 'Dispatched' | 'Preparing' | 'Delivered' | 'Pending Chemist';
   time: string;
 }
+
+export type UserCategoryTab = 'customers' | 'doctors' | 'nurses' | 'hospitals';
+export type UserStatusFilter = 'all' | 'active' | 'suspended' | 'banned';
+export type UserAccountStatus = 'active' | 'pending' | 'suspended' | 'banned';
+
+export interface UserOrderRecord {
+  orderNumber: string;
+  status: 'Delivered' | 'On the way' | 'Preparing';
+  date: string;
+  total: number;
+}
+
+export interface UserBookingRecord {
+  providerName: string;
+  status: 'Booked' | 'Done' | 'Cancelled';
+  mode: 'Virtual' | 'Hospital' | 'Home';
+  fee: number;
+}
+
+export interface UserCustomerItem {
+  id: string;
+  initials: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: UserAccountStatus;
+  county: string;
+  joinedDate: string;
+  signInMethod: string;
+  ordersCount: number;
+  bookingsCount: number;
+  orders: UserOrderRecord[];
+  bookings: UserBookingRecord[];
+  reason?: string;
+}
+
+export interface ProviderBookingModeSummary {
+  label: string;
+  scheduleText: string;
+  enabled: boolean;
+}
+
+export interface ProviderTreatedPatient {
+  id: string;
+  initials: string;
+  name: string;
+  county: string;
+  date: string;
+  mode: 'Virtual' | 'Hospital' | 'Home';
+  notesSummary: string;
+}
+
+export interface ProviderReviewItem {
+  rating: string;
+  patientName: string;
+  text: string;
+}
+
+export interface UserDoctorItem {
+  id: string;
+  initials: string;
+  avatarBadge: string;
+  name: string;
+  city: string;
+  status: UserAccountStatus;
+  specialty: string;
+  licenceExpires: string;
+  licenceBadgeType: 'normal' | 'warning' | 'expired';
+  rating: string;
+  loginEmail: string;
+  joinedDate: string;
+  licenceNumber: string;
+  licenceValid: boolean;
+  workplace: string;
+  experienceYears: string;
+  earnedKes: number;
+  platformFeeKes: number;
+  bookingModes: ProviderBookingModeSummary[];
+  patientsTreated: ProviderTreatedPatient[];
+  reviews: ProviderReviewItem[];
+  renewalRequested?: boolean;
+  reason?: string;
+}
+
+export interface UserNurseItem {
+  id: string;
+  initials: string;
+  avatarBadge: string;
+  name: string;
+  city: string;
+  status: UserAccountStatus;
+  service: string;
+  licenceExpires: string;
+  licenceBadgeType: 'normal' | 'warning' | 'expired';
+  rating: string;
+  loginEmail: string;
+  joinedDate: string;
+  licenceNumber: string;
+  licenceValid: boolean;
+  experienceYears: string;
+  earnedKes: number;
+  platformFeeKes: number;
+  bookingModes: ProviderBookingModeSummary[];
+  patientsTreated: ProviderTreatedPatient[];
+  reviews: ProviderReviewItem[];
+  renewalRequested?: boolean;
+  reason?: string;
+}
+
+export interface UserHospitalItem {
+  id: string;
+  initials: string;
+  name: string;
+  level: string;
+  status: UserAccountStatus;
+  type: 'Private' | 'Public' | 'Faith-based';
+  county: string;
+  phone: string;
+  email: string;
+  joinedDate: string;
+  registrationNumber: string;
+  doctorsCount: number;
+  departments: string[];
+  reason?: string;
+}
+
+export type AdminEarningsPeriod = 'year' | 'quarter' | 'month';
+
+export interface AdminEarningsBar {
+  month: string;
+  doctorsKes: number;
+  nursesKes: number;
+  chemistsKes: number;
+  doctorsHeightPct: number;
+  nursesHeightPct: number;
+  chemistsHeightPct: number;
+}
+
+export interface AdminEarningsSourceRow {
+  source: 'Doctors' | 'Nurses' | 'Chemists';
+  customersPaid: number;
+  platformKeeps: number;
+  paidToProviders: number;
+  rate: string;
+}
+
+export interface AdminEarningsDataset {
+  totalEarned: number;
+  fromDoctors: number;
+  fromNurses: number;
+  fromChemists: number;
+  monthlyBars: AdminEarningsBar[];
+  breakdown: AdminEarningsSourceRow[];
+}
+
+
