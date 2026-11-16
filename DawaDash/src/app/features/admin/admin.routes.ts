@@ -5,6 +5,10 @@ import { AdminOverview } from './admin-overview/admin-overview';
 import { AdminSettings } from './admin-settings/admin-settings';
 import { AdminChemists } from './admin-chemists/admin-chemists';
 import { AdminCustomers } from './admin-customers/admin-customers';
+import { AdminUsers } from './admin-users/admin-users';
+import { AdminProducts } from './admin-products/admin-products';
+import { AdminOrders } from './admin-orders/admin-orders';
+import { AdminEarnings } from './admin-earnings/admin-earnings';
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -16,6 +20,10 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'approvals', component: AdminApprovals, title: 'DawaDash – Admin Approvals' },
       { path: 'chemists', component: AdminChemists, title: 'DawaDash – Admin Chemists' },
       { path: 'customers', component: AdminCustomers, title: 'DawaDash – Admin Customers' },
+      { path: 'products', component: AdminProducts, title: 'DawaDash Admin – Products' },
+      { path: 'users', component: AdminUsers, title: 'DawaDash Admin – Users' },
+      { path: 'orders', component: AdminOrders, title: 'DawaDash Admin – Orders' },
+      { path: 'earnings', component: AdminEarnings, title: 'DawaDash Admin – Platform Earnings' },
       { path: 'settings', component: AdminSettings, title: 'DawaDash – Admin Settings' },
     ],
   },

@@ -1,100 +1,214 @@
 <section class="admin-products-page">
-  <!-- Page Header -->
-  <header class="page-header">
-    <h1>Products</h1>
-  </header>
+  @if (!selectedProduct()) {
+    <!-- Products List Page -->
+    <header class="page-header">
+      <h1>Products</h1>
+    </header>
 
-  <!-- Search Bar Row -->
-  <div class="search-bar-row">
-    <input
-      type="text"
-      [(ngModel)]="searchTerm"
-      (keyup.enter)="onSearch()"
-      placeholder="Search product or chemist"
-      class="search-input"
-    />
-    <button type="button" class="btn btn-search" (click)="onSearch()">Search</button>
-  </div>
+    <!-- Search Bar Row -->
+    <form class="search-bar-row" (ngSubmit)="onSearch()">
+      <input
+        type="text"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        name="productSearch"
+        placeholder="Search product or chemist"
+        class="search-input"
+      />
+      <button type="submit" class="btn-search">Search</button>
+    </form>
 
-  <!-- Filter Chips (All, Live, Prescription, Hidden) -->
-  <div class="filter-chips">
-    <button
-      type="button"
-      class="chip chip-all"
-      [class.selected]="activeFilter() === 'all'"
-      (click)="setFilter('all')"
-    >
-      All
-    </button>
-    <button
-      type="button"
-      class="chip chip-live"
-      [class.selected]="activeFilter() === 'live'"
-      (click)="setFilter('live')"
-    >
-      Live
-    </button>
-    <button
-      type="button"
-      class="chip chip-prescription"
-      [class.selected]="activeFilter() === 'prescription'"
-      (click)="setFilter('prescription')"
-    >
-      Prescription
-    </button>
-    <button
-      type="button"
-      class="chip chip-hidden"
-      [class.selected]="activeFilter() === 'hidden'"
-      (click)="setFilter('hidden')"
-    >
-      Hidden
-    </button>
-  </div>
+    <!-- Filter Chips (All, Live, Prescription, Hidden) -->
+    <div class="filter-chips">
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'live'"
+        (click)="setFilter('live')"
+      >
+        Live
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'prescription'"
+        (click)="setFilter('prescription')"
+      >
+        Prescription
+      </button>
+      <button
+        type="button"
+        class="chip"
+        [class.selected]="activeFilter() === 'hidden'"
+        (click)="setFilter('hidden')"
+      >
+        Hidden
+      </button>
+    </div>
 
-  <!-- Products List -->
-  <div class="products-list">
-    @for (product of filteredProducts(); track product.id) {
-      <div class="card product-card">
-        <div class="card-details">
-          <h3 class="card-title">
-            {{ product.name }}
-          </h3>
-          <p class="card-subtitle">
-            Added by {{ product.chemistName }} · {{ product.location }} · KES {{ product.price }}
-          </p>
+    <!-- Responsive Table Card -->
+    <div class="table-card">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>PRODUCT</th>
+            <th>STATUS</th>
+            <th>CHEMIST</th>
+            <th class="desktop-only">PRICE</th>
+            <th class="desktop-only">COUNTY</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of filteredProducts(); track product.id) {
+            <tr class="clickable-row" (click)="openDetails(product.id)">
+              <td>
+                <div class="product-cell">
+                  <span class="product-avatar">{{ product.initials || product.name.slice(0, 2) }}</span>
+                  <div class="product-meta">
+                    <strong class="product-name">{{ product.name }}</strong>
+                    <span class="product-sku">{{ product.sku }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [class]="'badge badge-' + product.status">
+                  {{ statusLabel(product.status) }}
+                </span>
+              </td>
+              <td>{{ product.chemistName }}</td>
+              <td class="desktop-only">KES {{ product.price | number }}</td>
+              <td class="desktop-only">{{ product.location }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-cell">
+                No products found matching "{{ searchTerm() }}" under "{{ activeFilter() }}".
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="table-hint">Click a row to open its details page</p>
+  } @else {
+    <!-- Product Details Page -->
+    @if (selectedProduct(); as product) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Products</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ product.name }}</span>
+      </nav>
+
+      <header class="detail-header">
+        <div class="product-identity">
+          <div class="product-square-avatar">{{ product.initials || product.name.slice(0, 2) }}</div>
+          <div class="product-heading">
+            <h1>{{ product.name }}</h1>
+            <div class="product-pills">
+              <span class="badge" [class]="'badge badge-' + product.status">
+                {{ statusLabel(product.status) }}
+              </span>
+              <span class="badge badge-mint">{{ product.sku }}</span>
+              <span class="badge badge-mint">KES {{ product.price | number }}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="card-actions">
-          <!-- Status Badge -->
-          <span class="status-badge status-{{ product.status }}">
-            {{ product.status | titlecase }}
-          </span>
+        <div class="detail-actions">
+          <button
+            type="button"
+            class="btn-outline-teal"
+            (click)="togglePrescription(product.id)"
+          >
+            {{ product.requiresPrescription ? 'Mark OTC' : 'Require prescription' }}
+          </button>
 
-          <!-- Contextual Action Button (Hide vs Show) -->
           @if (product.status === 'hidden') {
-            <button
-              type="button"
-              class="btn btn-show"
-              (click)="showProduct(product.id)"
-            >
-              Show
+            <button type="button" class="btn-solid-teal" (click)="showProduct(product.id)">
+              Show product
             </button>
           } @else {
-            <button
-              type="button"
-              class="btn btn-hide"
-              (click)="hideProduct(product.id)"
-            >
-              Hide
+            <button type="button" class="btn-danger-outline" (click)="hideProduct(product.id)">
+              Hide product
             </button>
           }
         </div>
-      </div>
-    } @empty {
-      <div class="card empty-card">
-        <p>No medicines or products found matching "{{ searchTerm() }}" under "{{ activeFilter() }}"</p>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="info-card">
+            <h3>Catalogue details</h3>
+            <div class="kv-row">
+              <span class="kv-label">Product code</span>
+              <strong class="kv-value">{{ product.sku }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Category</span>
+              <strong class="kv-value">{{ product.category || 'General Medicine' }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Pack size</span>
+              <strong class="kv-value">{{ product.packSize || 'Standard pack' }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Prescription rule</span>
+              <strong class="kv-value">
+                {{ product.requiresPrescription ? 'Prescription required' : 'Over the counter (OTC)' }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Stock &amp; moderation</h3>
+            <div class="kv-row">
+              <span class="kv-label">Reported stock</span>
+              <strong class="kv-value">{{ product.stockCount ?? 0 }} units</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Customer visibility</span>
+              <strong class="kv-value">
+                {{ product.status === 'hidden' ? 'Hidden from search' : 'Visible in search' }}
+              </strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Last updated</span>
+              <strong class="kv-value">{{ product.updatedAt || 'Today' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Listed by</h3>
+            <div class="kv-row">
+              <span class="kv-label">Chemist</span>
+              <strong class="kv-value">{{ product.chemistName }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">County</span>
+              <strong class="kv-value">{{ product.location }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Unit price</span>
+              <strong class="kv-value">KES {{ product.price | number }}</strong>
+            </div>
+          </div>
+        </aside>
       </div>
     }
-  </div>
+  }
+
+  @if (statusNotice(); as notice) {
+    <div class="toast-banner">{{ notice }}</div>
+  }
 </section>

@@ -1,64 +1,234 @@
 <section class="doctor-earnings-page">
-  <header class="earnings-header">
-    <div>
-      <h1>Earnings</h1>
-      <p class="subtitle">Daily consult proceeds and instant M-Pesa payouts</p>
+  @if (activeView() === 'earnings') {
+    <!-- EARNINGS OVERVIEW VIEW -->
+    <header class="earnings-header">
+      <div>
+        <h1>Earnings</h1>
+        <p class="subtitle">Daily consult proceeds and instant M-Pesa payouts</p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-analytics" (click)="openAnalytics()">
+          <svg class="icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M18 20V10"></path>
+            <path d="M12 20V4"></path>
+            <path d="M6 20v-6"></path>
+          </svg>
+          <span>Earning analytics</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="openWithdraw()">
+          Withdraw to M-Pesa
+        </button>
+      </div>
+    </header>
+
+    <!-- Summary Metric Cards -->
+    <div class="metrics-grid">
+      <div class="card metric-card">
+        <span class="metric-label">Available Balance</span>
+        <strong class="metric-value font-mono">KES {{ availableBalance() | number }}</strong>
+        <span class="metric-footnote">Cleared for instant transfer</span>
+      </div>
+
+      <div class="card metric-card">
+        <span class="metric-label">Earned Today</span>
+        <strong class="metric-value font-mono">KES {{ earnedToday() | number }}</strong>
+        <span class="metric-footnote">6 consults settled</span>
+      </div>
+
+      <div class="card metric-card">
+        <span class="metric-label">Earned This Week</span>
+        <strong class="metric-value font-mono">KES {{ earnedWeek() | number }}</strong>
+        <span class="metric-footnote">18 consults total</span>
+      </div>
     </div>
 
-    <button type="button" class="btn btn-primary" (click)="openWithdraw()">
-      Withdraw to M-Pesa
-    </button>
-  </header>
-
-  <!-- Summary Metric Cards -->
-  <div class="metrics-grid">
-    <div class="card metric-card">
-      <span class="metric-label">Available Balance</span>
-      <strong class="metric-value font-mono">KES {{ availableBalance() | number }}</strong>
-      <span class="metric-footnote">Cleared for instant transfer</span>
+    <!-- Transparent Fee Explanation -->
+    <div class="fee-explainer">
+      <strong>DawaDash 10% Platform Fee Model</strong>
+      <p>
+        You receive 100% of your configured consultation fee without deductions. The 10% platform fee is paid by patients at booking.
+      </p>
     </div>
 
-    <div class="card metric-card">
-      <span class="metric-label">Earned Today</span>
-      <strong class="metric-value font-mono">KES {{ earnedToday() | number }}</strong>
-      <span class="metric-footnote">6 consults settled</span>
-    </div>
+    <!-- Transactions Table -->
+    <div class="card ledger-card">
+      <h2>Recent Consultations</h2>
 
-    <div class="card metric-card">
-      <span class="metric-label">Earned This Week</span>
-      <strong class="metric-value font-mono">KES {{ earnedWeek() | number }}</strong>
-      <span class="metric-footnote">18 consults total</span>
-    </div>
-  </div>
+      <div class="ledger-list">
+        @for (tx of ledger(); track tx.id) {
+          <div class="ledger-row">
+            <div class="tx-info">
+              <strong>{{ tx.patientName }}</strong>
+              <span>{{ tx.type }} · {{ tx.date }}, {{ tx.time }}</span>
+            </div>
 
-  <!-- Transparent Fee Explanation -->
-  <div class="fee-explainer">
-    <strong>DawaDash 10% Platform Fee Model</strong>
-    <p>
-      You receive 100% of your configured consultation fee without deductions. The 10% platform fee is paid by patients at booking.
-    </p>
-  </div>
-
-  <!-- Transactions Table -->
-  <div class="card ledger-card">
-    <h2>Recent Consultations</h2>
-
-    <div class="ledger-list">
-      @for (tx of ledger(); track tx.id) {
-        <div class="ledger-row">
-          <div class="tx-info">
-            <strong>{{ tx.patientName }}</strong>
-            <span>{{ tx.type }} · {{ tx.date }}, {{ tx.time }}</span>
+            <div class="tx-amounts">
+              <span class="net-amount font-mono">+ KES {{ tx.netEarned | number }}</span>
+              <span class="fee-meta">Gross: {{ tx.grossAmount }} (Fee: -{{ tx.platformFee }})</span>
+            </div>
           </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- EARNING ANALYTICS VIEW ("My earnings" UI from screenshots) -->
+    <div class="analytics-view">
+      <div class="analytics-top-nav">
+        <button type="button" class="btn-back" (click)="backToEarnings()">
+          ← Back to Earnings
+        </button>
+      </div>
 
-          <div class="tx-amounts">
-            <span class="net-amount font-mono">+ KES {{ tx.netEarned | number }}</span>
-            <span class="fee-meta">Gross: {{ tx.grossAmount }} (Fee: -{{ tx.platformFee }})</span>
+      <header class="analytics-header">
+        <h1>My earnings</h1>
+      </header>
+
+      <!-- Timeframe Filter Chips -->
+      <div class="period-chips">
+        <button
+          type="button"
+          class="period-chip"
+          [class.selected]="selectedPeriod() === 'This month'"
+          (click)="setPeriod('This month')"
+        >
+          This month
+        </button>
+        <button
+          type="button"
+          class="period-chip"
+          [class.selected]="selectedPeriod() === 'Last 3 months'"
+          (click)="setPeriod('Last 3 months')"
+        >
+          Last 3 months
+        </button>
+        <button
+          type="button"
+          class="period-chip"
+          [class.selected]="selectedPeriod() === 'This year'"
+          (click)="setPeriod('This year')"
+        >
+          This year
+        </button>
+      </div>
+
+      <!-- 4 KPI Metric Cards -->
+      <div class="analytics-kpi-grid">
+        <div class="card kpi-card">
+          <span class="kpi-label">You earned</span>
+          <strong class="kpi-value">KES {{ activeAnalytics().earned | number }}</strong>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">Waiting to be paid</span>
+          <strong class="kpi-value">KES {{ activeAnalytics().waiting | number }}</strong>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">Consultations</span>
+          <strong class="kpi-value">{{ activeAnalytics().consultations }}</strong>
+        </div>
+
+        <div class="card kpi-card">
+          <span class="kpi-label">Average per patient</span>
+          <strong class="kpi-value">KES {{ activeAnalytics().averagePerPatient | number }}</strong>
+        </div>
+      </div>
+
+      <!-- Middle 2-Column Section: Weekly Bar Chart + Channel Breakdown & Best Day Insight -->
+      <div class="analytics-middle-grid">
+        <!-- Earned each week -->
+        <div class="card chart-card">
+          <h2 class="section-card-title">Earned each week</h2>
+
+          <div class="bar-chart-area">
+            <div class="bars-row">
+              @for (bar of activeAnalytics().weeklyBars; track bar.label) {
+                <div class="bar-col" [title]="bar.label + ': KES ' + (bar.amount | number)">
+                  <div class="bar-track">
+                    <div class="bar-fill" [style.height.%]="bar.heightPercent"></div>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="bar-labels-row">
+              @for (bar of activeAnalytics().weeklyBars; track bar.label) {
+                <span class="bar-label">{{ bar.label }}</span>
+              }
+            </div>
           </div>
         </div>
-      }
+
+        <!-- Right stack: Where your money comes from + Amber insight banner -->
+        <div class="analytics-right-stack">
+          <div class="card breakdown-card">
+            <h2 class="section-card-title">Where your money comes from</h2>
+
+            <div class="breakdown-list">
+              @for (ch of activeAnalytics().channels; track ch.label) {
+                <div class="breakdown-item">
+                  <div class="breakdown-row-head">
+                    <span class="breakdown-name">{{ ch.label }}</span>
+                    <strong class="breakdown-amount">
+                      KES {{ ch.amount | number }} · {{ ch.percent }}%
+                    </strong>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" [style.width.%]="ch.percent"></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Best Day / Insight Banner -->
+          <div class="insight-banner">
+            <strong>{{ activeAnalytics().insightTitle }}</strong>
+            <span>{{ activeAnalytics().insightSubtitle }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payouts Table -->
+      <div class="payouts-section">
+        <h2 class="payouts-title">Payouts</h2>
+
+        <div class="table-card">
+          <div class="table-scroll">
+            <table class="payouts-table">
+              <thead>
+                <tr>
+                  <th>DATE</th>
+                  <th>CONSULTS</th>
+                  <th>YOU EARNED</th>
+                  <th class="col-desktop-only">STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of activeAnalytics().payouts; track row.id) {
+                  <tr>
+                    <td class="cell-date">{{ row.date }}</td>
+                    <td class="cell-consults">{{ row.consults }}</td>
+                    <td class="cell-earned">KES {{ row.amount | number }}</td>
+                    <td class="col-desktop-only">
+                      <span
+                        class="status-pill"
+                        [class.status-paid]="row.status === 'Paid'"
+                        [class.status-pending]="row.status === 'Pending'"
+                      >
+                        {{ row.status }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- M-Pesa Modal -->
   @if (showWithdrawModal()) {

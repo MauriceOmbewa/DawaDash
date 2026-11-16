@@ -1,90 +1,274 @@
 <section class="doctor-schedule-page">
-  <header class="schedule-header">
-    <div>
-      <h1>Schedule</h1>
-      <p class="subtitle">Review booked appointments, slot capacity, and availability</p>
-    </div>
-
-    <button type="button" class="btn btn-primary" (click)="openAddSlot()">
-      + Add Slot
-    </button>
-  </header>
-
-  <!-- Week Days Strip -->
-  <div class="week-strip">
-    @for (day of weekDays(); track day.day) {
-      <button
-        type="button"
-        class="day-pill"
-        [class.active]="selectedDay() === day.day"
-        (click)="selectDay(day.day)"
-      >
-        <span class="day-name">{{ day.day }}</span>
-        <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
-        <span class="day-count">{{ day.count }} slots</span>
-      </button>
-    }
-  </div>
-
-  <!-- Type Filter Bar -->
-  <div class="filter-row">
-    <div class="pill-group">
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'All'"
-        (click)="setTypeFilter('All')"
-      >
-        All
-      </button>
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'Video consult'"
-        (click)="setTypeFilter('Video consult')"
-      >
-        Video consult
-      </button>
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'Clinic visit'"
-        (click)="setTypeFilter('Clinic visit')"
-      >
-        Clinic visit
-      </button>
-    </div>
-
-    <span class="total-slots">{{ filteredAppointments().length }} slots</span>
-  </div>
-
-  <!-- Timeline Cards -->
-  <div class="schedule-list">
-    @for (apt of filteredAppointments(); track apt.id) {
-      <div class="card schedule-card">
-        <div class="time-block">
-          <span class="time-text">{{ apt.time }}</span>
-          <span class="time-type">{{ apt.type }}</span>
-        </div>
-
-        <div class="patient-block">
-          <h3>{{ apt.patient.name }}</h3>
-          <p>{{ apt.patient.symptoms }}</p>
-        </div>
-
-        <div class="status-block">
-          <span
-            class="badge"
-            [class.badge-start]="apt.status === 'start'"
-            [class.badge-next]="apt.status === 'next'"
-            [class.badge-booked]="apt.status === 'booked'"
-          >
-            {{ apt.status }}
-          </span>
-        </div>
+  @if (activeView() === 'schedule') {
+    <!-- SCHEDULE VIEW -->
+    <header class="schedule-header">
+      <div>
+        <h1>Schedule</h1>
+        <p class="subtitle">Review booked appointments, slot capacity, and availability</p>
       </div>
-    }
-  </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-settings" (click)="openSettings()">
+          <svg class="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Settings</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="openAddSlot()">
+          + Add Slot
+        </button>
+      </div>
+    </header>
+
+    <!-- Week Days Strip -->
+    <div class="week-strip">
+      @for (day of weekDays(); track day.day) {
+        <button
+          type="button"
+          class="day-pill"
+          [class.active]="selectedDay() === day.day"
+          (click)="selectDay(day.day)"
+        >
+          <span class="day-name">{{ day.day }}</span>
+          <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
+          <span class="day-count">{{ day.count }} slots</span>
+        </button>
+      }
+    </div>
+
+    <!-- Type Filter Bar -->
+    <div class="filter-row">
+      <div class="pill-group">
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'All'"
+          (click)="setTypeFilter('All')"
+        >
+          All
+        </button>
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'Video consult'"
+          (click)="setTypeFilter('Video consult')"
+        >
+          Video consult
+        </button>
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'Clinic visit'"
+          (click)="setTypeFilter('Clinic visit')"
+        >
+          Clinic visit
+        </button>
+      </div>
+
+      <span class="total-slots">{{ filteredAppointments().length }} slots</span>
+    </div>
+
+    <!-- Schedule Table Format (matching uploaded table screenshot) -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>PATIENT</th>
+              <th>TYPE</th>
+              <th>TIME</th>
+              <th>SYMPTOMS</th>
+              <th>PAYMENT</th>
+              <th>STATUS</th>
+              <th>SLOT ACTIVE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (apt of filteredAppointments(); track apt.id) {
+              <tr class="table-row" [class.row-paused]="apt.status === 'cancelled'">
+                <td>
+                  <div class="patient-cell">
+                    <div class="patient-avatar">
+                      {{ apt.patient.name.charAt(0) }}
+                    </div>
+                    <div>
+                      <div class="patient-name">{{ apt.patient.name }}</div>
+                      <div class="patient-meta">{{ apt.patient.location }}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="cell-muted">
+                  {{ apt.type }}
+                </td>
+
+                <td class="cell-time">
+                  {{ apt.time }}
+                </td>
+
+                <td class="cell-symptoms">
+                  <span class="symptoms-text">{{ apt.patient.symptoms }}</span>
+                </td>
+
+                <td>
+                  <span class="pill-soft pill-paid">
+                    {{ apt.isPaid ? 'Paid' : 'Pending' }}
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="pill-soft"
+                    [class.pill-start]="apt.status === 'start'"
+                    [class.pill-next]="apt.status === 'next'"
+                    [class.pill-booked]="apt.status === 'booked'"
+                    [class.pill-paused]="apt.status === 'cancelled'"
+                  >
+                    {{ apt.status === 'start' ? 'active' : apt.status === 'cancelled' ? 'paused' : apt.status }}
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    role="switch"
+                    [attr.aria-checked]="apt.status !== 'cancelled'"
+                    class="row-switch"
+                    [class.is-on]="apt.status !== 'cancelled'"
+                    (click)="toggleSlotActive(apt.id)"
+                    title="Toggle slot availability"
+                  >
+                    <span class="row-switch-thumb"></span>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-table-cell">
+                  No consultation slots found for the selected filter.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <!-- CONSULTATION SETTINGS VIEW -->
+    <div class="settings-view">
+      <div class="settings-top-nav">
+        <button type="button" class="btn-back" (click)="backToSchedule()">
+          ← Back to Schedule
+        </button>
+      </div>
+
+      <header class="settings-header">
+        <h1>Consultation settings</h1>
+        <p class="subtitle">Turn each way of consulting on or off and choose when patients can book it.</p>
+      </header>
+
+      <div class="settings-grid">
+        @for (channel of consultationSettings(); track channel.id) {
+          <div class="settings-card" [class.channel-disabled]="!channel.enabled">
+            <!-- Card Top: Title + Dark Pill On/Off Toggle -->
+            <div class="settings-card-top">
+              <div>
+                <h2 class="channel-title">{{ channel.title }}</h2>
+                <p class="channel-subtitle">{{ channel.subtitle }}</p>
+              </div>
+
+              <button
+                type="button"
+                class="channel-toggle"
+                [class.is-on]="channel.enabled"
+                (click)="toggleChannel(channel.id)"
+              >
+                <span>{{ channel.enabled ? 'On' : 'Off' }}</span>
+              </button>
+            </div>
+
+            <!-- Days it can be booked -->
+            <div class="settings-section">
+              <label class="field-label">Days it can be booked</label>
+              <div class="days-pills-grid">
+                @for (day of allDays; track day) {
+                  <button
+                    type="button"
+                    class="book-day-pill"
+                    [class.selected]="isDaySelected(channel, day)"
+                    (click)="toggleDay(channel.id, day)"
+                  >
+                    {{ day }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- From & To Inputs -->
+            <div class="two-col-grid">
+              <div class="field-group">
+                <label class="field-label">From</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="channel.fromTime"
+                  (ngModelChange)="updateChannelField(channel.id, 'fromTime', $event)"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">To</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="channel.toTime"
+                  (ngModelChange)="updateChannelField(channel.id, 'toTime', $event)"
+                />
+              </div>
+            </div>
+
+            <!-- Your fee & Patient pays -->
+            <div class="two-col-grid">
+              <div class="field-group">
+                <label class="field-label">Your fee (KES)</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="channel.fee | number"
+                  (ngModelChange)="updateChannelField(channel.id, 'fee', $event)"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Patient pays</label>
+                <div class="setting-input readonly-input">
+                  KES {{ getPatientPays(channel.fee) | number }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Note -->
+            <p class="channel-footer-note">{{ channel.footerNote }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Full-width Save settings button -->
+      <div class="save-settings-bar">
+        <button type="button" class="btn-save-settings" (click)="saveConsultationSettings()">
+          Save settings
+        </button>
+
+        @if (settingsSavedNotice()) {
+          <div class="saved-toast">
+            ✓ Consultation settings saved and synced for patients.
+          </div>
+        }
+      </div>
+    </div>
+  }
 
   <!-- Add Slot Modal -->
   @if (showAddSlotModal()) {
