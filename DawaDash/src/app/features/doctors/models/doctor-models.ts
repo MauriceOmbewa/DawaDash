@@ -78,4 +78,74 @@ export interface DoctorPatientRecord {
   notes: string;
 }
 
+export type DoctorEarningsPeriod =
+  | 'daily'
+  | 'week'
+  | 'biweekly'
+  | 'month'
+  | 'quarter'
+  | 'sixMonths'
+  | 'year'
+  | 'allTime';
 
+export type DoctorChartType = 'stackedBar' | 'line' | 'pie' | 'area' | 'rankings';
+
+export type DoctorEarningCategory =
+  | 'Virtual consult'
+  | 'Hospital visit'
+  | 'Home visit'
+  | 'Follow-up review'
+  | 'Lab & Rx review';
+
+export type DoctorLogCategoryFilter = 'all' | DoctorEarningCategory;
+
+export interface DoctorEarningsBar {
+  month: string;
+  virtualKes: number;
+  hospitalKes: number;
+  homeKes: number;
+  followUpKes: number;
+  labRxKes: number;
+  virtualHeightPct: number;
+  hospitalHeightPct: number;
+  homeHeightPct: number;
+  followUpHeightPct: number;
+  labRxHeightPct: number;
+}
+
+export interface DoctorServiceBreakdownRow {
+  channel: DoctorEarningCategory;
+  patientsPaid: number;
+  youEarned: number;
+  consults: number;
+  avgPerConsult: number;
+}
+
+export interface DoctorEarningsDataset {
+  label: string;
+  chartTitle: string;
+  totalEarned: number;
+  fromVirtual: number;
+  fromHospital: number;
+  fromHome: number;
+  fromFollowUp: number;
+  fromLabRx: number;
+  monthlyBars: DoctorEarningsBar[];
+  breakdown: DoctorServiceBreakdownRow[];
+}
+
+export interface DoctorPaymentLog {
+  id: string;
+  reference: string;
+  category: DoctorEarningCategory;
+  patientName: string;
+  itemDescription: string;
+  location: string;
+  dateTime: string;
+  periodBuckets: DoctorEarningsPeriod[];
+  patientPaid: number;
+  platformFee: number;
+  youEarned: number;
+  paymentMethod: 'M-Pesa' | 'Card' | 'Insurance';
+  status: 'Settled' | 'Pending payout';
+}

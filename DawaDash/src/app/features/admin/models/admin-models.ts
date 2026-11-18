@@ -17,7 +17,7 @@ export interface Chemist {
   joinedDate?: string;
 }
 
-export type CustomerFilterStatus = 'all' | 'active' | 'banned';
+export type CustomerFilterStatus = 'all' | 'active' | 'suspended' | 'banned';
 
 export interface AdminCustomer {
   id: string;
@@ -25,9 +25,10 @@ export interface AdminCustomer {
   city: string;
   ordersCount: number;
   joinedDate: string;
-  status: 'active' | 'banned';
+  status: 'active' | 'suspended' | 'banned';
   email: string;
   phone: string;
+  suspendReason?: string;
   banReason?: string;
 }
 
@@ -80,7 +81,7 @@ export interface AdminOrder {
   time: string;
 }
 
-export type UserCategoryTab = 'customers' | 'doctors' | 'nurses' | 'hospitals';
+export type UserCategoryTab = 'customers' | 'doctors' | 'nurses' | 'chemists' | 'hospitals';
 export type UserStatusFilter = 'all' | 'active' | 'suspended' | 'banned';
 export type UserAccountStatus = 'active' | 'pending' | 'suspended' | 'banned';
 
@@ -188,6 +189,30 @@ export interface UserNurseItem {
   reason?: string;
 }
 
+export interface UserChemistItem {
+  id: string;
+  initials: string;
+  avatarBadge: string;
+  name: string;
+  city: string;
+  status: UserAccountStatus;
+  licenceNumber: string;
+  licenceValid: boolean;
+  licenceExpires: string;
+  licenceBadgeType: 'normal' | 'warning' | 'expired';
+  ordersCount: number;
+  productsCount: number;
+  subscriptionPlan: string;
+  phone: string;
+  email: string;
+  joinedDate: string;
+  earnedKes: number;
+  platformFeeKes: number;
+  subscriptionFeeKes: number;
+  renewalRequested?: boolean;
+  reason?: string;
+}
+
 export interface UserHospitalItem {
   id: string;
   initials: string;
@@ -205,20 +230,42 @@ export interface UserHospitalItem {
   reason?: string;
 }
 
-export type AdminEarningsPeriod = 'year' | 'quarter' | 'month';
+export type AdminEarningsPeriod =
+  | 'daily'
+  | 'week'
+  | 'biweekly'
+  | 'month'
+  | 'quarter'
+  | 'sixMonths'
+  | 'year'
+  | 'allTime';
+
+export type PaymentLogCategory =
+  | 'all'
+  | 'Doctors'
+  | 'Products'
+  | 'Chemists'
+  | 'Nurses'
+  | 'Hospitals';
+
+export type AdminChartType = 'stackedBar' | 'line' | 'pie' | 'area' | 'rankings';
 
 export interface AdminEarningsBar {
   month: string;
   doctorsKes: number;
-  nursesKes: number;
+  productsKes: number;
   chemistsKes: number;
+  nursesKes: number;
+  hospitalsKes: number;
   doctorsHeightPct: number;
-  nursesHeightPct: number;
+  productsHeightPct: number;
   chemistsHeightPct: number;
+  nursesHeightPct: number;
+  hospitalsHeightPct: number;
 }
 
 export interface AdminEarningsSourceRow {
-  source: 'Doctors' | 'Nurses' | 'Chemists';
+  source: 'Doctors' | 'Products' | 'Chemists' | 'Nurses' | 'Hospitals';
   customersPaid: number;
   platformKeeps: number;
   paidToProviders: number;
@@ -226,12 +273,32 @@ export interface AdminEarningsSourceRow {
 }
 
 export interface AdminEarningsDataset {
+  label: string;
+  chartTitle: string;
   totalEarned: number;
   fromDoctors: number;
-  fromNurses: number;
+  fromProducts: number;
   fromChemists: number;
+  fromNurses: number;
+  fromHospitals: number;
   monthlyBars: AdminEarningsBar[];
   breakdown: AdminEarningsSourceRow[];
 }
 
-
+export interface AdminPaymentLog {
+  id: string;
+  reference: string;
+  category: 'Doctors' | 'Products' | 'Chemists' | 'Nurses' | 'Hospitals';
+  providerName: string;
+  itemDescription: string;
+  customerName: string;
+  county: string;
+  dateTime: string;
+  periodBuckets: AdminEarningsPeriod[];
+  customerPaid: number;
+  platformEarned: number;
+  providerPayout: number;
+  commissionRate: string;
+  paymentMethod: 'M-Pesa' | 'Card' | 'Insurance';
+  status: 'Settled' | 'Pending payout';
+}

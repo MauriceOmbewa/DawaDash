@@ -72,4 +72,10 @@ export class AdminApprovals {
       list.filter((p: PendingProvider) => p.id !== id)
     );
   }
+
+  getInitials(type: ApprovalType): string {
+    if (type === 'Doctor') return 'Dr';
+    if (type === 'Nurse') return 'Nu';
+    return 'Ch';
+  }
 }

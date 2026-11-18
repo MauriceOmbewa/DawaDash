@@ -5,18 +5,19 @@
   </header>
 
   <!-- Search Bar Row -->
-  <div class="search-bar-row">
+  <form class="search-bar-row" (ngSubmit)="onSearch()">
     <input
       type="text"
-      [(ngModel)]="searchTerm"
-      (keyup.enter)="onSearch()"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+      name="customerSearch"
       placeholder="Search by name, email or phone"
       class="search-input"
     />
-    <button type="button" class="btn btn-search" (click)="onSearch()">Search</button>
-  </div>
+    <button type="submit" class="btn-search">Search</button>
+  </form>
 
-  <!-- Filter Chips (All, Active, Banned matching screenshot) -->
+  <!-- Filter Chips (All, Active, Suspended, Banned) -->
   <div class="filter-chips">
     <button
       type="button"
@@ -36,6 +37,14 @@
     </button>
     <button
       type="button"
+      class="chip chip-suspended"
+      [class.selected]="activeFilter() === 'suspended'"
+      (click)="setFilter('suspended')"
+    >
+      Suspended
+    </button>
+    <button
+      type="button"
       class="chip chip-banned"
       [class.selected]="activeFilter() === 'banned'"
       (click)="setFilter('banned')"
@@ -44,73 +53,114 @@
     </button>
   </div>
 
-  <!-- Customers List -->
-  <div class="customers-list">
-    @for (customer of filteredCustomers(); track customer.id) {
-      <div class="card customer-card">
-        <div class="card-details">
-          <h3 class="card-title">
-            {{ customer.name }}
-          </h3>
-          <p class="card-subtitle">
-            {{ customer.city }} · {{ customer.ordersCount }} {{ customer.ordersCount === 1 ? 'order' : 'orders' }} · Joined {{ customer.joinedDate }}
-          </p>
-        </div>
-
-        <div class="card-actions">
-          <!-- Status Badge -->
-          <span class="status-badge status-{{ customer.status }}">
-            {{ customer.status | titlecase }}
-          </span>
-
-          <!-- Action Button (Ban or Lift Ban) -->
-          @if (customer.status === 'active') {
-            <button
-              type="button"
-              class="btn btn-ban"
-              (click)="openBanModal(customer)"
-            >
-              Ban
-            </button>
-          } @else {
-            <button
-              type="button"
-              class="btn btn-lift-ban"
-              (click)="liftBan(customer.id)"
-            >
-              Lift ban
-            </button>
-          }
-        </div>
-      </div>
-    } @empty {
-      <div class="card empty-card">
-        <p>No customers found matching "{{ searchTerm() }}" in {{ activeFilter() }}</p>
-      </div>
-    }
+  <!-- Customers Responsive Table -->
+  <div class="table-card">
+    <table class="customers-table">
+      <thead>
+        <tr>
+          <th>CUSTOMER</th>
+          <th class="desktop-only">ORDERS</th>
+          <th class="desktop-only">JOINED</th>
+          <th>STATUS</th>
+          <th class="actions-col">ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (customer of filteredCustomers(); track customer.id) {
+          <tr>
+            <td>
+              <div class="customer-cell">
+                <span class="customer-avatar">Cu</span>
+                <div class="customer-meta">
+                  <strong class="customer-name">{{ customer.name }}</strong>
+                  <span class="customer-sub">{{ customer.city }} · {{ customer.phone }}</span>
+                  @if (customer.suspendReason) {
+                    <span class="customer-reason customer-reason-suspended">
+                      {{ customer.suspendReason }}
+                    </span>
+                  } @else if (customer.banReason) {
+                    <span class="customer-reason customer-reason-banned">
+                      {{ customer.banReason }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </td>
+            <td class="desktop-only">
+              <span class="orders-count">
+                {{ customer.ordersCount }} {{ customer.ordersCount === 1 ? 'order' : 'orders' }}
+              </span>
+            </td>
+            <td class="desktop-only">
+              <span class="joined-date">{{ customer.joinedDate }}</span>
+            </td>
+            <td>
+              <span class="status-badge status-{{ customer.status }}">
+                {{ customer.status | titlecase }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <select
+                class="status-select status-select-{{ customer.status }}"
+                [value]="customer.status"
+                (change)="onStatusSelectChange(customer, $event)"
+                [attr.aria-label]="'Change status for ' + customer.name"
+              >
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+                <option value="banned">Banned</option>
+              </select>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-cell">
+              No customers found matching "{{ searchTerm() }}" in {{ activeFilter() }}.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
-  <!-- Ban Reason Prompt Modal -->
-  @if (showBanModal()) {
-    <div class="modal-backdrop" (click)="closeBanModal()">
+  <!-- Notice Banner -->
+  <div class="notice-banner">
+    <strong>Suspending or banning asks for a reason</strong>
+    <span>The reason is saved to the customer's account record.</span>
+  </div>
+
+  <!-- Suspend / Ban Reason Prompt Modal -->
+  @if (showReasonModal()) {
+    <div class="modal-backdrop" (click)="closeReasonModal()">
       <div class="modal-card" (click)="$event.stopPropagation()">
-        <h3 class="modal-title">Ban Customer Account</h3>
+        <h3 class="modal-title">
+          {{ actionType() === 'suspend' ? 'Suspend Customer Account' : 'Ban Customer Account' }}
+        </h3>
         <p class="modal-desc">
-          Provide a reason for restricting {{ selectedCustomer()?.name }} ({{ selectedCustomer()?.city }}).
-          This action will prevent new prescription and pharmacy orders.
+          Provide a reason for
+          {{ actionType() === 'suspend' ? 'temporarily suspending' : 'banning' }}
+          {{ selectedCustomer()?.name }} ({{ selectedCustomer()?.city }}).
+          This action will restrict new prescription and pharmacy orders.
         </p>
         <textarea
           class="reason-textarea"
           rows="3"
-          [(ngModel)]="banReason"
-          placeholder="State reason (e.g. repeated payment reversal, forged prescription, abusive conduct)..."
+          [ngModel]="actionReason()"
+          (ngModelChange)="actionReason.set($event)"
+          placeholder="State reason (e.g. repeated cancelled orders, forged prescription, abusive conduct)..."
         ></textarea>
         <div class="modal-actions">
-          <button type="button" class="btn btn-cancel" (click)="closeBanModal()">
+          <button type="button" class="btn btn-cancel" (click)="closeReasonModal()">
             Cancel
           </button>
-          <button type="button" class="btn btn-confirm-ban" (click)="confirmBan()">
-            Confirm Ban
+          <button
+            type="button"
+            class="btn"
+            [class.btn-suspend-confirm]="actionType() === 'suspend'"
+            [class.btn-confirm-ban]="actionType() === 'ban'"
+            (click)="confirmReasonAction()"
+          >
+            Confirm {{ actionType() === 'suspend' ? 'Suspension' : 'Ban' }}
           </button>
         </div>
       </div>

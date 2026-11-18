@@ -4,6 +4,7 @@ import { NurseEarnings } from './nurse-earnings/nurse-earnings';
 import { NurseProfile } from './nurse-profile/nurse-profile';
 import { NurseSchedule } from './nurse-schedule/nurse-schedule';
 import { NurseToday } from './nurse-today/nurse-today';
+import { NursePatients } from './nurse-patients/nurse-patients';
 
 export const NURSE_ROUTES: Routes = [
   {
@@ -13,6 +14,7 @@ export const NURSE_ROUTES: Routes = [
       { path: '', redirectTo: 'today', pathMatch: 'full' },
       { path: 'today', component: NurseToday, title: 'DawaDash – Nurse Today' },
       { path: 'schedule', component: NurseSchedule, title: 'DawaDash – Nurse Schedule' },
+      { path: 'patients', component: NursePatients, title: 'DawaDash Nurse – Patients' },
       { path: 'earnings', component: NurseEarnings, title: 'DawaDash – Nurse Earnings' },
       { path: 'profile', component: NurseProfile, title: 'DawaDash – Nurse Profile' },
     ],

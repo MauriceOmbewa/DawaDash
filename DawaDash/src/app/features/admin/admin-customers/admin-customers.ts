@@ -15,12 +15,13 @@ export class AdminCustomers {
   searchTerm = signal<string>('');
   activeFilter = signal<CustomerFilterStatus>('all');
 
-  // Reason modal dialog state for Ban action
-  showBanModal = signal<boolean>(false);
+  // Reason modal dialog state for Suspend or Ban action
+  showReasonModal = signal<boolean>(false);
   selectedCustomer = signal<AdminCustomer | null>(null);
-  banReason = signal<string>('');
+  actionType = signal<'suspend' | 'ban'>('suspend');
+  actionReason = signal<string>('');
 
-  // Customer list matching screenshot
+  // Customer list
   customers = signal<AdminCustomer[]>([
     {
       id: 'cust-1',
@@ -63,6 +64,17 @@ export class AdminCustomers {
       email: 'fatma.omar@example.com',
       phone: '+254 745 678 901',
     },
+    {
+      id: 'cust-5',
+      name: '[Customer name]',
+      city: 'Nakuru',
+      ordersCount: 3,
+      joinedDate: '[date]',
+      status: 'suspended',
+      email: 'grace.wanjiku@example.com',
+      phone: '+254 756 789 012',
+      suspendReason: 'Pending review after repeated cancelled COD orders.',
+    },
   ]);
 
   // Computed filtered customers based on search and active filter
@@ -78,6 +90,7 @@ export class AdminCustomers {
         customer.city.toLowerCase().includes(query) ||
         customer.email.toLowerCase().includes(query) ||
         customer.phone.toLowerCase().includes(query) ||
+        (customer.suspendReason && customer.suspendReason.toLowerCase().includes(query)) ||
         (customer.banReason && customer.banReason.toLowerCase().includes(query));
 
       return matchesFilter && matchesSearch;
@@ -92,46 +105,82 @@ export class AdminCustomers {
     // Computed automatically updates with searchTerm signal
   }
 
-  openBanModal(customer: AdminCustomer): void {
+  onStatusSelectChange(customer: AdminCustomer, event: Event): void {
+    const selectEl = event.target as HTMLSelectElement;
+    const nextStatus = selectEl.value as AdminCustomer['status'];
+
+    if (nextStatus === customer.status) return;
+
+    if (nextStatus === 'active') {
+      this.reactivateCustomer(customer.id);
+      return;
+    }
+
+    if (nextStatus === 'suspended' || nextStatus === 'banned') {
+      // Revert visual select until modal confirmation
+      selectEl.value = customer.status;
+      this.openReasonModal(customer, nextStatus === 'suspended' ? 'suspend' : 'ban');
+    }
+  }
+
+  openReasonModal(customer: AdminCustomer, type: 'suspend' | 'ban'): void {
     this.selectedCustomer.set(customer);
-    this.banReason.set('Fraudulent prescription or abusive order conduct');
-    this.showBanModal.set(true);
+    this.actionType.set(type);
+    this.actionReason.set(
+      type === 'suspend'
+        ? 'Temporary hold pending order or verification review'
+        : 'Fraudulent prescription or abusive order conduct'
+    );
+    this.showReasonModal.set(true);
   }
 
-  closeBanModal(): void {
-    this.showBanModal.set(false);
+  closeReasonModal(): void {
+    this.showReasonModal.set(false);
     this.selectedCustomer.set(null);
-    this.banReason.set('');
+    this.actionReason.set('');
   }
 
-  confirmBan(): void {
+  confirmReasonAction(): void {
     const target = this.selectedCustomer();
     if (!target) return;
 
-    const reason = this.banReason().trim() || 'Account restricted by platform administrator';
+    const type = this.actionType();
+    const reason =
+      this.actionReason().trim() ||
+      (type === 'suspend'
+        ? 'Account temporarily suspended by platform administrator'
+        : 'Account banned by platform administrator');
 
     this.customers.update((list) =>
-      list.map((c) =>
-        c.id === target.id
+      list.map((c) => {
+        if (c.id !== target.id) return c;
+        return type === 'suspend'
           ? {
+              ...c,
+              status: 'suspended' as const,
+              suspendReason: reason,
+              banReason: undefined,
+            }
+          : {
               ...c,
               status: 'banned' as const,
               banReason: reason,
-            }
-          : c
-      )
+              suspendReason: undefined,
+            };
+      })
     );
 
-    this.closeBanModal();
+    this.closeReasonModal();
   }
 
-  liftBan(id: string): void {
+  reactivateCustomer(id: string): void {
     this.customers.update((list) =>
       list.map((c) =>
         c.id === id
           ? {
               ...c,
               status: 'active' as const,
+              suspendReason: undefined,
               banReason: undefined,
             }
           : c

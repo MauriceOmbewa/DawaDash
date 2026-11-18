@@ -22,7 +22,7 @@
     <div class="filter-chips">
       <button
         type="button"
-        class="chip"
+        class="chip chip-all"
         [class.selected]="activeFilter() === 'all'"
         (click)="setFilter('all')"
       >
@@ -30,7 +30,7 @@
       </button>
       <button
         type="button"
-        class="chip"
+        class="chip chip-live"
         [class.selected]="activeFilter() === 'live'"
         (click)="setFilter('live')"
       >
@@ -38,7 +38,7 @@
       </button>
       <button
         type="button"
-        class="chip"
+        class="chip chip-prescription"
         [class.selected]="activeFilter() === 'prescription'"
         (click)="setFilter('prescription')"
       >
@@ -46,7 +46,7 @@
       </button>
       <button
         type="button"
-        class="chip"
+        class="chip chip-hidden"
         [class.selected]="activeFilter() === 'hidden'"
         (click)="setFilter('hidden')"
       >

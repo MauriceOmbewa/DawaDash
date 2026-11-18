@@ -1,7 +1,7 @@
 <section class="admin-orders-page">
   <header class="orders-header">
     <div>
-      <h1>DawaDash Prescription & Medicine Orders</h1>
+      <h1>DawaDash Prescription &amp; Medicine Orders</h1>
       <p class="subtitle">Live fulfillment tracking across partner chemist network</p>
     </div>
   </header>
@@ -27,31 +27,98 @@
     </select>
   </div>
 
-  <div class="orders-list">
-    @for (order of filteredOrders(); track order.id) {
-      <div class="card order-card">
-        <div class="order-main">
-          <div class="order-id-row">
-            <strong class="order-number font-mono">{{ order.orderNumber }}</strong>
-            <span class="order-customer">· {{ order.customerName }}</span>
-            <span class="order-time font-mono">({{ order.time }})</span>
-          </div>
-          <p class="order-items">{{ order.itemsSummary }}</p>
-          <span class="order-chemist">Fulfilling Chemist: <strong>{{ order.chemistName }}</strong> ({{ order.county }})</span>
-        </div>
+  <div class="status-chips">
+    <button
+      type="button"
+      class="status-chip chip-all"
+      [class.selected]="statusFilter() === 'All'"
+      (click)="statusFilter.set('All')"
+    >
+      All ({{ orders().length }})
+    </button>
+    <button
+      type="button"
+      class="status-chip chip-dispatched"
+      [class.selected]="statusFilter() === 'Dispatched'"
+      (click)="statusFilter.set('Dispatched')"
+    >
+      Dispatched
+    </button>
+    <button
+      type="button"
+      class="status-chip chip-preparing"
+      [class.selected]="statusFilter() === 'Preparing'"
+      (click)="statusFilter.set('Preparing')"
+    >
+      Preparing
+    </button>
+    <button
+      type="button"
+      class="status-chip chip-delivered"
+      [class.selected]="statusFilter() === 'Delivered'"
+      (click)="statusFilter.set('Delivered')"
+    >
+      Delivered
+    </button>
+  </div>
 
-        <div class="order-right">
-          <strong class="order-amount font-mono">KES {{ order.totalAmount | number }}</strong>
-          <span
-            class="status-badge"
-            [class.status-dispatched]="order.status === 'Dispatched'"
-            [class.status-preparing]="order.status === 'Preparing'"
-            [class.status-delivered]="order.status === 'Delivered'"
-          >
-            {{ order.status }}
-          </span>
-        </div>
-      </div>
-    }
+  <div class="table-card">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>ORDER</th>
+          <th>STATUS</th>
+          <th class="desktop-only">CHEMIST</th>
+          <th class="desktop-only">TIME</th>
+          <th class="amount-col">TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of filteredOrders(); track order.id) {
+          <tr>
+            <td>
+              <div class="order-cell">
+                <span class="order-avatar">{{ getInitials(order.customerName) }}</span>
+                <div class="order-meta">
+                  <div class="order-title-line">
+                    <strong class="order-number font-mono">{{ order.orderNumber }}</strong>
+                    <span class="order-customer">· {{ order.customerName }}</span>
+                  </div>
+                  <span class="order-items">{{ order.itemsSummary }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span
+                class="status-badge"
+                [class.status-dispatched]="order.status === 'Dispatched'"
+                [class.status-preparing]="order.status === 'Preparing'"
+                [class.status-delivered]="order.status === 'Delivered'"
+              >
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="desktop-only">
+              <div class="chemist-meta">
+                <strong class="chemist-name">{{ order.chemistName }}</strong>
+                <span class="chemist-county">{{ order.county }}</span>
+              </div>
+            </td>
+            <td class="desktop-only">
+              <span class="order-time font-mono">{{ order.time }}</span>
+            </td>
+            <td class="amount-cell">
+              <strong class="order-amount font-mono">KES {{ order.totalAmount | number }}</strong>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-cell">
+              No orders match your current search or filters.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 </section>

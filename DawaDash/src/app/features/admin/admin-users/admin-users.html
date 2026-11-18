@@ -5,11 +5,11 @@
       <h1>Users</h1>
     </header>
 
-    <!-- Primary Category Tabs (Customers | Doctors | Nurses | Hospitals) -->
+    <!-- Primary Category Tabs (Customers | Doctors | Nurses | Chemists | Hospitals) -->
     <div class="category-bar" role="tablist" aria-label="User categories">
       <button
         type="button"
-        class="category-pill"
+        class="category-pill cat-pill-customers"
         [class.active]="activeCategory() === 'customers'"
         (click)="selectCategory('customers')"
       >
@@ -17,7 +17,7 @@
       </button>
       <button
         type="button"
-        class="category-pill"
+        class="category-pill cat-pill-doctors"
         [class.active]="activeCategory() === 'doctors'"
         (click)="selectCategory('doctors')"
       >
@@ -25,7 +25,7 @@
       </button>
       <button
         type="button"
-        class="category-pill"
+        class="category-pill cat-pill-nurses"
         [class.active]="activeCategory() === 'nurses'"
         (click)="selectCategory('nurses')"
       >
@@ -33,7 +33,15 @@
       </button>
       <button
         type="button"
-        class="category-pill"
+        class="category-pill cat-pill-chemists"
+        [class.active]="activeCategory() === 'chemists'"
+        (click)="selectCategory('chemists')"
+      >
+        Chemists
+      </button>
+      <button
+        type="button"
+        class="category-pill cat-pill-hospitals"
         [class.active]="activeCategory() === 'hospitals'"
         (click)="selectCategory('hospitals')"
       >
@@ -58,7 +66,7 @@
     <div class="status-chips">
       <button
         type="button"
-        class="status-chip"
+        class="status-chip chip-all"
         [class.selected]="activeStatus() === 'all'"
         (click)="selectStatus('all')"
       >
@@ -66,7 +74,7 @@
       </button>
       <button
         type="button"
-        class="status-chip"
+        class="status-chip chip-active"
         [class.selected]="activeStatus() === 'active'"
         (click)="selectStatus('active')"
       >
@@ -74,7 +82,7 @@
       </button>
       <button
         type="button"
-        class="status-chip"
+        class="status-chip chip-suspended"
         [class.selected]="activeStatus() === 'suspended'"
         (click)="selectStatus('suspended')"
       >
@@ -82,7 +90,7 @@
       </button>
       <button
         type="button"
-        class="status-chip"
+        class="status-chip chip-banned"
         [class.selected]="activeStatus() === 'banned'"
         (click)="selectStatus('banned')"
       >
@@ -231,6 +239,47 @@
         </table>
       }
 
+      @if (activeCategory() === 'chemists') {
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>CHEMIST</th>
+              <th>STATUS</th>
+              <th>LICENCE NO.</th>
+              <th class="desktop-only">ORDERS</th>
+              <th class="desktop-only">SUBSCRIPTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (chem of filteredChemists(); track chem.id) {
+              <tr class="clickable-row" (click)="openDetails('chemists', chem.id)">
+                <td>
+                  <div class="entity-cell">
+                    <span class="entity-avatar">{{ chem.avatarBadge }}</span>
+                    <div class="entity-meta">
+                      <strong class="entity-name">{{ chem.name }}</strong>
+                      <span class="entity-sub">{{ chem.city }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge badge-' + chem.status">
+                    {{ statusLabel(chem.status) }}
+                  </span>
+                </td>
+                <td>{{ chem.licenceNumber }}</td>
+                <td class="desktop-only">{{ chem.ordersCount }}</td>
+                <td class="desktop-only">{{ chem.subscriptionPlan }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-cell">No chemists match your filter.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+
       @if (activeCategory() === 'hospitals') {
         <table class="users-table">
           <thead>
@@ -298,6 +347,9 @@
               {{ customer.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
             </button>
           } @else {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('suspend')">
+              Suspend
+            </button>
             <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">
               Ban
             </button>
@@ -764,6 +816,136 @@
               <span class="kv-label">Platform fee</span>
               <strong class="kv-value">KES {{ nurse.platformFeeKes | number }}</strong>
             </div>
+          </div>
+        </aside>
+      </div>
+    }
+
+    @if (currentChemist(); as chemist) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <button type="button" class="crumb-link" (click)="backToList()">Users</button>
+        <span class="crumb-sep">/</span>
+        <button type="button" class="crumb-link" (click)="backToList()">Chemists</button>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ chemist.name }}</span>
+      </nav>
+
+      <header class="detail-header provider-header">
+        <div class="provider-identity">
+          <div class="provider-square-avatar">{{ chemist.initials }}</div>
+          <div class="provider-heading">
+            <h1>{{ chemist.name }}</h1>
+            <div class="provider-pills">
+              <span class="badge" [class]="'badge badge-' + chemist.status">
+                {{ statusLabel(chemist.status) }}
+              </span>
+              <span class="badge badge-mint">{{ chemist.city }}</span>
+              <span class="badge badge-mint">{{ chemist.subscriptionPlan }}</span>
+            </div>
+            @if (chemist.reason) {
+              <p class="reason-note">{{ chemist.reason }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          @if (chemist.status === 'pending') {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">Approve</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Reject</button>
+          } @else if (chemist.status === 'active') {
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('suspend')">Suspend</button>
+            <button type="button" class="btn-danger-outline" (click)="openReasonModal('ban')">Ban</button>
+          } @else {
+            <button type="button" class="btn-solid-teal" (click)="restoreActive()">
+              {{ chemist.status === 'banned' ? 'Lift ban' : 'Reactivate' }}
+            </button>
+          }
+        </div>
+      </header>
+
+      <div class="detail-grid">
+        <div class="detail-main-col">
+          <div class="info-card">
+            <h3>Storefront &amp; subscription</h3>
+            <div class="kv-row">
+              <span class="kv-label">Subscription plan</span>
+              <strong class="kv-value">{{ chemist.subscriptionPlan }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Products listed</span>
+              <strong class="kv-value">{{ chemist.productsCount }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Orders fulfilled</span>
+              <strong class="kv-value">{{ chemist.ordersCount }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">County</span>
+              <strong class="kv-value">{{ chemist.city }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>Earnings &amp; fees</h3>
+            <div class="kv-row">
+              <span class="kv-label">Chemist earned</span>
+              <strong class="kv-value">KES {{ chemist.earnedKes | number }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Product commission</span>
+              <strong class="kv-value">KES {{ chemist.platformFeeKes | number }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Subscription fee</span>
+              <strong class="kv-value">KES {{ chemist.subscriptionFeeKes | number }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <aside class="detail-side-col">
+          <div class="info-card">
+            <h3>Account</h3>
+            <div class="kv-row">
+              <span class="kv-label">Email</span>
+              <strong class="kv-value">{{ chemist.email }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Phone</span>
+              <strong class="kv-value">{{ chemist.phone }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Status</span>
+              <strong class="kv-value">{{ statusLabel(chemist.status) }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Joined</span>
+              <strong class="kv-value">{{ chemist.joinedDate }}</strong>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3>PPB Licence</h3>
+            <div class="kv-row">
+              <span class="kv-label">Licence no.</span>
+              <strong class="kv-value">{{ chemist.licenceNumber }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Expires</span>
+              <strong class="kv-value">{{ chemist.licenceExpires }}</strong>
+            </div>
+            <div class="kv-row">
+              <span class="kv-label">Check</span>
+              <span
+                class="badge"
+                [class.badge-active]="chemist.licenceValid"
+                [class.badge-banned]="!chemist.licenceValid"
+              >
+                {{ chemist.licenceValid ? 'Valid' : 'Expired' }}
+              </span>
+            </div>
+            <button type="button" class="btn-outline-teal card-btn" (click)="requestRenewal()">
+              {{ chemist.renewalRequested ? 'Renewal requested' : 'Request renewal' }}
+            </button>
           </div>
         </aside>
       </div>

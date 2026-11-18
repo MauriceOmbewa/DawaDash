@@ -10,102 +10,237 @@
 
 .approvals-header h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: clamp(1.7rem, 4.5vw, 2.35rem);
   font-weight: 800;
+  letter-spacing: -0.03em;
   color: #0A2E24;
+  line-height: 1.15;
 }
 
 .subtitle {
   margin: 4px 0 0 0;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: #5A7369;
 }
 
-.pill-group {
+.filter-row {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pill-group {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
-  background: #E8EFEA;
-  padding: 4px;
-  border-radius: 14px;
-  width: fit-content;
+  background: #E6F2EB;
+  padding: 5px;
+  border-radius: 20px;
 }
 
 .filter-pill {
   border: none;
-  background: transparent;
-  padding: 6px 14px;
-  border-radius: 10px;
-  font-size: 0.8rem;
+  background: #E2EAE5;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #5A7369;
+  color: #2D483E;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.filter-pill.active {
-  background: #ffffff;
-  color: #0A2E24;
+.pill-all {
+  background: #E2EAE5;
+  color: #2D483E;
 }
 
-.approvals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.pill-all:hover {
+  background: #CFDAD3;
 }
 
-.card {
+.pill-all.active {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+.pill-chemist {
+  background: #CFFAFE;
+  color: #155E75;
+}
+
+.pill-chemist:hover {
+  background: #A5F3FC;
+}
+
+.pill-chemist.active {
+  background: #0891B2;
+  color: #ffffff;
+}
+
+.pill-doctor {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.pill-doctor:hover {
+  background: #BBF7D0;
+}
+
+.pill-doctor.active {
+  background: #0B7358;
+  color: #ffffff;
+}
+
+.pill-nurse {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.pill-nurse:hover {
+  background: #FDE68A;
+}
+
+.pill-nurse.active {
+  background: #D97706;
+  color: #ffffff;
+}
+
+/* Table Card */
+.table-card {
   background: #ffffff;
   border: 1px solid #E2EAE5;
   border-radius: 20px;
-  padding: 18px 22px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
 }
 
-.approval-card {
+.approvals-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.approvals-table thead th {
+  background: #F6FAF8;
+  padding: 12px 16px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5A7369;
+  border-bottom: 1px solid #E8EFEA;
+}
+
+.approvals-table tbody td {
+  padding: 14px 16px;
+  font-size: 0.92rem;
+  color: #0A2E24;
+  border-bottom: 1px solid #EEF3F0;
+  vertical-align: middle;
+}
+
+.approvals-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.approvals-table tbody tr:hover {
+  background-color: #F7FBF8;
+}
+
+.provider-cell {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
 }
 
-.title-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.type-pill {
-  font-size: 0.75rem;
-  font-weight: 700;
+.provider-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #DDF3E8 0%, #CEEBE0 100%);
   color: #005C46;
-  background: #DCFCE7;
-  padding: 2px 8px;
-  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.card-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
+.provider-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.provider-name {
+  font-size: 0.94rem;
+  font-weight: 800;
   color: #0A2E24;
 }
 
-.card-subtitle {
-  margin: 4px 0 0 0;
-  font-size: 0.85rem;
-  color: #64748B;
+.provider-sub {
+  font-size: 0.8rem;
+  color: #5A7369;
+}
+
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #065F46;
+  background: #DCFCE7;
+  white-space: nowrap;
+}
+
+.type-pill-chemist {
+  background: #CFFAFE;
+  color: #155E75;
+}
+
+.type-pill-doctor {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.type-pill-nurse {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.licence-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #0A2E24;
 }
 
 .submitted-text {
-  font-size: 0.75rem;
-  color: #94A3B8;
-  display: block;
-  margin-top: 2px;
+  font-size: 0.84rem;
+  color: #5A7369;
+  white-space: nowrap;
 }
 
-.card-actions {
-  display: flex;
+.actions-col {
+  text-align: right !important;
+}
+
+.actions-cell {
+  text-align: right;
+}
+
+.table-actions {
+  display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
-  flex-shrink: 0;
 }
 
 .btn {
@@ -115,13 +250,14 @@
   font-family: inherit;
   font-weight: 700;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 12px;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-approve {
-  padding: 8px 24px;
-  font-size: 0.95rem;
+  padding: 7px 16px;
+  font-size: 0.84rem;
   background: #005C46;
   color: #ffffff;
   border: none;
@@ -132,15 +268,34 @@
 }
 
 .btn-reject {
-  padding: 8px 20px;
-  font-size: 0.95rem;
+  padding: 6px 14px;
+  font-size: 0.84rem;
   background: #ffffff;
   color: #0A2E24;
   border: 2px solid #005C46;
 }
 
-.empty-card {
+.btn-reject:hover {
+  background: #F4F8F5;
+}
+
+.empty-cell {
   text-align: center;
-  color: #64748B;
-  padding: 30px;
+  color: #5A7369;
+  padding: 32px 16px !important;
+  font-size: 0.9rem;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .admin-approvals-page {
+    gap: 20px;
+  }
+
+  .desktop-only {
+    display: table-cell;
+  }
 }

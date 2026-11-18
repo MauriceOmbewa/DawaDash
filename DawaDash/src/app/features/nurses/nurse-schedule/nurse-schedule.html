@@ -1,84 +1,290 @@
 <section class="nurse-schedule-page">
-  <header class="schedule-header">
-    <div>
-      <h1>Home Visit Schedule</h1>
-      <p class="subtitle">Daily nursing itineraries, routes, and clinical care rounds</p>
-    </div>
-
-    <button type="button" class="btn btn-primary" (click)="openAddVisit()">
-      + Add Visit
-    </button>
-  </header>
-
-  <!-- Week Strip -->
-  <div class="week-strip">
-    @for (day of weekDays(); track day.day) {
-      <button
-        type="button"
-        class="day-pill"
-        [class.active]="selectedDay() === day.day"
-        (click)="selectDay(day.day)"
-      >
-        <span class="day-name">{{ day.day }}</span>
-        <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
-        <span class="day-count">{{ day.count }} visits</span>
-      </button>
-    }
-  </div>
-
-  <!-- Filter Row -->
-  <div class="filter-row">
-    <div class="pill-group">
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'All'"
-        (click)="setTypeFilter('All')"
-      >
-        All Visits
-      </button>
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'Wound care'"
-        (click)="setTypeFilter('Wound care')"
-      >
-        Wound care
-      </button>
-      <button
-        type="button"
-        class="filter-pill"
-        [class.active]="typeFilter() === 'Injections'"
-        (click)="setTypeFilter('Injections')"
-      >
-        Injections
-      </button>
-    </div>
-
-    <span class="total-visits">{{ filteredVisits().length }} scheduled visits</span>
-  </div>
-
-  <!-- Schedule Visit List -->
-  <div class="schedule-list">
-    @for (visit of filteredVisits(); track visit.id) {
-      <div class="card schedule-card">
-        <div class="time-block">
-          <span class="time-text">{{ visit.scheduledTime }}</span>
-          <span class="time-neighborhood">{{ visit.patient.neighborhood }}</span>
-        </div>
-
-        <div class="patient-block">
-          <h3>{{ visit.patient.name }}</h3>
-          <p>{{ visit.patient.serviceType }} · {{ visit.patient.phone }}</p>
-        </div>
-
-        <div class="fee-block">
-          <span class="fee-amount">KES {{ visit.fee | number }}</span>
-          <span class="badge badge-accepted">Confirmed</span>
-        </div>
+  @if (activeView() === 'schedule') {
+    <!-- SCHEDULE VIEW -->
+    <header class="schedule-header">
+      <div>
+        <h1>Home Visit Schedule</h1>
+        <p class="subtitle">Daily nursing itineraries, routes, and clinical care rounds</p>
       </div>
-    }
-  </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-settings" (click)="openSettings()">
+          <svg class="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Settings</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="openAddVisit()">
+          + Add Visit
+        </button>
+      </div>
+    </header>
+
+    <!-- Week Days Strip -->
+    <div class="week-strip">
+      @for (day of weekDays(); track day.day) {
+        <button
+          type="button"
+          class="day-pill"
+          [class.active]="selectedDay() === day.day"
+          (click)="selectDay(day.day)"
+        >
+          <span class="day-name">{{ day.day }}</span>
+          <strong class="day-date">{{ day.date.split(' ')[1] }}</strong>
+          <span class="day-count">{{ day.count }} visits</span>
+        </button>
+      }
+    </div>
+
+    <!-- Type Filter Bar -->
+    <div class="filter-row">
+      <div class="pill-group">
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'All'"
+          (click)="setTypeFilter('All')"
+        >
+          All Visits
+        </button>
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'Wound care'"
+          (click)="setTypeFilter('Wound care')"
+        >
+          Wound care
+        </button>
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'Injections'"
+          (click)="setTypeFilter('Injections')"
+        >
+          Injections
+        </button>
+        <button
+          type="button"
+          class="filter-pill"
+          [class.active]="typeFilter() === 'IV drip / Infusion'"
+          (click)="setTypeFilter('IV drip / Infusion')"
+        >
+          IV drip
+        </button>
+      </div>
+
+      <span class="total-slots">{{ filteredVisits().length }} visits</span>
+    </div>
+
+    <!-- Schedule Table Format (matching Doctor Schedule UI) -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>PATIENT</th>
+              <th>SERVICE</th>
+              <th>TIME</th>
+              <th>ADDRESS / AREA</th>
+              <th>PAYMENT</th>
+              <th>STATUS</th>
+              <th>VISIT ACTIVE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (visit of filteredVisits(); track visit.id) {
+              <tr class="table-row" [class.row-paused]="visit.status === 'declined'">
+                <td>
+                  <div class="patient-cell">
+                    <div class="patient-avatar">
+                      {{ visit.patient.name.charAt(0) }}
+                    </div>
+                    <div>
+                      <div class="patient-name">{{ visit.patient.name }}</div>
+                      <div class="patient-meta">{{ visit.patient.neighborhood }} · {{ visit.patient.phone }}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="cell-muted">
+                  {{ visit.patient.serviceType }}
+                </td>
+
+                <td class="cell-time">
+                  {{ visit.scheduledTime }}
+                </td>
+
+                <td class="cell-symptoms">
+                  <span class="symptoms-text">{{ visit.patient.addressDetails || visit.patient.neighborhood }}</span>
+                </td>
+
+                <td>
+                  <span class="pill-soft pill-paid">
+                    {{ visit.patient.isPaid ? 'Paid · KES ' + (visit.fee | number) : 'Pending' }}
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="pill-soft"
+                    [class.pill-start]="visit.status === 'in_progress'"
+                    [class.pill-next]="visit.status === 'requested'"
+                    [class.pill-booked]="visit.status === 'accepted'"
+                    [class.pill-paused]="visit.status === 'declined' || visit.status === 'completed'"
+                  >
+                    {{
+                      visit.status === 'in_progress'
+                        ? 'active'
+                        : visit.status === 'declined'
+                        ? 'paused'
+                        : visit.status === 'accepted'
+                        ? 'confirmed'
+                        : visit.status
+                    }}
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    role="switch"
+                    [attr.aria-checked]="visit.status !== 'declined'"
+                    class="row-switch"
+                    [class.is-on]="visit.status !== 'declined'"
+                    (click)="toggleVisitActive(visit.id)"
+                    title="Toggle visit availability"
+                  >
+                    <span class="row-switch-thumb"></span>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-table-cell">
+                  No home visits scheduled for the selected filter.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @else {
+    <!-- HOME VISIT SETTINGS VIEW -->
+    <div class="settings-view">
+      <div class="settings-top-nav">
+        <button type="button" class="btn-back" (click)="backToSchedule()">
+          ← Back to Schedule
+        </button>
+      </div>
+
+      <header class="settings-header">
+        <h1>Home visit settings</h1>
+        <p class="subtitle">Turn each nursing care service on or off and choose when patients can book it.</p>
+      </header>
+
+      <div class="settings-grid">
+        @for (service of serviceSettings(); track service.id) {
+          <div class="settings-card" [class.channel-disabled]="!service.enabled">
+            <!-- Card Top: Title + Dark Pill On/Off Toggle -->
+            <div class="settings-card-top">
+              <div>
+                <h2 class="channel-title">{{ service.title }}</h2>
+                <p class="channel-subtitle">{{ service.subtitle }}</p>
+              </div>
+
+              <button
+                type="button"
+                class="channel-toggle"
+                [class.is-on]="service.enabled"
+                (click)="toggleService(service.id)"
+              >
+                <span>{{ service.enabled ? 'On' : 'Off' }}</span>
+              </button>
+            </div>
+
+            <!-- Days it can be booked -->
+            <div class="settings-section">
+              <label class="field-label">Days it can be booked</label>
+              <div class="days-pills-grid">
+                @for (day of allDays; track day) {
+                  <button
+                    type="button"
+                    class="book-day-pill"
+                    [class.selected]="isDaySelected(service, day)"
+                    (click)="toggleDay(service.id, day)"
+                  >
+                    {{ day }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- From & To Inputs -->
+            <div class="two-col-grid">
+              <div class="field-group">
+                <label class="field-label">From</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="service.fromTime"
+                  (ngModelChange)="updateServiceField(service.id, 'fromTime', $event)"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">To</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="service.toTime"
+                  (ngModelChange)="updateServiceField(service.id, 'toTime', $event)"
+                />
+              </div>
+            </div>
+
+            <!-- Your fee & Patient pays -->
+            <div class="two-col-grid">
+              <div class="field-group">
+                <label class="field-label">Your fee (KES)</label>
+                <input
+                  type="text"
+                  class="setting-input"
+                  [ngModel]="service.fee | number"
+                  (ngModelChange)="updateServiceField(service.id, 'fee', $event)"
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Patient pays</label>
+                <div class="setting-input readonly-input">
+                  KES {{ getPatientPays(service.fee) | number }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Note -->
+            <p class="channel-footer-note">{{ service.footerNote }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Full-width Save settings button -->
+      <div class="save-settings-bar">
+        <button type="button" class="btn-save-settings" (click)="saveServiceSettings()">
+          Save settings
+        </button>
+
+        @if (settingsSavedNotice()) {
+          <div class="saved-toast">
+            ✓ Home visit settings saved and synced for patients.
+          </div>
+        }
+      </div>
+    </div>
+  }
 
   <!-- Add Visit Modal -->
   @if (showAddVisitModal()) {
@@ -126,6 +332,15 @@
             placeholder="e.g. Nyali, Bamburi, Tudor"
             [ngModel]="neighborhood()"
             (ngModelChange)="neighborhood.set($event)"
+          />
+
+          <label>Address / Care Notes</label>
+          <input
+            type="text"
+            class="input-field"
+            placeholder="e.g. Near Nyali Centre, gate B"
+            [ngModel]="notes()"
+            (ngModelChange)="notes.set($event)"
           />
         </div>
 

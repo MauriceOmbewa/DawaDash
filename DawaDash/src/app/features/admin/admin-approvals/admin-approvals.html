@@ -2,7 +2,9 @@
   <header class="approvals-header">
     <div>
       <h1>Provider Approvals</h1>
-      <p class="subtitle">Validate chemist trade licenses, KMPDC credentials, and NCK nurse registrations</p>
+      <p class="subtitle">
+        Validate chemist trade licenses, KMPDC credentials, and NCK nurse registrations
+      </p>
     </div>
   </header>
 
@@ -10,7 +12,7 @@
     <div class="pill-group">
       <button
         type="button"
-        class="filter-pill"
+        class="filter-pill pill-all"
         [class.active]="filterType() === 'All'"
         (click)="filterType.set('All')"
       >
@@ -18,7 +20,7 @@
       </button>
       <button
         type="button"
-        class="filter-pill"
+        class="filter-pill pill-chemist"
         [class.active]="filterType() === 'Chemist'"
         (click)="filterType.set('Chemist')"
       >
@@ -26,7 +28,7 @@
       </button>
       <button
         type="button"
-        class="filter-pill"
+        class="filter-pill pill-doctor"
         [class.active]="filterType() === 'Doctor'"
         (click)="filterType.set('Doctor')"
       >
@@ -34,7 +36,7 @@
       </button>
       <button
         type="button"
-        class="filter-pill"
+        class="filter-pill pill-nurse"
         [class.active]="filterType() === 'Nurse'"
         (click)="filterType.set('Nurse')"
       >
@@ -43,31 +45,62 @@
     </div>
   </div>
 
-  <div class="approvals-list">
-    @for (item of filteredProviders(); track item.id) {
-      <div class="card approval-card">
-        <div class="card-details">
-          <div class="title-line">
-            <span class="type-pill">{{ item.type }}</span>
-            <h3 class="card-title">{{ item.name }}</h3>
-          </div>
-          <p class="card-subtitle">{{ item.specialtyOrDetails }} · License: <strong>{{ item.licenseNumber }}</strong></p>
-          <span class="submitted-text">Submitted: {{ item.submittedDate }}</span>
-        </div>
-
-        <div class="card-actions">
-          <button type="button" class="btn btn-approve" (click)="approve(item.id)">
-            Approve
-          </button>
-          <button type="button" class="btn btn-reject" (click)="reject(item.id)">
-            Reject
-          </button>
-        </div>
-      </div>
-    } @empty {
-      <div class="card empty-card">
-        <p>No pending applications in this category.</p>
-      </div>
-    }
+  <div class="table-card">
+    <table class="approvals-table">
+      <thead>
+        <tr>
+          <th>PROVIDER</th>
+          <th>TYPE</th>
+          <th class="desktop-only">LICENCE NO.</th>
+          <th class="desktop-only">SUBMITTED</th>
+          <th class="actions-col">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of filteredProviders(); track item.id) {
+          <tr>
+            <td>
+              <div class="provider-cell">
+                <span class="provider-avatar">{{ getInitials(item.type) }}</span>
+                <div class="provider-meta">
+                  <strong class="provider-name">{{ item.name }}</strong>
+                  <span class="provider-sub">{{ item.specialtyOrDetails }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span
+                class="type-pill"
+                [class]="'type-pill type-pill-' + item.type.toLowerCase()"
+              >
+                {{ item.type }}
+              </span>
+            </td>
+            <td class="desktop-only">
+              <span class="licence-code">{{ item.licenseNumber }}</span>
+            </td>
+            <td class="desktop-only">
+              <span class="submitted-text">{{ item.submittedDate }}</span>
+            </td>
+            <td class="actions-cell">
+              <div class="table-actions">
+                <button type="button" class="btn btn-approve" (click)="approve(item.id)">
+                  Approve
+                </button>
+                <button type="button" class="btn btn-reject" (click)="reject(item.id)">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-cell">
+              No pending applications in this category.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 </section>

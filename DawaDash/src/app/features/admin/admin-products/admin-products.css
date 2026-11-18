@@ -96,6 +96,62 @@
   color: #ffffff;
 }
 
+.chip-all {
+  background: #DCE5E0;
+  color: #2D483E;
+}
+
+.chip-all:hover {
+  background: #CFDCD5;
+}
+
+.chip-all.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+.chip-live {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-live:hover {
+  background: #BBF7D0;
+}
+
+.chip-live.selected {
+  background: #005C46;
+  color: #ffffff;
+}
+
+.chip-prescription {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.chip-prescription:hover {
+  background: #FDE68A;
+}
+
+.chip-prescription.selected {
+  background: #D97706;
+  color: #ffffff;
+}
+
+.chip-hidden {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.chip-hidden:hover {
+  background: #FECACA;
+}
+
+.chip-hidden.selected {
+  background: #991B1B;
+  color: #ffffff;
+}
+
 /* Table Card */
 .table-card {
   background: #ffffff;
