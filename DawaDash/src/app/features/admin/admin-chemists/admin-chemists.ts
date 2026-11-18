@@ -21,7 +21,7 @@ export class AdminChemists {
   actionType = signal<'suspend' | 'ban'>('suspend');
   actionReason = signal<string>('');
 
-  // Initial chemists matching the provided screenshots
+  // Initial chemists
   chemists = signal<Chemist[]>([
     {
       id: 'ch-1',
@@ -64,7 +64,6 @@ export class AdminChemists {
     },
   ]);
 
-  // Computed filtered list based on search and active chip
   filteredChemists = computed(() => {
     const query = this.searchTerm().toLowerCase().trim();
     const filter = this.activeFilter();
@@ -76,6 +75,7 @@ export class AdminChemists {
         c.name.toLowerCase().includes(query) ||
         c.location.toLowerCase().includes(query) ||
         c.licenceStatus.toLowerCase().includes(query) ||
+        (c.licenseNumber && c.licenseNumber.toLowerCase().includes(query)) ||
         (c.reason && c.reason.toLowerCase().includes(query));
       return matchesFilter && matchesSearch;
     });
@@ -89,11 +89,46 @@ export class AdminChemists {
     // Computed automatically updates with searchTerm
   }
 
+  onStatusSelectChange(chemist: Chemist, event: Event): void {
+    const selectEl = event.target as HTMLSelectElement;
+    const nextStatus = selectEl.value as Chemist['status'];
+
+    if (nextStatus === chemist.status) return;
+
+    if (nextStatus === 'active') {
+      this.chemists.update((list) =>
+        list.map((c) =>
+          c.id === chemist.id
+            ? {
+                ...c,
+                status: 'active' as const,
+                licenceStatus: 'Licence valid · Active',
+                reason: undefined,
+              }
+            : c
+        )
+      );
+      return;
+    }
+
+    if (nextStatus === 'suspended' || nextStatus === 'banned') {
+      // Revert visual select until modal action is confirmed
+      selectEl.value = chemist.status;
+      const action = nextStatus === 'suspended' ? 'suspend' : 'ban';
+      this.openReasonModal(chemist, action);
+    }
+  }
+
   approveChemist(id: string): void {
     this.chemists.update((list) =>
       list.map((c) =>
         c.id === id
-          ? { ...c, status: 'active' as const, licenceStatus: 'Licence valid · 0 orders', ordersCount: 0 }
+          ? {
+              ...c,
+              status: 'active' as const,
+              licenceStatus: 'Licence valid',
+              ordersCount: c.ordersCount ?? 0,
+            }
           : c
       )
     );
@@ -101,26 +136,6 @@ export class AdminChemists {
 
   rejectChemist(id: string): void {
     this.chemists.update((list) => list.filter((c) => c.id !== id));
-  }
-
-  reactivateChemist(id: string): void {
-    this.chemists.update((list) =>
-      list.map((c) =>
-        c.id === id
-          ? { ...c, status: 'active' as const, licenceStatus: 'Licence reinstated · Active', reason: undefined }
-          : c
-      )
-    );
-  }
-
-  liftBan(id: string): void {
-    this.chemists.update((list) =>
-      list.map((c) =>
-        c.id === id
-          ? { ...c, status: 'active' as const, licenceStatus: 'Ban lifted · Active', reason: undefined }
-          : c
-      )
-    );
   }
 
   openReasonModal(chemist: Chemist, type: 'suspend' | 'ban'): void {
@@ -151,8 +166,18 @@ export class AdminChemists {
       list.map((c) => {
         if (c.id !== target.id) return c;
         return type === 'suspend'
-          ? { ...c, status: 'suspended' as const, licenceStatus: 'Licence expired · Reason saved', reason: reasonText }
-          : { ...c, status: 'banned' as const, licenceStatus: 'Banned · Reason saved', reason: reasonText };
+          ? {
+              ...c,
+              status: 'suspended' as const,
+              licenceStatus: 'Licence expired · Reason saved',
+              reason: reasonText,
+            }
+          : {
+              ...c,
+              status: 'banned' as const,
+              licenceStatus: 'Banned · Reason saved',
+              reason: reasonText,
+            };
       })
     );
     this.closeReasonModal();

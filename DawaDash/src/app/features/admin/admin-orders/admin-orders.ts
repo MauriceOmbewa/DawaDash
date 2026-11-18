@@ -13,6 +13,7 @@ import { AdminOrder } from '../models/admin-models';
 export class AdminOrders {
   searchQuery = signal('');
   countyFilter = signal('All');
+  statusFilter = signal<'All' | AdminOrder['status']>('All');
 
   orders = signal<AdminOrder[]>([
     {
@@ -64,15 +65,27 @@ export class AdminOrders {
   filteredOrders = computed(() => {
     const q = this.searchQuery().toLowerCase().trim();
     const c = this.countyFilter();
+    const s = this.statusFilter();
 
     return this.orders().filter((o: AdminOrder) => {
       const matchSearch =
         !q ||
         o.orderNumber.toLowerCase().includes(q) ||
         o.customerName.toLowerCase().includes(q) ||
-        o.itemsSummary.toLowerCase().includes(q);
+        o.itemsSummary.toLowerCase().includes(q) ||
+        o.chemistName.toLowerCase().includes(q);
       const matchCounty = c === 'All' || o.county === c;
-      return matchSearch && matchCounty;
+      const matchStatus = s === 'All' || o.status === s;
+      return matchSearch && matchCounty && matchStatus;
     });
   });
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0].toUpperCase())
+      .join('');
+  }
 }

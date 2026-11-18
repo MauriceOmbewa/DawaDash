@@ -26,6 +26,7 @@
 
 .search-input {
   flex: 1;
+  min-width: 0;
   background: #ffffff;
   border: 1px solid #CFDBD5;
   border-radius: 16px;
@@ -42,10 +43,15 @@
   box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.12);
 }
 
+.search-input::placeholder {
+  color: #8A9D95;
+}
+
 .btn-search {
-  padding: 12px 28px;
+  padding: 12px 26px;
   font-size: 0.95rem;
   font-weight: 700;
+  font-family: inherit;
   background: #005C46;
   color: #ffffff;
   border: none;
@@ -59,7 +65,7 @@
   background: #004A38;
 }
 
-/* Filter Chips (All, Active, Banned) */
+/* Filter Chips (All, Active, Suspended, Banned) */
 .filter-chips {
   display: flex;
   align-items: center;
@@ -101,6 +107,16 @@
   color: #ffffff;
 }
 
+.chip-suspended {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.chip-suspended.selected {
+  background: #D97706;
+  color: #ffffff;
+}
+
 .chip-banned {
   background: #FEE2E2;
   color: #991B1B;
@@ -111,53 +127,107 @@
   color: #ffffff;
 }
 
-/* Customers List */
-.customers-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.card {
+/* Table Card */
+.table-card {
   background: #ffffff;
   border: 1px solid #E2EAE5;
   border-radius: 20px;
-  padding: 16px 18px;
+  overflow: hidden;
   box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
 }
 
-.customer-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+.customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
 
-.card-details {
+.customers-table thead th {
+  background: #F6FAF8;
+  padding: 12px 16px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5A7369;
+  border-bottom: 1px solid #E8EFEA;
+}
+
+.customers-table tbody td {
+  padding: 14px 16px;
+  font-size: 0.92rem;
+  color: #0A2E24;
+  border-bottom: 1px solid #EEF3F0;
+  vertical-align: middle;
+}
+
+.customers-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.customers-table tbody tr:hover {
+  background-color: #F7FBF8;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #DDF3E8 0%, #CEEBE0 100%);
+  color: #005C46;
+  font-weight: 800;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.customer-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
 }
 
-.card-title {
-  margin: 0;
-  font-size: 1.05rem;
+.customer-name {
+  font-size: 0.94rem;
   font-weight: 800;
   color: #0A2E24;
 }
 
-.card-subtitle {
-  margin: 0;
-  font-size: 0.85rem;
+.customer-sub {
+  font-size: 0.8rem;
   color: #5A7369;
 }
 
-.card-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+.customer-reason {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.customer-reason-suspended {
+  color: #92400E;
+}
+
+.customer-reason-banned {
+  color: #991B1B;
+}
+
+.orders-count {
+  font-weight: 600;
+  color: #0A2E24;
+}
+
+.joined-date {
+  font-size: 0.85rem;
+  color: #5A7369;
 }
 
 /* Status Badges */
@@ -169,6 +239,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .status-active {
@@ -176,9 +247,91 @@
   color: #065F46;
 }
 
+.status-suspended {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
 .status-banned {
   background: #FEE2E2;
   color: #991B1B;
+}
+
+.actions-col {
+  text-align: right !important;
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Status Action Dropdown */
+.status-select {
+  appearance: auto;
+  padding: 7px 12px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid #CFDBD5;
+  background-color: #ffffff;
+  color: #0A2E24;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.status-select:focus {
+  border-color: #005C46;
+  box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.12);
+}
+
+.status-select-active {
+  border-color: #86EFAC;
+  background-color: #F0FDF4;
+  color: #065F46;
+}
+
+.status-select-suspended {
+  border-color: #FCD34D;
+  background-color: #FFFBEB;
+  color: #92400E;
+}
+
+.status-select-banned {
+  border-color: #FCA5A5;
+  background-color: #FEF2F2;
+  color: #991B1B;
+}
+
+/* Notice Banner */
+.notice-banner {
+  background: #FFF9ED;
+  border: 1.5px solid #F6D082;
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notice-banner strong {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.notice-banner span {
+  font-size: 0.85rem;
+  color: #5A7369;
+}
+
+.empty-cell {
+  text-align: center;
+  color: #5A7369;
+  padding: 32px 16px !important;
+  font-size: 0.9rem;
 }
 
 /* Buttons */
@@ -189,40 +342,9 @@
   font-family: inherit;
   font-weight: 700;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 12px;
   transition: all 0.15s ease;
   white-space: nowrap;
-}
-
-.btn-ban {
-  padding: 7px 22px;
-  font-size: 0.92rem;
-  background: #ffffff;
-  color: #991B1B;
-  border: 2px solid #991B1B;
-}
-
-.btn-ban:hover {
-  background: #FEF2F2;
-}
-
-.btn-lift-ban {
-  padding: 8px 22px;
-  font-size: 0.92rem;
-  background: #005C46;
-  color: #ffffff;
-  border: none;
-}
-
-.btn-lift-ban:hover {
-  background: #004A38;
-}
-
-.empty-card {
-  text-align: center;
-  color: #5A7369;
-  font-size: 0.9rem;
-  padding: 32px 20px;
 }
 
 /* Modal Dialog */
@@ -300,6 +422,17 @@
   background: #DCE5E0;
 }
 
+.btn-suspend-confirm {
+  padding: 8px 22px;
+  background: #D97706;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-suspend-confirm:hover {
+  background: #B45309;
+}
+
 .btn-confirm-ban {
   padding: 8px 22px;
   background: #991B1B;
@@ -311,23 +444,16 @@
   background: #7F1D1D;
 }
 
-@media (max-width: 640px) {
-  .customer-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .card-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
+.desktop-only {
+  display: none;
 }
 
 @media (min-width: 768px) {
   .admin-customers-page {
     gap: 20px;
   }
-  .card {
-    padding: 18px 24px;
+
+  .desktop-only {
+    display: table-cell;
   }
 }

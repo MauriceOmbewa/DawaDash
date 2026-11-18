@@ -35,8 +35,8 @@
   padding: 8px 18px;
   border-radius: 9999px;
   border: none;
-  background: #DCFCE7;
-  color: #065F46;
+  background: #E2EAE5;
+  color: #2D483E;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 700;
@@ -44,12 +44,73 @@
   transition: all 0.15s ease;
 }
 
-.category-pill:hover {
-  background: #CFEFD9;
+.cat-pill-customers {
+  background: #E2EAE5;
+  color: #2D483E;
 }
 
-.category-pill.active {
+.cat-pill-customers:hover {
+  background: #CFDAD3;
+}
+
+.cat-pill-customers.active {
   background: #0B251F;
+  color: #ffffff;
+}
+
+.cat-pill-doctors {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.cat-pill-doctors:hover {
+  background: #BBF7D0;
+}
+
+.cat-pill-doctors.active {
+  background: #0B7358;
+  color: #ffffff;
+}
+
+.cat-pill-nurses {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.cat-pill-nurses:hover {
+  background: #FDE68A;
+}
+
+.cat-pill-nurses.active {
+  background: #D97706;
+  color: #ffffff;
+}
+
+.cat-pill-chemists {
+  background: #CFFAFE;
+  color: #155E75;
+}
+
+.cat-pill-chemists:hover {
+  background: #A5F3FC;
+}
+
+.cat-pill-chemists.active {
+  background: #0891B2;
+  color: #ffffff;
+}
+
+.cat-pill-hospitals {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.cat-pill-hospitals:hover {
+  background: #BFDBFE;
+}
+
+.cat-pill-hospitals.active {
+  background: #2563EB;
   color: #ffffff;
 }
 
@@ -113,8 +174,8 @@
   padding: 7px 18px;
   border-radius: 9999px;
   border: none;
-  background: #E1F2E8;
-  color: #0B4F3C;
+  background: #DCE5E0;
+  color: #2D483E;
   font-family: inherit;
   font-size: 0.86rem;
   font-weight: 700;
@@ -122,8 +183,59 @@
   transition: all 0.15s ease;
 }
 
-.status-chip.selected {
+.chip-all {
+  background: #DCE5E0;
+  color: #2D483E;
+}
+
+.chip-all:hover {
+  background: #CFDCD5;
+}
+
+.chip-all.selected {
   background: #0B251F;
+  color: #ffffff;
+}
+
+.chip-active {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-active:hover {
+  background: #BBF7D0;
+}
+
+.chip-active.selected {
+  background: #005C46;
+  color: #ffffff;
+}
+
+.chip-suspended {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.chip-suspended:hover {
+  background: #FDE68A;
+}
+
+.chip-suspended.selected {
+  background: #D97706;
+  color: #ffffff;
+}
+
+.chip-banned {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.chip-banned:hover {
+  background: #FECACA;
+}
+
+.chip-banned.selected {
+  background: #991B1B;
   color: #ffffff;
 }
 
@@ -230,12 +342,12 @@
   color: #065F46;
 }
 
-.badge-pending {
+.badge-pending,
+.badge-suspended {
   background: #FEF3C7;
   color: #92400E;
 }
 
-.badge-suspended,
 .badge-banned {
   background: #FEE2E2;
   color: #991B1B;

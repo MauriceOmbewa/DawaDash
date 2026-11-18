@@ -1,0 +1,370 @@
+:host {
+  display: block;
+}
+
+.nurse-patients-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+  font-weight: 800;
+  color: #0A2E24;
+  letter-spacing: -0.025em;
+}
+
+/* Search Bar Row */
+.search-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #CFDBD5;
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #0A2E24;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-input:focus {
+  border-color: #005C46;
+  box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.1);
+}
+
+.search-input::placeholder {
+  color: #64748B;
+}
+
+.btn-search {
+  padding: 12px 26px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  background: #005C46;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.btn-search:hover {
+  background: #004A38;
+}
+
+/* Filter Chips */
+.filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 18px;
+  border-radius: 9999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: #DCFCE7;
+  color: #0A2E24;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  background: #C6F6D5;
+}
+
+.chip.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+/* Table Card */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(10, 46, 36, 0.03);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.patients-table thead th {
+  padding: 14px 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748B;
+  background: #FAFDFB;
+  border-bottom: 1px solid #E2EAE5;
+  white-space: nowrap;
+}
+
+.patient-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.patient-row:hover {
+  background-color: #F4F8F5;
+}
+
+.patient-row td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F0F4F2;
+  vertical-align: middle;
+  font-size: 0.9rem;
+  color: #0A2E24;
+}
+
+.patient-row:last-child td {
+  border-bottom: none;
+}
+
+.patient-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.patient-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #DCFCE7;
+  color: #005C46;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.patient-name {
+  font-weight: 800;
+  color: #0A2E24;
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+.patient-location {
+  font-size: 0.8rem;
+  color: #5A7369;
+  margin-top: 2px;
+}
+
+.cell-date,
+.cell-mode,
+.cell-visits {
+  color: #0A2E24;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn-view {
+  padding: 7px 20px;
+  border-radius: 12px;
+  border: 1.8px solid #005C46;
+  background: #ffffff;
+  color: #0A2E24;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-view:hover {
+  background: #EBF5EF;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 32px 20px;
+  color: #5A7369;
+  font-size: 0.9rem;
+}
+
+.table-caption {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #5A7369;
+}
+
+/* Hide Visits & Record columns on compact mobile */
+.col-desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .nurse-patients-page {
+    gap: 18px;
+    padding: 24px 20px;
+  }
+
+  .col-desktop-only {
+    display: table-cell;
+  }
+}
+
+/* Details Page View */
+.patient-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.btn-back {
+  background: #ffffff;
+  border: 1px solid #D5E4DC;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0A2E24;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn-back:hover {
+  background: #EBF5EF;
+  border-color: #005C46;
+}
+
+.details-card {
+  background: #ffffff;
+  border: 1px solid #E2EAE5;
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.details-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.details-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #DCFCE7;
+  color: #005C46;
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.details-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.details-meta {
+  margin: 3px 0 0 0;
+  font-size: 0.84rem;
+  color: #5A7369;
+}
+
+.mode-badge {
+  margin-left: auto;
+  background: #DCFCE7;
+  color: #065F46;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .details-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.detail-box {
+  background: #F4F8F5;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: #5A7369;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: #0A2E24;
+  font-weight: 800;
+}
+
+.clinical-notes-box {
+  background: #FAFDFB;
+  border: 1px solid #E2EAE5;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.clinical-notes-box h3 {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.clinical-notes-box p {
+  margin: 0 0 12px 0;
+  font-size: 0.88rem;
+  color: #5A7369;
+}
+
+.clinical-notes-box p:last-child {
+  margin-bottom: 0;
+}

@@ -5,6 +5,7 @@ import {
   ProviderTreatedPatient,
   UserAccountStatus,
   UserCategoryTab,
+  UserChemistItem,
   UserCustomerItem,
   UserDoctorItem,
   UserHospitalItem,
@@ -426,6 +427,94 @@ export class AdminUsers {
     },
   ]);
 
+  chemists = signal<UserChemistItem[]>([
+    {
+      id: 'ch-1',
+      initials: 'DB',
+      avatarBadge: 'Ch',
+      name: 'Diani Beach Pharmacy',
+      city: 'Mombasa',
+      status: 'active',
+      licenceNumber: 'PPB/RET/2026/884',
+      licenceValid: true,
+      licenceExpires: '30 Jun 2027',
+      licenceBadgeType: 'normal',
+      ordersCount: 126,
+      productsCount: 64,
+      subscriptionPlan: 'Pro Pharmacy',
+      phone: '+254 711 234 567',
+      email: 'orders@dianibeachpharmacy.co.ke',
+      joinedDate: '15 Jul 2026',
+      earnedKes: 284000,
+      platformFeeKes: 28400,
+      subscriptionFeeKes: 15000,
+    },
+    {
+      id: 'ch-2',
+      initials: 'WC',
+      avatarBadge: 'Ch',
+      name: 'Westlands Care Pharmacy',
+      city: 'Nairobi',
+      status: 'pending',
+      licenceNumber: 'PPB/RET/2026/912',
+      licenceValid: true,
+      licenceExpires: '28 Feb 2027',
+      licenceBadgeType: 'warning',
+      ordersCount: 0,
+      productsCount: 18,
+      subscriptionPlan: 'Starter Pharmacy',
+      phone: '+254 722 891 034',
+      email: 'compliance@westlandscare.ke',
+      joinedDate: '27 Oct 2026',
+      earnedKes: 0,
+      platformFeeKes: 0,
+      subscriptionFeeKes: 0,
+    },
+    {
+      id: 'ch-3',
+      initials: 'NC',
+      avatarBadge: 'Ch',
+      name: 'Nyali Coast Dispensary',
+      city: 'Mombasa',
+      status: 'suspended',
+      licenceNumber: 'PPB/RET/2025/401',
+      licenceValid: false,
+      licenceExpires: 'Expired',
+      licenceBadgeType: 'expired',
+      ordersCount: 84,
+      productsCount: 41,
+      subscriptionPlan: 'Pro Pharmacy',
+      phone: '+254 734 567 890',
+      email: 'desk@nyalicoastdispensary.ke',
+      joinedDate: '08 Jun 2026',
+      earnedKes: 142500,
+      platformFeeKes: 14250,
+      subscriptionFeeKes: 15000,
+      reason: 'Awaiting updated Pharmacy and Poisons Board (PPB) annual renewal certificate.',
+    },
+    {
+      id: 'ch-4',
+      initials: 'AC',
+      avatarBadge: 'Ch',
+      name: 'Apex Care Chemists',
+      city: 'Kisumu',
+      status: 'active',
+      licenceNumber: 'PPB/RET/2026/677',
+      licenceValid: true,
+      licenceExpires: '25 days left',
+      licenceBadgeType: 'warning',
+      ordersCount: 93,
+      productsCount: 52,
+      subscriptionPlan: 'Growth Pharmacy',
+      phone: '+254 701 334 998',
+      email: 'hello@apexcarechemists.co.ke',
+      joinedDate: '21 Aug 2026',
+      earnedKes: 198000,
+      platformFeeKes: 19800,
+      subscriptionFeeKes: 10000,
+    },
+  ]);
+
   hospitals = signal<UserHospitalItem[]>([
     {
       id: 'hosp-1',
@@ -482,6 +571,8 @@ export class AdminUsers {
         return 'Search doctors';
       case 'nurses':
         return 'Search nurses';
+      case 'chemists':
+        return 'Search chemists';
       case 'hospitals':
         return 'Search hospitals';
     }
@@ -529,6 +620,21 @@ export class AdminUsers {
     });
   });
 
+  filteredChemists = computed(() => {
+    const q = this.searchTerm().toLowerCase().trim();
+    const st = this.activeStatus();
+    return this.chemists().filter((ch) => {
+      const statusOk = st === 'all' || ch.status === st;
+      const queryOk =
+        !q ||
+        ch.name.toLowerCase().includes(q) ||
+        ch.city.toLowerCase().includes(q) ||
+        ch.licenceNumber.toLowerCase().includes(q) ||
+        ch.subscriptionPlan.toLowerCase().includes(q);
+      return statusOk && queryOk;
+    });
+  });
+
   filteredHospitals = computed(() => {
     const q = this.searchTerm().toLowerCase().trim();
     const st = this.activeStatus();
@@ -560,6 +666,12 @@ export class AdminUsers {
     if (this.selectedCategory() !== 'nurses') return null;
     const id = this.selectedId();
     return this.nurses().find((n) => n.id === id) ?? null;
+  });
+
+  currentChemist = computed(() => {
+    if (this.selectedCategory() !== 'chemists') return null;
+    const id = this.selectedId();
+    return this.chemists().find((ch) => ch.id === id) ?? null;
   });
 
   currentHospital = computed(() => {
@@ -600,6 +712,8 @@ export class AdminUsers {
         return 'Doctors';
       case 'nurses':
         return 'Nurses';
+      case 'chemists':
+        return 'Chemists';
       case 'hospitals':
         return 'Hospitals';
     }
@@ -645,6 +759,10 @@ export class AdminUsers {
       this.nurses.update((list) =>
         list.map((n) => (n.id === id ? { ...n, status: nextStatus, reason: reasonText } : n))
       );
+    } else if (cat === 'chemists') {
+      this.chemists.update((list) =>
+        list.map((ch) => (ch.id === id ? { ...ch, status: nextStatus, reason: reasonText } : ch))
+      );
     } else if (cat === 'hospitals') {
       this.hospitals.update((list) =>
         list.map((h) => (h.id === id ? { ...h, status: nextStatus, reason: reasonText } : h))
@@ -674,6 +792,10 @@ export class AdminUsers {
       this.nurses.update((list) =>
         list.map((n) => (n.id === id ? { ...n, status: 'active', reason: undefined } : n))
       );
+    } else if (cat === 'chemists') {
+      this.chemists.update((list) =>
+        list.map((ch) => (ch.id === id ? { ...ch, status: 'active', reason: undefined } : ch))
+      );
     } else if (cat === 'hospitals') {
       this.hospitals.update((list) =>
         list.map((h) => (h.id === id ? { ...h, status: 'active', reason: undefined } : h))
@@ -696,8 +818,16 @@ export class AdminUsers {
       this.nurses.update((list) =>
         list.map((n) => (n.id === id ? { ...n, renewalRequested: true } : n))
       );
+    } else if (cat === 'chemists') {
+      this.chemists.update((list) =>
+        list.map((ch) => (ch.id === id ? { ...ch, renewalRequested: true } : ch))
+      );
     }
-    this.flashNotice('Licence renewal reminder sent to practitioner.');
+    this.flashNotice(
+      cat === 'chemists'
+        ? 'PPB licence renewal reminder sent to chemist.'
+        : 'Licence renewal reminder sent to practitioner.'
+    );
   }
 
   openPatientNote(patient: ProviderTreatedPatient): void {

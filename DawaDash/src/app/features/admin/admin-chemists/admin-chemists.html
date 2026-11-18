@@ -5,16 +5,17 @@
   </header>
 
   <!-- Search Bar Row -->
-  <div class="search-bar-row">
+  <form class="search-bar-row" (ngSubmit)="onSearch()">
     <input
       type="text"
-      [(ngModel)]="searchTerm"
-      (keyup.enter)="onSearch()"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+      name="chemistSearch"
       placeholder="Search chemists"
       class="search-input"
     />
-    <button type="button" class="btn btn-search" (click)="onSearch()">Search</button>
-  </div>
+    <button type="submit" class="btn-search">Search</button>
+  </form>
 
   <!-- Filter Chips (All, Active, Pending, Suspended, Banned) -->
   <div class="filter-chips">
@@ -60,79 +61,93 @@
     </button>
   </div>
 
-  <!-- Chemists List Cards -->
-  <div class="chemists-list">
-    @for (chemist of filteredChemists(); track chemist.id) {
-      <div class="card chemist-card">
-        <div class="card-details">
-          <h3 class="card-title">
-            {{ chemist.name }} · {{ chemist.location }}
-          </h3>
-          <p class="card-subtitle">
-            {{ chemist.licenceStatus }}
-            @if (chemist.status === 'active' && chemist.ordersCount !== undefined) {
-              · {{ chemist.ordersCount }} orders
-            }
-          </p>
-        </div>
-
-        <div class="card-actions">
-          <!-- Status Pill -->
-          <span class="status-badge status-{{ chemist.status }}">
-            {{ chemist.status | titlecase }}
-          </span>
-
-          <!-- Contextual Action Buttons -->
-          @if (chemist.status === 'active') {
-            <button
-              type="button"
-              class="btn btn-suspend"
-              (click)="openReasonModal(chemist, 'suspend')"
-            >
-              Suspend
-            </button>
-          } @else if (chemist.status === 'pending') {
-            <button
-              type="button"
-              class="btn btn-approve"
-              (click)="approveChemist(chemist.id)"
-            >
-              Approve
-            </button>
-            <button
-              type="button"
-              class="btn btn-reject"
-              (click)="rejectChemist(chemist.id)"
-            >
-              Reject
-            </button>
-          } @else if (chemist.status === 'suspended') {
-            <button
-              type="button"
-              class="btn btn-reactivate"
-              (click)="reactivateChemist(chemist.id)"
-            >
-              Reactivate
-            </button>
-          } @else if (chemist.status === 'banned') {
-            <button
-              type="button"
-              class="btn btn-lift-ban"
-              (click)="liftBan(chemist.id)"
-            >
-              Lift ban
-            </button>
-          }
-        </div>
-      </div>
-    } @empty {
-      <div class="card empty-card">
-        <p>No chemists found matching "{{ searchTerm() }}" in {{ activeFilter() }}</p>
-      </div>
-    }
+  <!-- Chemists Responsive Table -->
+  <div class="table-card">
+    <table class="chemists-table">
+      <thead>
+        <tr>
+          <th>CHEMIST</th>
+          <th class="desktop-only">LICENCE</th>
+          <th class="desktop-only">ORDERS</th>
+          <th>STATUS</th>
+          <th class="actions-col">ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (chemist of filteredChemists(); track chemist.id) {
+          <tr>
+            <td>
+              <div class="chemist-cell">
+                <span class="chemist-avatar">Ch</span>
+                <div class="chemist-meta">
+                  <strong class="chemist-name">{{ chemist.name }}</strong>
+                  <span class="chemist-sub">{{ chemist.location }}</span>
+                  @if (chemist.reason) {
+                    <span class="chemist-reason">{{ chemist.reason }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+            <td class="desktop-only">
+              <div class="licence-meta">
+                <span class="licence-status">{{ chemist.licenceStatus }}</span>
+                @if (chemist.licenseNumber) {
+                  <span class="licence-number">{{ chemist.licenseNumber }}</span>
+                }
+              </div>
+            </td>
+            <td class="desktop-only">
+              {{ chemist.ordersCount !== undefined ? chemist.ordersCount : '—' }}
+            </td>
+            <td>
+              <span class="status-badge status-{{ chemist.status }}">
+                {{ chemist.status | titlecase }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              @if (chemist.status === 'pending') {
+                <div class="pending-actions">
+                  <button
+                    type="button"
+                    class="btn btn-approve"
+                    (click)="approveChemist(chemist.id)"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-reject"
+                    (click)="rejectChemist(chemist.id)"
+                  >
+                    Reject
+                  </button>
+                </div>
+              } @else {
+                <select
+                  class="status-select status-select-{{ chemist.status }}"
+                  [value]="chemist.status"
+                  (change)="onStatusSelectChange(chemist, $event)"
+                  [attr.aria-label]="'Change status for ' + chemist.name"
+                >
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                  <option value="banned">Banned</option>
+                </select>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-cell">
+              No chemists found matching "{{ searchTerm() }}" in {{ activeFilter() }}.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
-  <!-- Notice Banner matching screenshot -->
+  <!-- Notice Banner -->
   <div class="notice-banner">
     <strong>Suspending or banning asks for a reason</strong>
     <span>The reason is saved and shown to the chemist.</span>
@@ -146,12 +161,14 @@
           {{ actionType() === 'suspend' ? 'Suspend Chemist' : 'Ban Chemist' }}
         </h3>
         <p class="modal-desc">
-          Please provide a reason for {{ actionTarget()?.name }} ({{ actionTarget()?.location }}). This explanation will be saved to their account record.
+          Please provide a reason for {{ actionTarget()?.name }} ({{ actionTarget()?.location }}).
+          This explanation will be saved to their account record.
         </p>
         <textarea
           class="reason-textarea"
           rows="3"
-          [(ngModel)]="actionReason"
+          [ngModel]="actionReason()"
+          (ngModelChange)="actionReason.set($event)"
           placeholder="State reason (e.g. Licence expired, non-compliant dispatch, regulatory order)..."
         ></textarea>
         <div class="modal-actions">

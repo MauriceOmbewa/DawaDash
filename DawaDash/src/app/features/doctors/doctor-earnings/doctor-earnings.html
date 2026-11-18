@@ -1,236 +1,625 @@
 <section class="doctor-earnings-page">
-  @if (activeView() === 'earnings') {
-    <!-- EARNINGS OVERVIEW VIEW -->
-    <header class="earnings-header">
+  @if (!showConsultationLogs()) {
+    <!-- Header with Consultation Logs & M-Pesa Withdraw Actions -->
+    <header class="page-header">
       <div>
-        <h1>Earnings</h1>
-        <p class="subtitle">Daily consult proceeds and instant M-Pesa payouts</p>
+        <h1>Doctor earnings</h1>
+        <p class="subtitle">
+          Consultation proceeds, channel mix, and instant M-Pesa payouts ·
+          <span class="balance-inline">Available: KES {{ availableBalance() | number }}</span>
+        </p>
       </div>
 
       <div class="header-actions">
-        <button type="button" class="btn btn-analytics" (click)="openAnalytics()">
-          <svg class="icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M18 20V10"></path>
-            <path d="M12 20V4"></path>
-            <path d="M6 20v-6"></path>
-          </svg>
-          <span>Earning analytics</span>
+        <button type="button" class="btn-logs-outline" (click)="openLogs()">
+          Consultation logs ({{ paymentLogs().length }})
         </button>
-
-        <button type="button" class="btn btn-primary" (click)="openWithdraw()">
+        <button type="button" class="btn-logs" (click)="openWithdraw()">
           Withdraw to M-Pesa
         </button>
       </div>
     </header>
 
-    <!-- Summary Metric Cards -->
-    <div class="metrics-grid">
-      <div class="card metric-card">
-        <span class="metric-label">Available Balance</span>
-        <strong class="metric-value font-mono">KES {{ availableBalance() | number }}</strong>
-        <span class="metric-footnote">Cleared for instant transfer</span>
-      </div>
+    <!-- Period Filter Chips (Daily to All time) -->
+    <div class="period-chips">
+      @for (opt of periodOptions; track opt.id) {
+        <button
+          type="button"
+          class="chip"
+          [class.selected]="selectedPeriod() === opt.id"
+          (click)="setPeriod(opt.id)"
+        >
+          {{ opt.label }}
+        </button>
+      }
+    </div>
 
-      <div class="card metric-card">
-        <span class="metric-label">Earned Today</span>
-        <strong class="metric-value font-mono">KES {{ earnedToday() | number }}</strong>
-        <span class="metric-footnote">6 consults settled</span>
+    <!-- Summary KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-card-total">
+        <span class="kpi-label">Total earned ({{ activeData().label }})</span>
+        <strong class="kpi-value">KES {{ activeData().totalEarned | number }}</strong>
       </div>
-
-      <div class="card metric-card">
-        <span class="metric-label">Earned This Week</span>
-        <strong class="metric-value font-mono">KES {{ earnedWeek() | number }}</strong>
-        <span class="metric-footnote">18 consults total</span>
+      <div class="kpi-card">
+        <span class="kpi-label">Virtual consults</span>
+        <strong class="kpi-value">KES {{ activeData().fromVirtual | number }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Hospital visits</span>
+        <strong class="kpi-value">KES {{ activeData().fromHospital | number }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Home visits</span>
+        <strong class="kpi-value">KES {{ activeData().fromHome | number }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Follow-up reviews</span>
+        <strong class="kpi-value">KES {{ activeData().fromFollowUp | number }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Lab &amp; Rx reviews</span>
+        <strong class="kpi-value">KES {{ activeData().fromLabRx | number }}</strong>
       </div>
     </div>
 
-    <!-- Transparent Fee Explanation -->
-    <div class="fee-explainer">
-      <strong>DawaDash 10% Platform Fee Model</strong>
-      <p>
-        You receive 100% of your configured consultation fee without deductions. The 10% platform fee is paid by patients at booking.
-      </p>
-    </div>
+    <!-- Chart + Channel Breakdown Split Grid -->
+    <div class="earnings-grid">
+      <!-- Left Card: Multi-Chart Analytics Switcher -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title-group">
+            <h2>{{ activeData().chartTitle }}</h2>
+            @if (selectedChartType() === 'area') {
+              <span class="trend-badge" [class.trend-down]="areaChartData().trendPct < 0">
+                {{ areaChartData().trendPct >= 0 ? '+' : '' }}{{ areaChartData().trendPct }}% vs start
+              </span>
+            }
+          </div>
 
-    <!-- Transactions Table -->
-    <div class="card ledger-card">
-      <h2>Recent Consultations</h2>
+          @if (hoveredBar(); as bar) {
+            <span class="bar-tooltip">
+              {{ bar.month }}: KES {{ getBarTotal(bar) | number }}
+            </span>
+          } @else if (activePieSlice(); as slice) {
+            <span class="bar-tooltip">
+              {{ slice.label }}: {{ slice.pct }}%
+            </span>
+          }
+        </div>
 
-      <div class="ledger-list">
-        @for (tx of ledger(); track tx.id) {
-          <div class="ledger-row">
-            <div class="tx-info">
-              <strong>{{ tx.patientName }}</strong>
-              <span>{{ tx.type }} · {{ tx.date }}, {{ tx.time }}</span>
+        <!-- Chart Visual Switcher -->
+        <div class="chart-switcher" role="tablist" aria-label="Choose analytics chart visual">
+          @for (opt of chartTypeOptions; track opt.id) {
+            <button
+              type="button"
+              class="chart-tab"
+              [class.active]="selectedChartType() === opt.id"
+              (click)="setChartType(opt.id)"
+            >
+              {{ opt.label }}
+            </button>
+          }
+        </div>
+
+        <!-- 1. Stacked Vertical Bar Chart -->
+        @if (selectedChartType() === 'stackedBar') {
+          <div class="stacked-chart">
+            @for (bar of activeData().monthlyBars; track bar.month) {
+              <div
+                class="bar-column"
+                (mouseenter)="hoveredBar.set(bar)"
+                (mouseleave)="hoveredBar.set(null)"
+                (click)="hoveredBar.set(bar)"
+              >
+                <div class="bar-track">
+                  <div
+                    class="bar-segment segment-labrx"
+                    [style.height.%]="bar.labRxHeightPct"
+                    [title]="'Lab & Rx review: KES ' + bar.labRxKes"
+                  ></div>
+                  <div
+                    class="bar-segment segment-home"
+                    [style.height.%]="bar.homeHeightPct"
+                    [title]="'Home visit: KES ' + bar.homeKes"
+                  ></div>
+                  <div
+                    class="bar-segment segment-hospital"
+                    [style.height.%]="bar.hospitalHeightPct"
+                    [title]="'Hospital visit: KES ' + bar.hospitalKes"
+                  ></div>
+                  <div
+                    class="bar-segment segment-followup"
+                    [style.height.%]="bar.followUpHeightPct"
+                    [title]="'Follow-up review: KES ' + bar.followUpKes"
+                  ></div>
+                  <div
+                    class="bar-segment segment-virtual"
+                    [style.height.%]="bar.virtualHeightPct"
+                    [title]="'Virtual consult: KES ' + bar.virtualKes"
+                  ></div>
+                </div>
+                <span class="bar-label">{{ bar.month }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 2. Multi-Series Line Graph -->
+        @if (selectedChartType() === 'line') {
+          <div class="svg-chart-wrap">
+            <svg viewBox="0 0 500 218" class="analytics-svg" aria-label="Line graph of doctor earnings">
+              @for (tick of lineChartData().gridTicks; track tick.y) {
+                <line
+                  [attr.x1]="lineChartData().left"
+                  [attr.y1]="tick.y"
+                  [attr.x2]="lineChartData().right"
+                  [attr.y2]="tick.y"
+                  stroke="#E8EFEA"
+                  stroke-width="1"
+                  stroke-dasharray="3 3"
+                />
+                <text
+                  [attr.x]="lineChartData().left - 8"
+                  [attr.y]="tick.y + 4"
+                  text-anchor="end"
+                  class="svg-axis-text"
+                >
+                  {{ tick.label }}
+                </text>
+              }
+
+              @for (xl of lineChartData().xLabels; track xl.label) {
+                @if (hoveredBar()?.month === xl.label) {
+                  <line
+                    [attr.x1]="xl.x"
+                    [attr.y1]="lineChartData().top"
+                    [attr.x2]="xl.x"
+                    [attr.y2]="lineChartData().bottom"
+                    stroke="#005C46"
+                    stroke-width="1.5"
+                    stroke-dasharray="4 3"
+                    opacity="0.45"
+                  />
+                }
+                <text
+                  [attr.x]="xl.x"
+                  y="208"
+                  text-anchor="middle"
+                  class="svg-axis-text"
+                  style="cursor: pointer"
+                  (mouseenter)="hoveredBar.set(xl.bar)"
+                  (click)="hoveredBar.set(xl.bar)"
+                >
+                  {{ xl.label }}
+                </text>
+              }
+
+              @for (s of lineChartData().series; track s.key) {
+                <polyline
+                  fill="none"
+                  [attr.stroke]="s.color"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [attr.points]="s.pointsAttr"
+                />
+                @for (pt of s.coords; track pt.label; let idx = $index) {
+                  <circle
+                    [attr.cx]="pt.x"
+                    [attr.cy]="pt.y"
+                    [attr.r]="hoveredBar()?.month === pt.label ? 5.2 : 3.6"
+                    [attr.fill]="s.color"
+                    stroke="#ffffff"
+                    stroke-width="1.6"
+                    style="cursor: pointer"
+                    (mouseenter)="hoveredBar.set(activeData().monthlyBars[idx])"
+                    (mouseleave)="hoveredBar.set(null)"
+                    (click)="hoveredBar.set(activeData().monthlyBars[idx])"
+                  >
+                    <title>{{ s.label }} ({{ pt.label }}): KES {{ pt.value | number }}</title>
+                  </circle>
+                }
+              }
+            </svg>
+          </div>
+        }
+
+        <!-- 3. Donut / Pie Chart -->
+        @if (selectedChartType() === 'pie') {
+          <div class="pie-layout">
+            <div class="pie-svg-wrap">
+              <svg viewBox="0 0 220 220" class="pie-svg" aria-label="Pie chart of doctor earnings share">
+                <circle
+                  cx="110"
+                  cy="110"
+                  r="70"
+                  fill="transparent"
+                  stroke="#EEF3F0"
+                  stroke-width="34"
+                />
+                @for (slice of pieSlices(); track slice.key) {
+                  <circle
+                    cx="110"
+                    cy="110"
+                    r="70"
+                    fill="transparent"
+                    [attr.stroke]="slice.color"
+                    [attr.stroke-width]="hoveredSliceKey() === slice.key ? 39 : 34"
+                    [attr.stroke-dasharray]="slice.dashArray"
+                    [attr.stroke-dashoffset]="slice.dashOffset"
+                    transform="rotate(-90 110 110)"
+                    class="pie-segment"
+                    (mouseenter)="hoveredSliceKey.set(slice.key)"
+                    (mouseleave)="hoveredSliceKey.set(null)"
+                    (click)="hoveredSliceKey.set(slice.key)"
+                  >
+                    <title>{{ slice.label }}: KES {{ slice.amount | number }} ({{ slice.pct }}%)</title>
+                  </circle>
+                }
+              </svg>
+              <div class="pie-center">
+                @if (activePieSlice(); as slice) {
+                  <span class="pie-center-label">{{ slice.label }}</span>
+                  <strong class="pie-center-val">{{ slice.pct }}%</strong>
+                  <span class="pie-center-sub">KES {{ slice.amount | number }}</span>
+                } @else {
+                  <span class="pie-center-label">Total earned</span>
+                  <strong class="pie-center-val">KES {{ activeData().totalEarned | number }}</strong>
+                  <span class="pie-center-sub">{{ activeData().label }}</span>
+                }
+              </div>
             </div>
 
-            <div class="tx-amounts">
-              <span class="net-amount font-mono">+ KES {{ tx.netEarned | number }}</span>
-              <span class="fee-meta">Gross: {{ tx.grossAmount }} (Fee: -{{ tx.platformFee }})</span>
+            <div class="pie-legend-list">
+              @for (slice of pieSlices(); track slice.key) {
+                <button
+                  type="button"
+                  class="pie-legend-row"
+                  [class.highlighted]="hoveredSliceKey() === slice.key"
+                  (mouseenter)="hoveredSliceKey.set(slice.key)"
+                  (mouseleave)="hoveredSliceKey.set(null)"
+                  (click)="hoveredSliceKey.set(slice.key)"
+                >
+                  <span class="pie-row-left">
+                    <span class="legend-dot" [style.background]="slice.color"></span>
+                    <span class="pie-row-name">{{ slice.label }}</span>
+                  </span>
+                  <span class="pie-row-right">
+                    <strong>{{ slice.pct }}%</strong>
+                    <span>KES {{ slice.amount | number }}</span>
+                  </span>
+                </button>
+              }
             </div>
           </div>
         }
+
+        <!-- 4. Area Growth Trend Chart -->
+        @if (selectedChartType() === 'area') {
+          <div class="svg-chart-wrap">
+            <svg viewBox="0 0 500 218" class="analytics-svg" aria-label="Area chart of total doctor earnings">
+              <defs>
+                <linearGradient id="doctorEarningsAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#005C46" stop-opacity="0.28" />
+                  <stop offset="100%" stop-color="#005C46" stop-opacity="0.02" />
+                </linearGradient>
+              </defs>
+
+              @for (tick of areaChartData().gridTicks; track tick.y) {
+                <line
+                  [attr.x1]="areaChartData().left"
+                  [attr.y1]="tick.y"
+                  [attr.x2]="areaChartData().right"
+                  [attr.y2]="tick.y"
+                  stroke="#E8EFEA"
+                  stroke-width="1"
+                  stroke-dasharray="3 3"
+                />
+                <text
+                  [attr.x]="areaChartData().left - 8"
+                  [attr.y]="tick.y + 4"
+                  text-anchor="end"
+                  class="svg-axis-text"
+                >
+                  {{ tick.label }}
+                </text>
+              }
+
+              <path [attr.d]="areaChartData().areaPath" fill="url(#doctorEarningsAreaGrad)" />
+              <path
+                [attr.d]="areaChartData().linePath"
+                fill="none"
+                stroke="#005C46"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+
+              @for (pt of areaChartData().points; track pt.label) {
+                <circle
+                  [attr.cx]="pt.x"
+                  [attr.cy]="pt.y"
+                  [attr.r]="hoveredBar()?.month === pt.label ? 6 : 4.5"
+                  fill="#005C46"
+                  stroke="#ffffff"
+                  stroke-width="2"
+                  style="cursor: pointer"
+                  (mouseenter)="hoveredBar.set(pt.bar)"
+                  (mouseleave)="hoveredBar.set(null)"
+                  (click)="hoveredBar.set(pt.bar)"
+                >
+                  <title>{{ pt.label }}: KES {{ pt.total | number }}</title>
+                </circle>
+                <text
+                  [attr.x]="pt.x"
+                  y="208"
+                  text-anchor="middle"
+                  class="svg-axis-text"
+                >
+                  {{ pt.label }}
+                </text>
+              }
+            </svg>
+          </div>
+        }
+
+        <!-- 5. Ranked Horizontal Stream Bars -->
+        @if (selectedChartType() === 'rankings') {
+          <div class="ranked-bars-list">
+            @for (stream of rankedStreams(); track stream.key) {
+              <div class="ranked-bar-item">
+                <div class="ranked-bar-top">
+                  <span class="ranked-bar-name">
+                    <span class="legend-dot" [style.background]="stream.color"></span>
+                    {{ stream.label }}
+                  </span>
+                  <span class="ranked-bar-metrics">
+                    <strong>KES {{ stream.amount | number }}</strong>
+                    <span class="ranked-share">{{ stream.sharePct }}%</span>
+                  </span>
+                </div>
+                <div class="ranked-track">
+                  <div
+                    class="ranked-fill"
+                    [style.width.%]="stream.widthPct"
+                    [style.background]="stream.color"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (selectedChartType() === 'stackedBar' || selectedChartType() === 'line') {
+          <div class="chart-legend">
+            <span class="legend-item">
+              <span class="legend-dot dot-virtual"></span> Virtual consult
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot dot-followup"></span> Follow-up review
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot dot-hospital"></span> Hospital visit
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot dot-home"></span> Home visit
+            </span>
+            <span class="legend-item">
+              <span class="legend-dot dot-labrx"></span> Lab &amp; Rx review
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Right Section: Channel breakdown -->
+      <div class="breakdown-section">
+        <h2>Channel breakdown</h2>
+
+        <div class="table-card">
+          <table class="earnings-table">
+            <thead>
+              <tr>
+                <th>CHANNEL</th>
+                <th>PATIENT PAID</th>
+                <th>YOU EARNED</th>
+                <th class="desktop-only">CONSULTS</th>
+                <th class="desktop-only">AVG / CONSULT</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of activeData().breakdown; track row.channel) {
+                <tr>
+                  <td><strong>{{ row.channel }}</strong></td>
+                  <td>KES {{ row.patientsPaid | number }}</td>
+                  <td class="highlight-earned">KES {{ row.youEarned | number }}</td>
+                  <td class="desktop-only">{{ row.consults }}</td>
+                  <td class="desktop-only">KES {{ row.avgPerConsult | number }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <p class="sample-footnote">
+          DawaDash 90/10 Platform Model: you keep 100% of your declared consultation fee. The 10% platform fee is paid by patients at checkout to cover telehealth streaming and pharmacy routing.
+        </p>
       </div>
     </div>
   } @else {
-    <!-- EARNING ANALYTICS VIEW ("My earnings" UI from screenshots) -->
-    <div class="analytics-view">
-      <div class="analytics-top-nav">
-        <button type="button" class="btn-back" (click)="backToEarnings()">
-          ← Back to Earnings
+    <!-- Consultation Logs Sub-View -->
+    <div class="logs-header">
+      <button type="button" class="btn-back" (click)="closeLogs()">
+        ← Back to Doctor earnings
+      </button>
+
+      <div class="logs-title-row">
+        <div>
+          <h1>Consultation logs</h1>
+          <p class="subtitle">
+            Every settled consultation, hospital check-in, home visit, and lab review disbursed to M-Pesa
+          </p>
+        </div>
+
+        <button type="button" class="btn-logs" (click)="openWithdraw()">
+          Withdraw to M-Pesa
         </button>
       </div>
+    </div>
 
-      <header class="analytics-header">
-        <h1>My earnings</h1>
-      </header>
+    <!-- Search + Period Filter Toolbar -->
+    <div class="logs-toolbar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search ref, patient, consult details, or location..."
+        [ngModel]="logSearchTerm()"
+        (ngModelChange)="logSearchTerm.set($event)"
+      />
 
-      <!-- Timeframe Filter Chips -->
-      <div class="period-chips">
-        <button
-          type="button"
-          class="period-chip"
-          [class.selected]="selectedPeriod() === 'This month'"
-          (click)="setPeriod('This month')"
-        >
-          This month
-        </button>
-        <button
-          type="button"
-          class="period-chip"
-          [class.selected]="selectedPeriod() === 'Last 3 months'"
-          (click)="setPeriod('Last 3 months')"
-        >
-          Last 3 months
-        </button>
-        <button
-          type="button"
-          class="period-chip"
-          [class.selected]="selectedPeriod() === 'This year'"
-          (click)="setPeriod('This year')"
-        >
-          This year
-        </button>
+      <select
+        class="period-select"
+        [ngModel]="logPeriodFilter()"
+        (ngModelChange)="logPeriodFilter.set($event)"
+        aria-label="Filter consultation logs by time period"
+      >
+        <option value="all">All periods</option>
+        @for (opt of periodOptions; track opt.id) {
+          <option [value]="opt.id">{{ opt.label }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="period-chips">
+      <button
+        type="button"
+        class="chip chip-cat-all"
+        [class.selected]="logCategoryFilter() === 'all'"
+        (click)="setLogCategory('all')"
+      >
+        All ({{ paymentLogs().length }})
+      </button>
+      <button
+        type="button"
+        class="chip chip-cat-virtual"
+        [class.selected]="logCategoryFilter() === 'Virtual consult'"
+        (click)="setLogCategory('Virtual consult')"
+      >
+        Virtual consult
+      </button>
+      <button
+        type="button"
+        class="chip chip-cat-hospital"
+        [class.selected]="logCategoryFilter() === 'Hospital visit'"
+        (click)="setLogCategory('Hospital visit')"
+      >
+        Hospital visit
+      </button>
+      <button
+        type="button"
+        class="chip chip-cat-home"
+        [class.selected]="logCategoryFilter() === 'Home visit'"
+        (click)="setLogCategory('Home visit')"
+      >
+        Home visit
+      </button>
+      <button
+        type="button"
+        class="chip chip-cat-followup"
+        [class.selected]="logCategoryFilter() === 'Follow-up review'"
+        (click)="setLogCategory('Follow-up review')"
+      >
+        Follow-up review
+      </button>
+      <button
+        type="button"
+        class="chip chip-cat-labrx"
+        [class.selected]="logCategoryFilter() === 'Lab & Rx review'"
+        (click)="setLogCategory('Lab & Rx review')"
+      >
+        Lab &amp; Rx review
+      </button>
+    </div>
+
+    <!-- Filtered Consultation Log Totals -->
+    <div class="logs-summary-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Showing consults</span>
+        <strong class="kpi-value">{{ logSummary().count }}</strong>
       </div>
-
-      <!-- 4 KPI Metric Cards -->
-      <div class="analytics-kpi-grid">
-        <div class="card kpi-card">
-          <span class="kpi-label">You earned</span>
-          <strong class="kpi-value">KES {{ activeAnalytics().earned | number }}</strong>
-        </div>
-
-        <div class="card kpi-card">
-          <span class="kpi-label">Waiting to be paid</span>
-          <strong class="kpi-value">KES {{ activeAnalytics().waiting | number }}</strong>
-        </div>
-
-        <div class="card kpi-card">
-          <span class="kpi-label">Consultations</span>
-          <strong class="kpi-value">{{ activeAnalytics().consultations }}</strong>
-        </div>
-
-        <div class="card kpi-card">
-          <span class="kpi-label">Average per patient</span>
-          <strong class="kpi-value">KES {{ activeAnalytics().averagePerPatient | number }}</strong>
-        </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Patient paid</span>
+        <strong class="kpi-value">KES {{ logSummary().patientsPaid | number }}</strong>
       </div>
+      <div class="kpi-card">
+        <span class="kpi-label">You earned</span>
+        <strong class="kpi-value highlight-earned">KES {{ logSummary().youEarned | number }}</strong>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Available balance</span>
+        <strong class="kpi-value">KES {{ availableBalance() | number }}</strong>
+      </div>
+    </div>
 
-      <!-- Middle 2-Column Section: Weekly Bar Chart + Channel Breakdown & Best Day Insight -->
-      <div class="analytics-middle-grid">
-        <!-- Earned each week -->
-        <div class="card chart-card">
-          <h2 class="section-card-title">Earned each week</h2>
-
-          <div class="bar-chart-area">
-            <div class="bars-row">
-              @for (bar of activeAnalytics().weeklyBars; track bar.label) {
-                <div class="bar-col" [title]="bar.label + ': KES ' + (bar.amount | number)">
-                  <div class="bar-track">
-                    <div class="bar-fill" [style.height.%]="bar.heightPercent"></div>
-                  </div>
+    <!-- Responsive Consultation Logs Table -->
+    <div class="table-card">
+      <table class="earnings-table logs-table">
+        <thead>
+          <tr>
+            <th>REF &amp; TIME</th>
+            <th>CHANNEL</th>
+            <th class="desktop-only">PATIENT &amp; LOCATION</th>
+            <th>PATIENT PAID</th>
+            <th>YOU EARNED</th>
+            <th class="desktop-only">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of filteredConsultationLogs(); track log.id) {
+            <tr>
+              <td>
+                <div class="log-ref-cell">
+                  <strong class="log-ref">{{ log.reference }}</strong>
+                  <span class="log-sub">{{ log.dateTime }}</span>
+                  <span class="mobile-provider-sub">{{ log.patientName }} · {{ log.location }}</span>
                 </div>
-              }
-            </div>
-            <div class="bar-labels-row">
-              @for (bar of activeAnalytics().weeklyBars; track bar.label) {
-                <span class="bar-label">{{ bar.label }}</span>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- Right stack: Where your money comes from + Amber insight banner -->
-        <div class="analytics-right-stack">
-          <div class="card breakdown-card">
-            <h2 class="section-card-title">Where your money comes from</h2>
-
-            <div class="breakdown-list">
-              @for (ch of activeAnalytics().channels; track ch.label) {
-                <div class="breakdown-item">
-                  <div class="breakdown-row-head">
-                    <span class="breakdown-name">{{ ch.label }}</span>
-                    <strong class="breakdown-amount">
-                      KES {{ ch.amount | number }} · {{ ch.percent }}%
-                    </strong>
-                  </div>
-                  <div class="progress-track">
-                    <div class="progress-fill" [style.width.%]="ch.percent"></div>
-                  </div>
+              </td>
+              <td>
+                <span class="category-badge cat-{{ getCategoryClass(log.category) }}">
+                  {{ log.category }}
+                </span>
+              </td>
+              <td class="desktop-only">
+                <div class="log-provider-cell">
+                  <strong>{{ log.patientName }} · {{ log.location }}</strong>
+                  <span class="log-sub">{{ log.itemDescription }}</span>
                 </div>
-              }
-            </div>
-          </div>
-
-          <!-- Best Day / Insight Banner -->
-          <div class="insight-banner">
-            <strong>{{ activeAnalytics().insightTitle }}</strong>
-            <span>{{ activeAnalytics().insightSubtitle }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Payouts Table -->
-      <div class="payouts-section">
-        <h2 class="payouts-title">Payouts</h2>
-
-        <div class="table-card">
-          <div class="table-scroll">
-            <table class="payouts-table">
-              <thead>
-                <tr>
-                  <th>DATE</th>
-                  <th>CONSULTS</th>
-                  <th>YOU EARNED</th>
-                  <th class="col-desktop-only">STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of activeAnalytics().payouts; track row.id) {
-                  <tr>
-                    <td class="cell-date">{{ row.date }}</td>
-                    <td class="cell-consults">{{ row.consults }}</td>
-                    <td class="cell-earned">KES {{ row.amount | number }}</td>
-                    <td class="col-desktop-only">
-                      <span
-                        class="status-pill"
-                        [class.status-paid]="row.status === 'Paid'"
-                        [class.status-pending]="row.status === 'Pending'"
-                      >
-                        {{ row.status }}
-                      </span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+              </td>
+              <td>KES {{ log.patientPaid | number }}</td>
+              <td class="highlight-earned">+ KES {{ log.youEarned | number }}</td>
+              <td class="desktop-only">
+                <span
+                  class="status-pill"
+                  [class.status-settled]="log.status === 'Settled'"
+                  [class.status-pending]="log.status === 'Pending payout'"
+                >
+                  {{ log.paymentMethod }} · {{ log.status }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-cell">
+                No consultation logs match the selected channel or search query.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   }
 
-  <!-- M-Pesa Modal -->
+  <!-- M-Pesa B2C Payout Modal -->
   @if (showWithdrawModal()) {
     <div class="modal-backdrop" (click)="closeWithdraw()">
       <div class="modal-card" (click)="$event.stopPropagation()">
@@ -266,14 +655,14 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeWithdraw()">
+          <button type="button" class="btn-secondary" (click)="closeWithdraw()">
             Cancel
           </button>
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn-logs"
             (click)="processWithdrawal()"
-            [disabled]="isSuccess()"
+            [disabled]="isSuccess() || withdrawAmount() <= 0 || withdrawAmount() > availableBalance()"
           >
             Confirm Withdrawal
           </button>
@@ -282,3 +671,4 @@
     </div>
   }
 </section>
+s

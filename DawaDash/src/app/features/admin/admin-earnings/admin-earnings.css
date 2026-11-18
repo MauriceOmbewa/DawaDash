@@ -8,7 +8,16 @@
   gap: 18px;
 }
 
-.page-header h1 {
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.page-header h1,
+.logs-title-row h1 {
   margin: 0;
   font-size: clamp(1.7rem, 4.5vw, 2.35rem);
   font-weight: 800;
@@ -17,25 +26,50 @@
   line-height: 1.15;
 }
 
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #5A7369;
+}
+
+.btn-logs {
+  padding: 10px 20px;
+  border-radius: 14px;
+  border: none;
+  background: #005C46;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-logs:hover {
+  background: #004A38;
+}
+
 /* Period Chips */
 .period-chips {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .chip {
-  padding: 8px 18px;
+  padding: 8px 16px;
   border-radius: 9999px;
   border: none;
   background: #E1F2E8;
   color: #0B4F3C;
   font-family: inherit;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .chip:hover {
@@ -47,11 +81,102 @@
   color: #ffffff;
 }
 
-/* 4 KPI Summary Cards */
+/* Category-Themed Filter Chips (Payment Logs) */
+.chip-cat-all {
+  background: #DCE5E0;
+  color: #2D483E;
+}
+
+.chip-cat-all:hover {
+  background: #CFDCD5;
+}
+
+.chip-cat-all.selected {
+  background: #0B251F;
+  color: #ffffff;
+}
+
+.chip-cat-doctors {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.chip-cat-doctors:hover {
+  background: #BBF7D0;
+}
+
+.chip-cat-doctors.selected {
+  background: #0B7358;
+  color: #ffffff;
+}
+
+.chip-cat-products {
+  background: #E2EAE5;
+  color: #0D2923;
+}
+
+.chip-cat-products:hover {
+  background: #CFDAD3;
+}
+
+.chip-cat-products.selected {
+  background: #0D2923;
+  color: #ffffff;
+}
+
+.chip-cat-chemists {
+  background: #CFFAFE;
+  color: #155E75;
+}
+
+.chip-cat-chemists:hover {
+  background: #A5F3FC;
+}
+
+.chip-cat-chemists.selected {
+  background: #0891B2;
+  color: #ffffff;
+}
+
+.chip-cat-nurses {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.chip-cat-nurses:hover {
+  background: #FDE68A;
+}
+
+.chip-cat-nurses.selected {
+  background: #D97706;
+  color: #ffffff;
+}
+
+.chip-cat-hospitals {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.chip-cat-hospitals:hover {
+  background: #BFDBFE;
+}
+
+.chip-cat-hospitals.selected {
+  background: #2563EB;
+  color: #ffffff;
+}
+
+/* KPI Summary Cards */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.kpi-card-total {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #ffffff 0%, #F2FAF6 100%);
+  border-color: #CFE6DA;
 }
 
 .kpi-card {
@@ -66,13 +191,13 @@
 }
 
 .kpi-label {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   color: #5A7369;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .kpi-value {
-  font-size: clamp(1.35rem, 2.8vw, 1.65rem);
+  font-size: clamp(1.25rem, 2.5vw, 1.55rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #0A2E24;
@@ -106,12 +231,33 @@
   flex-wrap: wrap;
 }
 
+.chart-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .chart-header h2,
 .breakdown-section h2 {
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
   color: #0A2E24;
+}
+
+.trend-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #065F46;
+  background: #DCFCE7;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.trend-badge.trend-down {
+  color: #991B1B;
+  background: #FEE2E2;
 }
 
 .bar-tooltip {
@@ -123,12 +269,242 @@
   border-radius: 9999px;
 }
 
+.chart-switcher {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #F4F8F5;
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid #E2EAE5;
+}
+
+.chart-tab {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5A7369;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chart-tab:hover {
+  color: #0A2E24;
+  background: #E8EFEA;
+}
+
+.chart-tab.active {
+  background: #005C46;
+  color: #ffffff;
+}
+
+/* SVG Line & Area Charts */
+.svg-chart-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.analytics-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.svg-axis-text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #5A7369;
+  font-family: inherit;
+}
+
+/* Pie / Donut Chart */
+.pie-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+@media (min-width: 520px) {
+  .pie-layout {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+.pie-svg-wrap {
+  position: relative;
+  width: 196px;
+  height: 196px;
+  margin: 0 auto;
+}
+
+.pie-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pie-segment {
+  cursor: pointer;
+  transition: stroke-width 0.15s ease, opacity 0.15s ease;
+}
+
+.pie-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.pie-center-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #5A7369;
+  line-height: 1.2;
+}
+
+.pie-center-val {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0A2E24;
+  margin-top: 2px;
+}
+
+.pie-center-sub {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #005C46;
+  margin-top: 2px;
+}
+
+.pie-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pie-legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid #EEF3F0;
+  background: #FAFDFB;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pie-legend-row:hover,
+.pie-legend-row.highlighted {
+  background: #EFF7F2;
+  border-color: #B6DAC7;
+}
+
+.pie-row-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0A2E24;
+}
+
+.pie-row-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #5A7369;
+}
+
+.pie-row-right strong {
+  color: #0A2E24;
+  font-weight: 800;
+}
+
+/* Ranked Horizontal Stream Bars */
+.ranked-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.ranked-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ranked-bar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.84rem;
+}
+
+.ranked-bar-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #0A2E24;
+}
+
+.ranked-bar-metrics {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ranked-bar-metrics strong {
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.ranked-share {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #5A7369;
+  background: #EEF3F0;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.ranked-track {
+  width: 100%;
+  height: 11px;
+  background: #EEF3F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.ranked-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.25s ease;
+}
+
 .stacked-chart {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  height: 195px;
+  height: 215px;
   padding: 12px 6px 0;
 }
 
@@ -154,16 +530,26 @@
 
 .bar-segment {
   width: 100%;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .bar-column:hover .bar-segment {
   opacity: 0.9;
 }
 
-.segment-chemists {
-  background: #0D2923;
+.segment-hospitals {
+  background: #2563EB;
   border-radius: 6px 6px 2px 2px;
+}
+
+.segment-chemists {
+  background: #0891B2;
+  border-radius: 2px;
+}
+
+.segment-products {
+  background: #0D2923;
+  border-radius: 2px;
 }
 
 .segment-nurses {
@@ -185,7 +571,7 @@
 .chart-legend {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -193,7 +579,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: #0A2E24;
 }
@@ -213,11 +599,19 @@
   background: #F5B031;
 }
 
-.dot-chemists {
+.dot-products {
   background: #0D2923;
 }
 
-/* Breakdown Table */
+.dot-chemists {
+  background: #0891B2;
+}
+
+.dot-hospitals {
+  background: #2563EB;
+}
+
+/* Breakdown & Logs Tables */
 .breakdown-section {
   display: flex;
   flex-direction: column;
@@ -261,11 +655,175 @@
   border-bottom: none;
 }
 
+.earnings-table tbody tr:hover {
+  background-color: #F7FBF8;
+}
+
+.highlight-earned {
+  font-weight: 800;
+  color: #005C46 !important;
+}
+
 .sample-footnote {
   margin: 0;
   font-size: 0.82rem;
   color: #5A7369;
   line-height: 1.45;
+}
+
+/* Payment Logs Sub-View */
+.logs-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-back {
+  align-self: flex-start;
+  padding: 7px 14px;
+  border-radius: 12px;
+  border: 1px solid #CFDBD5;
+  background: #ffffff;
+  color: #0A2E24;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-back:hover {
+  background: #EEF5F1;
+}
+
+.logs-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 220px;
+  background: #ffffff;
+  border: 1px solid #CFDBD5;
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: #0A2E24;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #005C46;
+  box-shadow: 0 0 0 3px rgba(0, 92, 70, 0.12);
+}
+
+.period-select {
+  background: #ffffff;
+  border: 1px solid #CFDBD5;
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0A2E24;
+  cursor: pointer;
+  outline: none;
+}
+
+.logs-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.log-ref-cell,
+.log-provider-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.log-ref {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0A2E24;
+}
+
+.log-sub {
+  font-size: 0.78rem;
+  color: #5A7369;
+}
+
+.mobile-provider-sub {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #0A2E24;
+}
+
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cat-doctors {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.cat-products {
+  background: #E2EAE5;
+  color: #0D2923;
+}
+
+.cat-chemists {
+  background: #CFFAFE;
+  color: #155E75;
+}
+
+.cat-nurses {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.cat-hospitals {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-settled {
+  background: #DCFCE7;
+  color: #065F46;
+}
+
+.status-pending {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.empty-cell {
+  text-align: center;
+  color: #5A7369;
+  padding: 32px 16px !important;
+  font-size: 0.9rem;
 }
 
 .desktop-only {
@@ -278,12 +836,25 @@
   }
 
   .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .kpi-card-total {
+    grid-column: span 1;
+  }
+
+  .logs-summary-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
+    gap: 14px;
   }
 
   .desktop-only {
     display: table-cell;
+  }
+
+  .mobile-provider-sub {
+    display: none;
   }
 }
 
